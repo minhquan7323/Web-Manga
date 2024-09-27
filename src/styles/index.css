@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.sidebar {
+  background-color: aqua;
+}
+
+.product {
+  background-color: rgb(51, 0, 255);
+
+}
+
+.item {
+  background-color: rgb(255, 234, 0);
+
+}

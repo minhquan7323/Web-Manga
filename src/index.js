@@ -1,13 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import './styles/index.css';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import App from './App';
+import Cart from './containers/CartPage';
+import DetailProduct from './containers/DetailProductPage';
+import Product from './containers/ProductPage';
+import Home from './containers/HomePage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} >
+          <Route path="Product" element={<Product />} />
+          <Route path="Cart" element={<Cart />} />
+          <Route path="DetailProduct" element={<DetailProduct />} />
+          <Route index element={<Home />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
