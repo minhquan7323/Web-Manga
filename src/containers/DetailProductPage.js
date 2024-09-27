@@ -1,8 +1,13 @@
-function DetailProduct() {
+import React from 'react';
+import { useParams } from 'react-router-dom';
+
+const DetailProductPage = () => {
+    const { id } = useParams();
     return (
         <div>
-            <h1>Detail Product</h1>
+            <h1>Product Details for Product ID: {id}</h1>
         </div>
-    )
-}
-export default DetailProduct;
+    );
+};
+
+export default DetailProductPage;

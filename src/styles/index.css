@@ -16,12 +16,12 @@ code {
   background-color: aqua;
 }
 
-.product {
-  background-color: rgb(51, 0, 255);
-
+body {
+  background-color: #f51010;
+  /* background-color: #ddd; */
 }
 
-.item {
-  background-color: rgb(255, 234, 0);
-
+a {
+  text-decoration: none;
+  color: black;
 }

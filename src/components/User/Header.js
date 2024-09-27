@@ -20,7 +20,6 @@ function Header() {
                         <NavLink to="/" className='nav-link'>Home</NavLink>
                         <NavLink to="/Product" className='nav-link'>Product</NavLink>
                         <NavLink to="/Cart" className='nav-link'>Cart</NavLink>
-                        <NavLink to="/DetailProduct" className='nav-link'>DetailProduct</NavLink>
                     </Nav>
                     <Form className="d-flex">
                         <Form.Control
