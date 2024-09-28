@@ -1,27 +1,104 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: #ddd !important;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.bg {
+  background-color: #fff;
+}
+
+.ProductPage-container {
+  background-color: #ddd;
+}
+
+.product-card-body a {
+  text-decoration: none;
+  color: black;
+}
+
+.product {
+  padding: 5px !important;
+  margin: 0;
+
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.1s ease;
+}
+
+.product-card:hover {
+  transform: scale(1.03);
+}
+
+.product-card-img {
+  border-radius: 8px 8px 0 0;
+}
+
+.product-card-price,
+.product-card-title {
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4em;
+}
+
+
+
+.product-card-title {
+  font-size: 14px;
+  min-height: 2.8em;
+}
+
+.product-card-body .product-card-price {
+  color: #c92127;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: left;
+  padding: 5px 0;
+}
+
+.product-card-body {
+  padding: 5px !important;
+}
+
+.toolbar {
+  padding: 5px;
+}
+
+.toolbar select {
+  font-size: 15px;
+  line-height: 3;
+
+}
+
+.products,
+.product-box {
+  padding: 10px;
+}
+
+.product-box>div {
+  padding: 10px;
+  border-radius: 8px;
+}
+
+
+.sidebar-box {
+  padding: 10px;
+}
+
+.sidebar-box>div {
+  position: sticky;
+  top: 0;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
 .sidebar {
-  background-color: aqua;
-}
-
-body {
-  background-color: #f51010;
-  /* background-color: #ddd; */
-}
-
-a {
-  text-decoration: none;
-  color: black;
+  padding: 10px;
 }
