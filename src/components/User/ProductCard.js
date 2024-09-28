@@ -1,5 +1,5 @@
 import React from 'react';
-import Badge from 'react-bootstrap/Badge';
+// import Badge from 'react-bootstrap/Badge';
 import Col from 'react-bootstrap/Col';
 import { Card } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
@@ -18,7 +18,9 @@ const ProductCard = ({ product }) => {
                     <Card.Text className="product-card-price">
                         {product.price}đ
                     </Card.Text>
-                    <Badge bg="secondary">Eps {product.episode}</Badge>
+                    {/* <Badge bg="secondary" className='product-card-episode'>
+                        Eps {product.episode}
+                    </Badge> */}
                 </Card.Body>
             </Card>
         </Col>

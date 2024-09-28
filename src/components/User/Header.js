@@ -3,11 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-
 import { NavLink } from 'react-router-dom';
+
 function Header() {
     return (
-        <Navbar expand="lg" className="bg-body-tertiary">
+        <Navbar expand="lg" className="bg-body-tertiary fixed-top"> {/* Thêm class fixed-top */}
             <Container fluid>
                 <Navbar.Brand>Logo</Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />

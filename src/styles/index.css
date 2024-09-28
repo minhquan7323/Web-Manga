@@ -6,6 +6,17 @@ body {
   background-color: #fff;
 }
 
+.fixed-navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.content {
+  padding-top: 56px;
+}
+
 .ProductPage-container {
   background-color: #ddd;
 }
@@ -22,10 +33,10 @@ body {
 }
 
 .product-card {
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: none !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  transition: transform 0.1s ease;
+  transition: transform 0.2s ease;
 }
 
 .product-card:hover {
@@ -78,27 +89,35 @@ body {
 
 .products,
 .product-box {
-  padding: 10px;
+  padding: 10px !important;
 }
 
 .product-box>div {
   padding: 10px;
   border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
 }
 
+.product-card-episode {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 
+.sidebar,
 .sidebar-box {
-  padding: 10px;
+  padding: 10px !important;
 }
 
 .sidebar-box>div {
   position: sticky;
-  top: 0;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  top: 66px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
 }
 
-.sidebar {
-  padding: 10px;
+.pagination {
+  justify-content: center;
+  margin: 10px 0 !important;
 }
