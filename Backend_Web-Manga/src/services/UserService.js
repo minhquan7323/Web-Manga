@@ -95,12 +95,15 @@ const updateUser = (id, data) => {
                     message: 'The user is not defined'
                 })
             }
+            if (data.password) {
+                data.password = await bcrypt.hash(data.password, 10);
+            }
 
             const updateUser = await User.findByIdAndUpdate(id, data, { new: true })
 
             resolve({
                 status: 'OK',
-                message: 'SUCCESS',
+                message: 'Update user success',
                 data: updateUser
             })
         }
@@ -113,30 +116,28 @@ const updateUser = (id, data) => {
 const deleteUser = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const checkUser = await User.findOne({
-                _id: id
-            })
+            const checkUser = await User.findOne({ _id: id });
 
             if (checkUser === null) {
-                resolve({
+                return resolve({
                     status: 'OK',
                     message: 'The user is not defined'
-                })
+                });
             }
 
-            const updateUser = await User.findByIdAndUpdate(id, data, { new: true })
+            await User.findByIdAndDelete(id);
 
             resolve({
                 status: 'OK',
-                message: 'SUCCESS',
-                data: updateUser
-            })
+                message: 'Delete user success'
+            });
+        } catch (e) {
+            reject(e);
         }
-        catch (e) {
-            reject(e)
-        }
-    })
-}
+    });
+};
+
+
 
 
 module.exports = {
