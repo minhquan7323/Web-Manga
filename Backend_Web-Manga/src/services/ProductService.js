@@ -111,20 +111,52 @@ const deleteProduct = (id) => {
     });
 }
 
-const allProduct = () => {
+const allProduct = (limit, page, sort, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allProduct = await Product.find()
+            const totalProduct = await Product.countDocuments();
+
+            if (filter) {
+                const allProductFilter = await Product.limit(limit).skip((page - 1) * limit).find({ [filter[0]]: { '$regex': filter[1] } })
+                resolve({
+                    status: 'OK',
+                    message: 'Success',
+                    data: allProductFilter,
+                    totalProduct: totalProduct,
+                    currentPage: Number(page),
+                    totalPage: Math.ceil(totalProduct / limit)
+                });
+            }
+
+            if (sort) {
+                const objectSort = {}
+                objectSort[sort[1]] = sort[0]
+                const allProductSort = await Product.find().limit(limit).skip((page - 1) * limit).sort(objectSort)
+                resolve({
+                    status: 'OK',
+                    message: 'Success',
+                    data: allProductSort,
+                    totalProduct: totalProduct,
+                    currentPage: Number(page),
+                    totalPage: Math.ceil(totalProduct / limit)
+                });
+            }
+
+            const allProduct = await Product.find().limit(limit).skip((page - 1) * limit)
             resolve({
                 status: 'OK',
                 message: 'Success',
-                data: allProduct
+                data: allProduct,
+                totalProduct: totalProduct,
+                currentPage: Number(page),
+                totalPage: Math.ceil(totalProduct / limit)
             });
         } catch (e) {
             reject(e);
         }
     });
 }
+
 
 module.exports = {
     createProduct,
