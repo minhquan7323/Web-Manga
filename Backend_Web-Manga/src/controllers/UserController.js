@@ -84,7 +84,6 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         const userId = req.params.id
-        const token = req.headers
 
         if (!userId) {
             return res.status(200).json({

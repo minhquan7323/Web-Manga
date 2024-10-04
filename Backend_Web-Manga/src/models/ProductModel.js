@@ -6,8 +6,8 @@ const productSchema = new moongoose.Schema(
         type: { type: String, require: true },
         price: { type: Number, require: true },
         countInStock: { type: Number, require: true },
-        description: { type: String, require: true },
         rating: { type: Number, require: true },
+        description: { type: String }
     },
     {
         timestamps: true
