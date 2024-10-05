@@ -121,3 +121,11 @@ body {
   justify-content: center;
   margin: 10px 0 !important;
 }
+
+.user-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.signin-button {
+  margin: 0 10px;
+}

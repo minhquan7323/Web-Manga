@@ -4,10 +4,11 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { NavLink } from 'react-router-dom';
+import SignInPage from '../../containers/SignInPage';
 
 function Header() {
     return (
-        <Navbar expand="lg" className="bg-body-tertiary fixed-top"> {/* Thêm class fixed-top */}
+        <Navbar expand="lg" className="bg-body-tertiary fixed-top" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
             <Container fluid>
                 <Navbar.Brand>Logo</Navbar.Brand>
                 <Navbar.Toggle aria-controls="navbarScroll" />
@@ -30,9 +31,10 @@ function Header() {
                         />
                         <Button variant="outline-success">Search</Button>
                     </Form>
+                    <SignInPage />
                 </Navbar.Collapse>
             </Container>
-        </Navbar>
+        </Navbar >
     );
 }
 
