@@ -11,7 +11,7 @@ function App() {
         fetchApi()
     }, [])
     const fetchApi = async () => {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL_BACKEND}/product/getall`)
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall`)
         console.log('res', res.data.data)
 
     }

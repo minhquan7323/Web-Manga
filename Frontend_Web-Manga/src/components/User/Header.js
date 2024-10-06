@@ -34,7 +34,7 @@ function Header() {
                     <SignInPage />
                 </Navbar.Collapse>
             </Container>
-        </Navbar >
+        </Navbar>
     );
 }
 
