@@ -6,6 +6,8 @@ import Cart from '../containers/CartPage';
 import DetailProduct from '../containers/DetailProductPage';
 import Product from '../containers/ProductPage';
 import Home from '../containers/HomePage';
+import SignIn from '../containers/SignInPage';
+import SignUp from '../containers/SignUpPage';
 
 const AppRoutes = () => {
     return (
@@ -15,6 +17,8 @@ const AppRoutes = () => {
                 <Route path="product/:id" element={<DetailProduct />} />
                 <Route path="cart" element={<Cart />} />
                 <Route index element={<Home />} />
+                <Route path="signin" element={<SignIn />} />
+                <Route path="signup" element={<SignUp />} />
             </Route>
         </Routes>
     );

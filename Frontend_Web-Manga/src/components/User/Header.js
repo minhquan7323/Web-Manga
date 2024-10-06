@@ -4,7 +4,6 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { NavLink } from 'react-router-dom';
-import SignInPage from '../../containers/SignInPage';
 
 function Header() {
     return (
@@ -31,7 +30,11 @@ function Header() {
                         />
                         <Button variant="outline-success">Search</Button>
                     </Form>
-                    <SignInPage />
+                    <NavLink to="/signin" className='nav-link signin-button'>
+                        <Button className="btn btn-primary">
+                            Sign In
+                        </Button>
+                    </NavLink>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
