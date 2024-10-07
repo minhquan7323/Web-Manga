@@ -176,14 +176,30 @@ body {
 
 .detail-product-content-right {
   padding: 16px;
+  margin-bottom: 10px;
 }
 
 .detail-product-content-left {
   padding: 16px;
+  margin-bottom: 10px;
   position: sticky;
   top: 66px;
 }
 
 .detail-product-price {
   color: #c92127;
+}
+
+.detail-product-content-right .table-label {
+  color: #777;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
