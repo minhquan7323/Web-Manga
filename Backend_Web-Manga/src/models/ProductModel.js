@@ -7,7 +7,11 @@ const productSchema = new moongoose.Schema(
         price: { type: Number, require: true },
         countInStock: { type: Number, require: true },
         rating: { type: Number, require: true },
-        description: { type: String }
+        description: { type: String },
+        supplier: { type: String, require: true },
+        publisher: { type: String, require: true },
+        author: { type: String, require: true },
+        cover: { type: String, require: true }
     },
     {
         timestamps: true

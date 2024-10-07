@@ -23,11 +23,10 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-  <title>React App</title>
+  <title>Web Manga</title>
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
   <!--
       This HTML file is a template.
@@ -40,5 +39,27 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
 </body>
+<script>
+  const roadLength = 33;
+  const car = '🚗';
+
+  function updateDisplay(position) {
+    let display = Array(roadLength).join('_');
+    display = display.slice(0, position) + car + display.slice(position + 1);
+    document.title = display;
+  }
+
+  let position = roadLength - 1;
+  updateDisplay(position);
+
+  setInterval(() => {
+    if (position > 0) {
+      position--;
+    } else {
+      position = roadLength - 1;
+    }
+    updateDisplay(position);
+  }, 150);
+</script>
 
 </html>

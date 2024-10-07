@@ -46,10 +46,10 @@ function SignUpPage() {
         })
     }
     return (
-        <div class="container signin-up">
-            <div class="row justify-content-center">
-                <div class="card form-signin-up col-11 col-xs-12 col-sm-10 col-md-8 col-lg-6">
-                    <div class="card-body">
+        <div className="container signin-up">
+            <div className="row justify-content-center">
+                <div className="card form-signin-up col-11 col-xs-12 col-sm-10 col-md-8 col-lg-6">
+                    <div className="card-body">
                         <div className="header">
                             <h1 className="fs-5">Sign Up</h1>
                         </div>

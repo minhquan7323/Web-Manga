@@ -8,7 +8,7 @@ import Toolbar from '../components/User/Toolbar';
 import Pagination from '../components/User/Pagination';
 
 function rdimg() {
-    return `https://picsum.photos/200?random=${Math.floor(Math.random() * 1000)}`;
+    return `https://picsum.photos/800/900?random=${Math.floor(Math.random() * 1000)}`;
 }
 
 function ProductPage() {
