@@ -14,13 +14,13 @@ const DetailProductPage = () => {
     };
 
     const increaseQuantity = () => {
-        if (quantity < 999) {
+        if (quantity < 10) {
             setQuantity(quantity + 1);
         }
     };
 
     const handleChange = (e) => {
-        const value = Math.max(1, Math.min(999, parseInt(e.target.value) || 1));
+        const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1));
         setQuantity(value);
     };
 
@@ -83,7 +83,7 @@ const DetailProductPage = () => {
                                         <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
                                             <i className="fas fa-minus"></i>
                                         </button>
-                                        <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="999" style={{ maxWidth: '55px', color: 'black' }} />
+                                        <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '55px', color: 'black' }} />
                                         <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
                                             <i className="fas fa-plus"></i>
                                         </button>

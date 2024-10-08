@@ -1,42 +1,194 @@
 import React, { useState } from 'react';
 
-function CartPage() {
-    // Giả sử đây là dữ liệu giỏ hàng mẫu, bạn sẽ thay thế nó bằng dữ liệu thực từ context hoặc redux
-    const [cartItems, setCartItems] = useState([
-        { id: 1, name: "Product 1", price: 100, quantity: 1 },
-        { id: 2, name: "Product 2", price: 200, quantity: 2 },
-    ]);
+const CartPage = () => {
+    // const [cartItems, setCartItems] = useState([
+    //     { id: 1, name: "Product 1", price: 100, quantity: 1 },
+    //     { id: 2, name: "Product 2", price: 200, quantity: 2 },
+    // ]);
 
-    // Hàm tính tổng giá trị của giỏ hàng
-    const getTotalPrice = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    // const getTotalPrice = () => {
+    //     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    // };
+
+    // const increaseQuantity = (id) => {
+    //     const updatedItems = cartItems.map(item =>
+    //         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    //     );
+    //     setCartItems(updatedItems);
+    // };
+
+    // const decreaseQuantity = (id) => {
+    //     const updatedItems = cartItems.map(item =>
+    //         item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+    //     );
+    //     setCartItems(updatedItems);
+    // };
+
+    // const removeItem = (id) => {
+    //     const updatedItems = cartItems.filter(item => item.id !== id);
+    //     setCartItems(updatedItems);
+    // };
+
+    const [quantity, setQuantity] = useState(1);
+
+    const decreaseQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+        }
     };
 
-    // Hàm tăng số lượng sản phẩm
-    const increaseQuantity = (id) => {
-        const updatedItems = cartItems.map(item =>
-            item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-        setCartItems(updatedItems);
+    const increaseQuantity = () => {
+        if (quantity < 10) {
+            setQuantity(quantity + 1);
+        }
     };
 
-    // Hàm giảm số lượng sản phẩm
-    const decreaseQuantity = (id) => {
-        const updatedItems = cartItems.map(item =>
-            item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-        );
-        setCartItems(updatedItems);
+    const handleChange = (e) => {
+        const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1));
+        setQuantity(value);
     };
 
-    // Hàm xóa sản phẩm khỏi giỏ hàng
-    const removeItem = (id) => {
-        const updatedItems = cartItems.filter(item => item.id !== id);
-        setCartItems(updatedItems);
-    };
-
+    function rdimg() {
+        return `https://picsum.photos/400/100?random=${Math.floor(Math.random() * 1000)}`;
+    }
     return (
-        <div>
-            <h1>Cart Page</h1>
+        <>
+            <div>
+                <div className='cart-page-title-container'>
+                    <h2 className='m-0 cart-page-title'>
+                        shopping cart
+                    </h2>
+                </div>
+                <div className='container cart-container' style={{ maxWidth: '100%', margin: '0 auto' }}>
+                    <div className='row'>
+                        <div className='col-8 cart-item-block'>
+                            <div className='cart-item-inner bg'>
+                                <div className='row cart-item-product'>
+                                    <div className='col-1 cart-product-check'>
+                                        <input className="form-check-input" type="checkbox" value="" aria-label="..." />
+                                    </div>
+                                    <div className='col-2 cart-product-img'>
+                                        <img src={rdimg()} alt='img' />
+                                    </div>
+                                    <div className='col-8 row cart-product-group-info'>
+                                        <div className='col-8 cart-product-info'>
+                                            <div className='cart-product-title'>
+                                                <h3>title</h3>
+                                            </div>
+                                            <div className='cart-product-price-original'>
+                                                <h6>33000 VND</h6>
+                                            </div>
+                                        </div>
+                                        <div className='col-4 cart-product-number'>
+                                            <div className='cart-product-quantity'>
+                                                <div className="btn-group" role="group" aria-label="Basic outlined example">
+                                                    <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
+                                                        <i className="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '45px', color: 'black' }} />
+                                                    <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
+                                                        <i className="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className='cart-product-price-total'>
+                                                <h5>150000 VND</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='col-1 cart-product-remove'>
+                                        <i class="fas fa-trash-can"></i>
+                                    </div>
+                                </div>
+                                <hr style={{ width: '95%', margin: '0 auto' }} />
+                                <div className='row cart-item-product'>
+                                    <div className='col-1 cart-product-check'>
+                                        <input className="form-check-input" type="checkbox" value="" aria-label="..." />
+                                    </div>
+                                    <div className='col-2 cart-product-img'>
+                                        <img src={rdimg()} alt='img' />
+                                    </div>
+                                    <div className='col-8 row cart-product-group-info'>
+                                        <div className='col-8 cart-product-info'>
+                                            <div className='cart-product-title'>
+                                                <h3>title</h3>
+                                            </div>
+                                            <div className='cart-product-price-original'>
+                                                <h6>33000 VND</h6>
+                                            </div>
+                                        </div>
+                                        <div className='col-4 cart-product-number'>
+                                            <div className='cart-product-quantity'>
+                                                <div className="btn-group" role="group" aria-label="Basic outlined example">
+                                                    <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
+                                                        <i className="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '45px', color: 'black' }} />
+                                                    <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
+                                                        <i className="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className='cart-product-price-total'>
+                                                <h5>150000 VND</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='col-1 cart-product-remove'>
+                                        <i class="fas fa-trash-can"></i>
+                                    </div>
+                                </div>
+                                <hr style={{ width: '95%', margin: '0 auto' }} />
+                                <div className='row cart-item-product'>
+                                    <div className='col-1 cart-product-check'>
+                                        <input className="form-check-input" type="checkbox" value="" aria-label="..." />
+                                    </div>
+                                    <div className='col-2 cart-product-img'>
+                                        <img src={rdimg()} alt='img' />
+                                    </div>
+                                    <div className='col-8 row cart-product-group-info'>
+                                        <div className='col-8 cart-product-info'>
+                                            <div className='cart-product-title'>
+                                                <h3>title</h3>
+                                            </div>
+                                            <div className='cart-product-price-original'>
+                                                <h6>33000 VND</h6>
+                                            </div>
+                                        </div>
+                                        <div className='col-4 cart-product-number'>
+                                            <div className='cart-product-quantity'>
+                                                <div className="btn-group" role="group" aria-label="Basic outlined example">
+                                                    <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
+                                                        <i className="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '45px', color: 'black' }} />
+                                                    <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
+                                                        <i className="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className='cart-product-price-total'>
+                                                <h5>150000 VND</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='col-1 cart-product-remove'>
+                                        <i class="fas fa-trash-can"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='col-4 cart-total-block'>
+                            <div className='cart-total-inner bg'>
+                                <div>
+                                    bcmmn
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* <h1>Cart Page</h1>
             {cartItems.length === 0 ? (
                 <p>Your cart is empty</p>
             ) : (
@@ -72,8 +224,8 @@ function CartPage() {
                     <h2>Total: ${getTotalPrice()}</h2>
                     <button>Proceed to Checkout</button>
                 </div>
-            )}
-        </div>
+            )} */}
+        </>
     );
 }
 
