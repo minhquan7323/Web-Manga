@@ -81,13 +81,11 @@ function SignUpPage() {
                                 </NavLink>
                             </p>
                         </div>
-                        <div className="footer">
-                            <Loading isLoading={isLoading}>
-                                <button type="button" className="btn btn-primary" onClick={handleSignUp}>
-                                    Sign Up
-                                </button>
-                            </Loading>
-                        </div>
+                        <Loading isLoading={isLoading}>
+                            <button type="button" className="btn btn-primary" onClick={handleSignUp}>
+                                Sign Up
+                            </button>
+                        </Loading>
                     </div>
                 </div>
             </div>

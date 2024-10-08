@@ -58,13 +58,11 @@ function SignInPage() {
                                     </NavLink>
                                 </p>
                             </div>
-                            <div className="footer">
-                                <Loading isLoading={isLoading}>
-                                    <button type="button" className="btn btn-primary" onClick={handleSignIn}>
-                                        Sign In
-                                    </button>
-                                </Loading>
-                            </div>
+                            <Loading isLoading={isLoading}>
+                                <button type="button" className="btn btn-primary" onClick={handleSignIn}>
+                                    Sign In
+                                </button>
+                            </Loading>
                         </div>
                     </div>
                 </div>

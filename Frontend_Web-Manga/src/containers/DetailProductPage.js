@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 function rdimg() {
-    return `https://picsum.photos/1080?random=${Math.floor(Math.random() * 1000)}`;
+    return `https://picsum.photos/400?random=${Math.floor(Math.random() * 1000)}`;
 }
 
 const DetailProductPage = () => {
@@ -31,7 +31,28 @@ const DetailProductPage = () => {
                     <div className="col-12 col-xs-12 col-sm-5 col-md-5 col-lg-5 detail-product-content-block">
                         <div className='detail-product-content-left bg'>
                             <img src={rdimg()} alt='img' className='detail-product-img' />
+                            <div className='row sub-img-detail-product'>
+                                <div className='col-2'>
+                                    <img src={rdimg()} alt='img' className='detail-product-img' />
+                                </div>
+                                <div className='col-2'>
+                                    <img src={rdimg()} alt='img' className='detail-product-img' />
+                                </div>
+                                <div className='col-2'>
+                                    <img src={rdimg()} alt='img' className='detail-product-img' />
+                                </div>
+                                <div className='col-2'>
+                                    <img src={rdimg()} alt='img' className='detail-product-img' />
+                                </div>
+                                <div className='col-2'>
+                                    <img src={rdimg()} alt='img' className='detail-product-img' />
+                                </div>
+                                <div className='col-2'>
+                                    <img src={rdimg()} alt='img' className='detail-product-img' />
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                     <div className="col-12 col-xs-12 col-sm-7 col-md-7 col-lg-7 detail-product-content-block">
                         <div className='detail-product-content-right bg'>

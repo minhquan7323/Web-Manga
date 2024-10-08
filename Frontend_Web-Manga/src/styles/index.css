@@ -203,3 +203,31 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.sub-img-detail-product {
+  padding: 10px 5px 0 5px;
+
+}
+
+.sub-img-detail-product img {
+  border-radius: 0 0 8px 8px;
+}
+
+.sub-img-detail-product div {
+  padding: 0 5px;
+}
+
+footer {
+  width: 100%;
+  bottom: 0;
+  padding: 10px 10px 0 10px;
+}
+
+.footer {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px 8px 0 0;
+}
+
+.footer-inner {
+  padding: 10px;
+}
