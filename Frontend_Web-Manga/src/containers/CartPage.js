@@ -96,7 +96,7 @@ const CartPage = () => {
                                         </div>
                                     </div>
                                     <div className='col-1 cart-product-remove p-0'>
-                                        <i class="fas fa-trash-can"></i>
+                                        <i className="fas fa-trash-can"></i>
                                     </div>
                                 </div>
                                 <hr style={{ width: '95%', margin: '0 auto' }} />
@@ -134,7 +134,7 @@ const CartPage = () => {
                                         </div>
                                     </div>
                                     <div className='col-1 cart-product-remove p-0'>
-                                        <i class="fas fa-trash-can"></i>
+                                        <i className="fas fa-trash-can"></i>
                                     </div>
                                 </div>
                                 <hr style={{ width: '95%', margin: '0 auto' }} />
@@ -172,7 +172,7 @@ const CartPage = () => {
                                         </div>
                                     </div>
                                     <div className='col-1 cart-product-remove p-0'>
-                                        <i class="fas fa-trash-can"></i>
+                                        <i className="fas fa-trash-can"></i>
                                     </div>
                                 </div>
                                 <hr style={{ width: '95%', margin: '0 auto' }} />
@@ -210,7 +210,7 @@ const CartPage = () => {
                                         </div>
                                     </div>
                                     <div className='col-1 cart-product-remove p-0'>
-                                        <i class="fas fa-trash-can"></i>
+                                        <i className="fas fa-trash-can"></i>
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +226,7 @@ const CartPage = () => {
                                             <h5><b>999000 VND</b></h5>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-danger cart-payment-btn btn-lg">Proceed to Payment</button>
+                                    <button type="button" className="btn btn-danger cart-payment-btn btn-lg">Proceed to Payment</button>
                                 </div>
                             </div>
                         </div>

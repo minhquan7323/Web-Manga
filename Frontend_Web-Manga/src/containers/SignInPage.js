@@ -6,10 +6,15 @@ import { useEffect, useState } from 'react';
 import { useMutationHooks } from '../hooks/useMutationHook.js';
 import Loading from '../components/Loading/Loading.js'
 import { useNavigate } from 'react-router-dom';
-import * as message from "../components/Message/Message.js";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch } from 'react-redux'
+import { updateUser } from '../redux/userSlide.js';
+
 
 function SignInPage() {
     const navigate = useNavigate()
+
+    const dispatch = useDispatch()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -25,8 +30,19 @@ function SignInPage() {
         if (isSuccess) {
             navigate('/')
             localStorage.setItem('access_token', data?.access_token)
+            if (data?.access_token) {
+                const decoded = jwtDecode(data?.access_token)
+                if (decoded?.id) {
+                    handleGetDetailsUser(decoded?.id, data?.access_token)
+                }
+            }
         }
     }, [isSuccess])
+
+    const handleGetDetailsUser = async (id, access_token) => {
+        const res = await UserService.getDetailsUser(id, access_token)
+        dispatch(updateUser({ ...res?.data, access_token: access_token }))
+    }
 
     const handleOnChangeEmail = (value) => {
         setEmail(value)

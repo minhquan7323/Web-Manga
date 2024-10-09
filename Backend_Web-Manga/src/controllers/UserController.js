@@ -54,9 +54,9 @@ const loginUser = async (req, res) => {
         }
         const response = await UserService.loginUser(req.body)
         const { refresh_token, ...newResponse } = response
-        res.cookie('refresh_token', refresh_token) = ({
+        res.cookie('refresh_token', refresh_token, {
             HttpOnly: true,
-            Secure: true,
+            Secure: true
 
         })
         return res.status(200).json(newResponse)
