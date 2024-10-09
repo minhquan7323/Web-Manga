@@ -2,12 +2,15 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import * as UserService from '../services/UserService.js'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutationHooks } from '../hooks/useMutationHook.js';
 import Loading from '../components/Loading/Loading.js'
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import * as message from "../components/Message/Message.js";
 
 function SignUpPage() {
+    const navigate = useNavigate()
+
     const [name, setName] = useState('')
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
@@ -18,8 +21,18 @@ function SignUpPage() {
         data => UserService.signUpUser(data)
     )
 
-    const { data } = mutation
+    const { data, isSuccess, isError } = mutation
     const isLoading = mutation.isPending
+
+    useEffect(() => {
+        if (isSuccess) {
+            message.success()
+            handleNavigateSignIn()
+        }
+        else if (isError) {
+            message.error()
+        }
+    }, [isSuccess, isError])
 
     const handleOnChangeName = (value) => {
         setName(value)
@@ -45,6 +58,12 @@ function SignUpPage() {
             confirmPassword
         })
     }
+    const handleNavigateSignIn = () => {
+        navigate('/signin')
+    }
+
+    const isFormValid = name !== '' && phone !== '' && email !== '' && password !== '' && confirmPassword !== ''
+
     return (
         <div className="container signin-up">
             <div className="row justify-content-center">
@@ -75,14 +94,13 @@ function SignUpPage() {
                                 <label htmlFor="confirmPassword">Confirm password</label>
                             </div>
                             {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
-                            <p className="text-muted">
-                                <NavLink to='/signin' className='label-signinup'>
-                                    Sign In
-                                </NavLink>
-                            </p>
+                            <span>You already have an account?</span>
+                            <span className="text-muted label-signinup" onClick={handleNavigateSignIn}>
+                                Sign In
+                            </span>
                         </div>
                         <Loading isLoading={isLoading}>
-                            <button type="button" className="btn btn-primary" onClick={handleSignUp}>
+                            <button type="button" className="btn btn-primary" onClick={handleSignUp} disabled={!isFormValid}>
                                 Sign Up
                             </button>
                         </Loading>
