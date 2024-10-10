@@ -315,7 +315,7 @@ footer {
 }
 
 .cart-total-inner {
-  padding: 10px;
+  padding: 20px;
 }
 
 .cart-total-inner>.cart-total {
@@ -325,4 +325,5 @@ footer {
 
 .cart-total-inner>.cart-payment-btn {
   width: 100%;
+  margin-top: 30px;
 }

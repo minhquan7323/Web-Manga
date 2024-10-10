@@ -9,7 +9,6 @@ import { jwtDecode } from 'jwt-decode'
 import { useDispatch } from 'react-redux'
 import { updateUser } from './redux/userSlide'
 import * as UserService from './services/UserService.js'
-import axios from 'axios'
 
 function App() {
     const dispatch = useDispatch()
