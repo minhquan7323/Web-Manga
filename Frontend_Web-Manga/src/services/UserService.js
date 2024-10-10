@@ -1,5 +1,7 @@
 import axios from "axios"
 
+export const axiosJWT = axios.create()
+
 export const signInUser = async (data) => {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/signin`, data)
     return res.data
@@ -9,10 +11,16 @@ export const signUpUser = async (data) => {
     return res.data
 }
 export const getDetailsUser = async (id, access_token) => {
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/user/getdetailsuser/${id}`, {
+    const res = await axiosJWT.get(`${process.env.REACT_APP_API_URL}/user/getdetailsuser/${id}`, {
         headers: {
             token: `Bearer ${access_token}`,
         }
+    })
+    return res.data
+}
+export const refreshToken = async () => {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/refreshtoken`, {
+        withCredentials: true
     })
     return res.data
 }

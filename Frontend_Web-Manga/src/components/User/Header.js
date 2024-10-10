@@ -30,7 +30,7 @@ const Header = () => {
                     {user?.name ? (
                         <Navbar.Text className='header-user'>
                             <span className='header-user-icon'>
-                                <i class="fa-solid fa-user"></i>
+                                <i className="fa-solid fa-user"></i>
                             </span>
                             <span className='header-user-name'>
                                 Hi, {user.name}
