@@ -1,5 +1,5 @@
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import * as UserService from '../services/UserService.js'
 import { useEffect, useState } from 'react';
@@ -100,9 +100,11 @@ function SignUpPage() {
                             </span>
                         </div>
                         <Loading isLoading={isLoading}>
-                            <button type="button" className="btn btn-primary" onClick={handleSignUp} disabled={!isFormValid}>
-                                Sign Up
-                            </button>
+                            <div className='item-center'>
+                                <button type="button" className="btn btn-primary" onClick={handleSignUp} disabled={!isFormValid}>
+                                    Sign Up
+                                </button>
+                            </div>
                         </Loading>
                     </div>
                 </div>

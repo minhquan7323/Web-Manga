@@ -1,27 +1,41 @@
-import Button from 'react-bootstrap/Button';
-import React, { useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import Button from 'react-bootstrap/Button'
+import React, { useState } from 'react'
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import Nav from 'react-bootstrap/Nav'
+import Navbar from 'react-bootstrap/Navbar'
 import Loading from '../Loading/Loading'
-import { NavLink } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
+import { useNavigate, NavLink } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Popover from 'react-bootstrap/Popover'
 import * as UserService from '../../services/UserService'
-import { resetUser } from '../../redux/userSlide';
+import { resetUser } from '../../redux/userSlide'
+
 const Header = () => {
     const user = useSelector((state) => state.user)
+    const navigate = useNavigate()
 
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(false)
+
+    const [showPopover, setShowPopover] = useState(false);
+
     const handleSignOut = async () => {
-        setIsLoading(true)
-        await UserService.signOutUser()
-        dispatch(resetUser())
-        setIsLoading(false)
+        setIsLoading(true);
+        await UserService.signOutUser();
+        dispatch(resetUser());
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_id');
+        setIsLoading(false);
+        setShowPopover(false);
     }
+
+    const handleProfileUser = () => {
+        navigate('/profileuser')
+        setShowPopover(false)
+    }
+
     return (
         <Navbar expand="lg" className="bg-body-tertiary fixed-top" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
             <Container fluid>
@@ -38,7 +52,7 @@ const Header = () => {
                         <Button variant="outline-success">Search</Button>
                     </Form>
                     <Loading isLoading={isLoading}>
-                        {user?.name ? (
+                        {user?.access_token ? (
                             <>
                                 <OverlayTrigger
                                     trigger="click"
@@ -48,15 +62,19 @@ const Header = () => {
                                         <Popover id={`popover-positioned-${'bottom'}`}>
                                             {/* <Popover.Header as="h3">{`Popover ${'bottom'}`}</Popover.Header> */}
                                             <Popover.Body>
-                                                <div>
-                                                    info acc
-                                                </div>
-                                                <div onClick={handleSignOut}>
-                                                    log out acc
+                                                <div className='header-account'>
+                                                    <div onClick={handleProfileUser}>
+                                                        info acc
+                                                    </div>
+                                                    <div onClick={handleSignOut}>
+                                                        log out acc
+                                                    </div>
                                                 </div>
                                             </Popover.Body>
                                         </Popover>
                                     }
+                                    show={showPopover}
+                                    onToggle={(nextShow) => setShowPopover(nextShow)}
                                 >
                                     <Navbar.Text className='header-user'>
                                         <span className='header-user-icon'>
@@ -79,7 +97,7 @@ const Header = () => {
                 </Navbar.Collapse>
             </Container>
         </Navbar>
-    );
-};
+    )
+}
 
-export default Header;
+export default Header

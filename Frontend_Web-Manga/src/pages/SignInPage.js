@@ -89,9 +89,11 @@ function SignInPage() {
                                 </span>
                             </div>
                             <Loading isLoading={isLoading}>
-                                <button type="button" className="btn btn-primary" onClick={handleSignIn} disabled={!isFormValid}>
-                                    Sign In
-                                </button>
+                                <div className='item-center'>
+                                    <button type="button" className="btn btn-primary" onClick={handleSignIn} disabled={!isFormValid}>
+                                        Sign In
+                                    </button>
+                                </div>
                             </Loading>
                         </div>
                     </div>

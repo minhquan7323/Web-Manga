@@ -22,6 +22,10 @@ export const getDetailsUser = async (id, access_token) => {
     })
     return res.data
 }
+export const updateUser = async (id) => {
+    const res = await axios.put(`${process.env.REACT_APP_API_URL}/user/updateuser/${id}`)
+    return res.data
+}
 export const refreshToken = async () => {
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/refreshtoken`, {
         withCredentials: true

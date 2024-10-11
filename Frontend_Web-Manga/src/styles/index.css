@@ -7,8 +7,23 @@ body {
   background-color: #fff;
 }
 
-.header-user {
+.header-user,
+.header-account {
   cursor: pointer;
+}
+
+.header-account div {
+  padding: 10px;
+  border-radius: 8px;
+  margin: 5px;
+}
+
+.header-account div:hover {
+  background-color: #777;
+}
+
+.popover-body {
+  padding: 5px !important;
 }
 
 .header-user-name {
@@ -189,12 +204,14 @@ body {
 
 .detail-product-content-right {
   padding: 16px;
+}
+
+.detail-product-content-right:not(:last-child) {
   margin-bottom: 10px;
 }
 
 .detail-product-content-left {
   padding: 16px;
-  margin-bottom: 10px;
   position: sticky;
   top: 66px;
 }
@@ -326,4 +343,12 @@ footer {
 .cart-total-inner>.cart-payment-btn {
   width: 100%;
   margin-top: 30px;
+}
+
+.profile-user {
+  padding: 10px 0;
+}
+
+.profile-user-content-block {
+  padding: 0 10px !important;
 }
