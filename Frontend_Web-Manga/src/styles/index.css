@@ -345,10 +345,14 @@ footer {
   margin-top: 30px;
 }
 
-.profile-user {
-  padding: 10px 0;
+.profile-user-content-block {
+  padding: 10px !important;
 }
 
-.profile-user-content-block {
-  padding: 0 10px !important;
+.detail-product-content-left {
+  padding: 10px;
+}
+
+.detail-product-content-left-block {
+  padding: 16px;
 }

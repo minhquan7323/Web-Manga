@@ -22,8 +22,12 @@ export const getDetailsUser = async (id, access_token) => {
     })
     return res.data
 }
-export const updateUser = async (id) => {
-    const res = await axios.put(`${process.env.REACT_APP_API_URL}/user/updateuser/${id}`)
+export const updateUser = async (id, data, access_token) => {
+    const res = await axiosJWT.put(`${process.env.REACT_APP_API_URL}/user/updateuser/${id}`, data, {
+        headers: {
+            token: `Bearer ${access_token}`,
+        }
+    })
     return res.data
 }
 export const refreshToken = async () => {
