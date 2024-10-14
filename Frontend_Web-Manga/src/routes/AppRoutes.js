@@ -1,6 +1,5 @@
 import React from 'react';
 import { Routes, Route } from "react-router-dom";
-
 import App from '../App';
 import Cart from '../pages/CartPage';
 import DetailProduct from '../pages/DetailProductPage';
@@ -9,8 +8,15 @@ import Home from '../pages/HomePage';
 import SignIn from '../pages/SignInPage';
 import SignUp from '../pages/SignUpPage';
 import Profile from '../pages/ProfilePage';
+import Admin from '../pages/AdminPage';
+import NotFound from '../pages/NotFoundPage';
+import { useSelector } from 'react-redux';
 
 const AppRoutes = () => {
+    const user = useSelector((state) => state.user)
+
+    const isCheckAdmin = user.isAdmin
+
     return (
         <Routes>
             <Route path="/" element={<App />}>
@@ -22,6 +28,8 @@ const AppRoutes = () => {
                 <Route path="signup" element={<SignUp />} />
                 <Route path="profileuser" element={<Profile />} />
             </Route>
+            <Route path="system/admin" element={user && isCheckAdmin ? <Admin /> : <NotFound />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 };

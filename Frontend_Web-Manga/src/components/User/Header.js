@@ -1,5 +1,5 @@
 import Button from 'react-bootstrap/Button'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Nav from 'react-bootstrap/Nav'
@@ -14,12 +14,21 @@ import { resetUser } from '../../redux/userSlide'
 
 const Header = () => {
     const user = useSelector((state) => state.user)
+    const [userName, setUserName] = useState('')
+    const [userAvatar, setUserAvatar] = useState('')
     const navigate = useNavigate()
 
     const dispatch = useDispatch()
     const [isLoading, setIsLoading] = useState(false)
 
     const [showPopover, setShowPopover] = useState(false);
+
+    useEffect(() => {
+        setIsLoading(true);
+        setUserName(user?.name || '');
+        setUserAvatar(user?.avatar || '');
+        setIsLoading(false);
+    }, [user?.name, user?.avatar]);
 
     const handleSignOut = async () => {
         setIsLoading(true);
@@ -33,6 +42,10 @@ const Header = () => {
 
     const handleProfileUser = () => {
         navigate('/profileuser')
+        setShowPopover(false)
+    }
+    const handleSystemManagement = () => {
+        navigate('/system/admin')
         setShowPopover(false)
     }
 
@@ -69,6 +82,9 @@ const Header = () => {
                                                     <div onClick={handleSignOut}>
                                                         log out acc
                                                     </div>
+                                                    <div onClick={handleSystemManagement}>
+                                                        system management
+                                                    </div>
                                                 </div>
                                             </Popover.Body>
                                         </Popover>
@@ -78,10 +94,14 @@ const Header = () => {
                                 >
                                     <Navbar.Text className='header-user'>
                                         <span className='header-user-icon'>
-                                            <i className="fa-solid fa-user"></i>
+                                            {userAvatar ? (
+                                                <img src={userAvatar} alt="avatar" style={{ height: '32px' }} />
+                                            ) : (
+                                                <i className="fa-solid fa-user"></i>
+                                            )}
                                         </span>
                                         <span className='header-user-name'>
-                                            Hi, {user.name}
+                                            Hi, {userName}
                                         </span>
 
                                     </Navbar.Text>

@@ -2,37 +2,51 @@ import * as UserService from '../services/UserService.js'
 import { useEffect, useState } from 'react';
 import { useMutationHooks } from '../hooks/useMutationHook.js';
 import Loading from '../components/Loading/Loading.js'
-import { useNavigate } from 'react-router-dom';
 import * as message from "../components/Message/Message.js";
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUser } from '../redux/userSlide.js';
+import { getBase64 } from '../utils.js';
+import { Button, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons'
 
 const ProfilePage = () => {
     const user = useSelector((state) => state.user)
     const dispatch = useDispatch()
-    const [name, setName] = useState(user?.name)
-    const [phone, setPhone] = useState(user?.phone)
-    const [address, setAddress] = useState(user?.address)
-    const [email, setEmail] = useState(user?.email)
-    const [password, setPassword] = useState(user?.password)
+    const [name, setName] = useState('')
+    const [phone, setPhone] = useState('')
+    const [avatar, setAvatar] = useState('')
+    const [address, setAddress] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
     const mutation = useMutationHooks(
-        data => {
-            const { id, access_token, ...rests } = data
-            UserService.updateUser(id, rests, access_token)
+        async (data) => {
+            const { id, access_token, ...rests } = data;
+            await UserService.updateUser(id, rests, access_token);
+        },
+        {
+            onSuccess: () => {
+                handleGetDetailsUser(user?.id, user?.access_token);
+            },
+            onError: () => {
+            }
         }
-    )
+    );
 
     const { data, isSuccess, isError } = mutation
-    const isLoading = mutation.isPending
 
+    const isLoading = mutation.isPending
     useEffect(() => {
-        setName(user?.name)
-        setPhone(user?.phone)
-        setAddress(user?.address)
-        setEmail(user?.email)
-        setPassword(user?.password)
-    }, [user])
+        if (user) {
+            setName(user?.name || '');
+            setPhone(user?.phone || '');
+            setAvatar(user?.avatar || '');
+            setAddress(user?.address || '');
+            setEmail(user?.email || '');
+            setPassword(user?.password || '');
+        }
+    }, [user, isSuccess, isError]);
+
 
     useEffect(() => {
         if (isSuccess) {
@@ -44,10 +58,7 @@ const ProfilePage = () => {
         }
     }, [isSuccess, isError])
 
-    const handleGetDetailsUser = async (id, access_token) => {
-        const res = await UserService.getDetailsUser(id, access_token)
-        dispatch(updateUser({ ...res?.data, access_token: access_token }))
-    }
+
 
     const handleOnChangeName = (value) => {
         setName(value)
@@ -55,6 +66,13 @@ const ProfilePage = () => {
     const handleOnChangePhone = (value) => {
         setPhone(value)
     }
+    const handleOnChangeAvatar = async (info) => {
+        const file = info.fileList[0]?.originFileObj;
+        if (file) {
+            const preview = await getBase64(file);
+            setAvatar(preview);
+        }
+    };
     const handleOnChangeAddress = (value) => {
         setAddress(value)
     }
@@ -70,13 +88,17 @@ const ProfilePage = () => {
             id: user?.id,
             name,
             phone,
+            avatar,
             address,
             email,
-            password,
+            // password,
             access_token: user?.access_token
         })
     }
-
+    const handleGetDetailsUser = async (id, access_token) => {
+        const res = await UserService.getDetailsUser(id, access_token)
+        dispatch(updateUser({ ...res?.data, access_token: access_token }))
+    }
     return (
         <>
             <div className="container profile-user" style={{ maxWidth: '100%', margin: '0 auto' }}>
@@ -90,7 +112,7 @@ const ProfilePage = () => {
                     </div>
                     <div className="col-12 col-xs-12 col-sm-8 col-md-9 col-lg-9 profile-user-content-block">
                         <div className='detail-product-content-right bg'>
-                            <div class="row g-2">
+                            <div className="row g-2">
                                 <div className="form-floating mb-3">
                                     <input type="name" className="form-control" id="name" placeholder="name" value={name} onChange={(e) => handleOnChangeName(e.target.value)} />
                                     <label htmlFor="signUpName">Name</label>
@@ -104,13 +126,19 @@ const ProfilePage = () => {
                                     <label htmlFor="phone">Address</label>
                                 </div>
                                 <div className="col-6 form-floating mb-3">
-                                    <input type="email" className="form-control" id="email" placeholder="name@example.com" value={email} onChange={(e) => handleOnChangeEmail(e.target.value)} />
+                                    <input type="email" className="form-control" id="email" placeholder="name@example.com" value={email} onChange={(e) => handleOnChangeEmail(e.target.value)} disabled />
                                     <label htmlFor="email">Email address</label>
                                 </div>
                                 <div className="col-6 form-floating mb-3">
-                                    <input type="password" className="form-control" id="password" placeholder="password" value={password} onChange={(e) => handleOnChangePassword(e.target.value)} />
+                                    <input type="password" className="form-control" id="password" placeholder="password" value={password} onChange={(e) => handleOnChangePassword(e.target.value)} disabled />
                                     <label htmlFor="password">Password</label>
                                 </div>
+                                <Upload onChange={handleOnChangeAvatar} showUploadList={false} maxCount={1}>
+                                    <Button icon={<UploadOutlined />}>Select file</Button>
+                                </Upload>
+                                {avatar && (
+                                    <img src={avatar} />
+                                )}
                             </div>
                             <Loading isLoading={isLoading}>
                                 <div className='item-center'>

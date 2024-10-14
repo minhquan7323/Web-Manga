@@ -3,7 +3,6 @@ const { default: mongoose } = require('mongoose')
 const dotenv = require('dotenv')
 const routes = require('./routes')
 const cors = require('cors')
-const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 dotenv.config()
 
@@ -11,9 +10,9 @@ const app = express()
 const port = process.env.PORT || 3001
 
 app.use(cors())
-app.use(bodyParser.json())
+app.use(express.json({ limit: '50mb' }))
+app.use(express.urlencoded({ limit: '50mb' }))
 app.use(cookieParser())
-
 routes(app)
 
 mongoose.connect(`${process.env.MONGO_DB}`)
@@ -25,5 +24,5 @@ mongoose.connect(`${process.env.MONGO_DB}`)
     })
 
 app.listen(port, () => {
-    console.log('Server is running in port', + port);
+    console.log('Server is running on port', port);
 })

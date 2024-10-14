@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Header from './components/User/Header'
 import Footer from './components/User/Footer'
 
@@ -33,8 +33,20 @@ function App() {
     UserService.axiosJWT.interceptors.request.use(async (config) => {
         const { decoded } = handleDecoded()
         const currentTime = new Date()
-        if (decoded?.exp < currentTime.getTime() / 1000) {
+        if (decoded?.exp < Math.floor(currentTime.getTime() / 1000)) {
             const data = await UserService.refreshToken()
+            config.headers['token'] = `Bearer ${data?.access_token}`
+        }
+        return config
+    }, function (error) {
+        return Promise.reject(error)
+    })
+    UserService.axiosJWT.interceptors.request.use(async (config) => {
+        const { decoded } = handleDecoded()
+        const currentTime = new Date()
+        if (decoded?.exp < Math.floor(currentTime.getTime() / 1000)) {
+            const data = await UserService.refreshToken()
+            localStorage.setItem('access_token', JSON.stringify(data?.access_token))
             config.headers['token'] = `Bearer ${data?.access_token}`
         }
         return config
@@ -46,7 +58,6 @@ function App() {
         const res = await UserService.getDetailsUser(id, access_token)
         dispatch(updateUser({ ...res?.data, access_token: access_token }))
     }
-
     return (
         <div>
             <div>
