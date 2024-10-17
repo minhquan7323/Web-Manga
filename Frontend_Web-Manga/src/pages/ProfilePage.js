@@ -23,13 +23,6 @@ const ProfilePage = () => {
         async (data) => {
             const { id, access_token, ...rests } = data;
             await UserService.updateUser(id, rests, access_token);
-        },
-        {
-            onSuccess: () => {
-                handleGetDetailsUser(user?.id, user?.access_token);
-            },
-            onError: () => {
-            }
         }
     );
 
@@ -50,8 +43,9 @@ const ProfilePage = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            handleGetDetailsUser(user?.id, user?.access_token)
             message.success()
+            if (user?.access_token != null)
+                handleGetDetailsUser(user?.id, user?.access_token, dispatch)
         }
         else if (isError) {
             message.error()
@@ -95,7 +89,7 @@ const ProfilePage = () => {
             access_token: user?.access_token
         })
     }
-    const handleGetDetailsUser = async (id, access_token) => {
+    const handleGetDetailsUser = async (id, access_token, dispatch) => {
         const res = await UserService.getDetailsUser(id, access_token)
         dispatch(updateUser({ ...res?.data, access_token: access_token }))
     }
@@ -104,14 +98,14 @@ const ProfilePage = () => {
             <div className="container profile-user" style={{ maxWidth: '100%', margin: '0 auto' }}>
                 <div className='row profile-user-box p-0'>
                     <div className="col-12 col-xs-12 col-sm-4 col-md-3 col-lg-3 profile-user-content-block">
-                        <div className='detail-product-content-left bg'>
-                            <div className='detail-product-content-left-block'>
+                        <div className='profile-user-content-left bg'>
+                            <div className='profile-user-content-left-block'>
                                 User information
                             </div>
                         </div>
                     </div>
                     <div className="col-12 col-xs-12 col-sm-8 col-md-9 col-lg-9 profile-user-content-block">
-                        <div className='detail-product-content-right bg'>
+                        <div className='profile-user-content-right bg'>
                             <div className="row g-2">
                                 <div className="form-floating mb-3">
                                     <input type="name" className="form-control" id="name" placeholder="name" value={name} onChange={(e) => handleOnChangeName(e.target.value)} />

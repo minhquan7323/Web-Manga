@@ -2,11 +2,11 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import * as UserService from '../services/UserService.js'
+import * as message from "../components/Message/Message.js";
 import { useEffect, useState } from 'react';
 import { useMutationHooks } from '../hooks/useMutationHook.js';
 import Loading from '../components/Loading/Loading.js'
 import { useNavigate } from 'react-router-dom';
-import * as message from "../components/Message/Message.js";
 
 function SignUpPage() {
     const navigate = useNavigate()
@@ -18,21 +18,22 @@ function SignUpPage() {
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const mutation = useMutationHooks(
-        data => UserService.signUpUser(data)
-    )
+        async (data) => {
+            return await UserService.signUpUser(data);
+        }
+    );
 
-    const { data, isSuccess, isError } = mutation
+    const { data, isError } = mutation
     const isLoading = mutation.isPending
 
     useEffect(() => {
-        if (isSuccess) {
-            message.success()
-            handleNavigateSignIn()
+        if (data && data?.status === 'OK') {
+            message.success();
+            navigate('/signin');
+        } else if (isError || (data && data?.status === 'ERR')) {
+            message.error(data?.message);
         }
-        else if (isError) {
-            message.error()
-        }
-    }, [isSuccess, isError])
+    }, [data, isError, navigate]);
 
     const handleOnChangeName = (value) => {
         setName(value)
@@ -78,7 +79,7 @@ function SignUpPage() {
                                 <label htmlFor="signUpName">Name</label>
                             </div>
                             <div className="form-floating mb-3">
-                                <input type="phone" className="form-control" id="phone" placeholder="name@example.com" value={phone} onChange={(e) => handleOnChangePhone(e.target.value)} />
+                                <input type="tel" className="form-control" id="phone" placeholder="0123123123" value={phone} onChange={(e) => handleOnChangePhone(e.target.value.replace(/\D/g, ''))} />
                                 <label htmlFor="phone">Phone</label>
                             </div>
                             <div className="form-floating mb-3">
@@ -93,7 +94,7 @@ function SignUpPage() {
                                 <input type="password" className="form-control" id="confirmPassword" placeholder="name@example.com" value={confirmPassword} onChange={(e) => handleOnChangeConfirmPassword(e.target.value)} />
                                 <label htmlFor="confirmPassword">Confirm password</label>
                             </div>
-                            {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
+                            {data?.status === 'ERR' && <div style={{ color: 'red' }}>{data?.message}</div>}
                             <span>You already have an account?</span>
                             <span className="text-muted label-signinup" onClick={handleNavigateSignIn}>
                                 Sign In

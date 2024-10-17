@@ -2,6 +2,7 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import * as UserService from '../services/UserService.js'
+import * as message from "../components/Message/Message.js";
 import { useEffect, useState } from 'react';
 import { useMutationHooks } from '../hooks/useMutationHook.js';
 import Loading from '../components/Loading/Loading.js'
@@ -20,15 +21,17 @@ function SignInPage() {
     const [password, setPassword] = useState('')
 
     const mutation = useMutationHooks(
-        data => UserService.signInUser(data)
+        async (data) => {
+            return await UserService.signInUser(data)
+        }
     )
 
-    const { data, isSuccess } = mutation
+    const { data, isError } = mutation
     const isLoading = mutation.isPending
 
     useEffect(() => {
-        if (isSuccess) {
-            navigate('/')
+        if (data && data?.status === 'OK') {
+            message.success();
             localStorage.setItem('access_token', JSON.stringify(data?.access_token))
             if (data?.access_token) {
                 const decoded = jwtDecode(data?.access_token)
@@ -36,8 +39,11 @@ function SignInPage() {
                     handleGetDetailsUser(decoded?.id, data?.access_token)
                 }
             }
+            navigate('/');
+        } else if (isError || (data && data?.status === 'ERR')) {
+            message.error(data?.message);
         }
-    }, [isSuccess])
+    }, [data, isError, navigate]);
 
     const handleGetDetailsUser = async (id, access_token) => {
         const res = await UserService.getDetailsUser(id, access_token)
@@ -47,9 +53,11 @@ function SignInPage() {
     const handleOnChangeEmail = (value) => {
         setEmail(value)
     }
+
     const handleOnChangePassword = (value) => {
         setPassword(value)
     }
+
     const handleSignIn = () => {
         mutation.mutate({
             email,

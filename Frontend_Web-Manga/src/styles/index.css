@@ -176,16 +176,24 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.detail-product {
-  padding: 10px !important;
+.detail-product,
+.admin-system,
+.profile-user {
+  padding: 10px 10px 0 10px !important;
 }
 
-.detail-product-box {
+.detail-product-box,
+.admin-system-box,
+.profile-user-box {
   padding: 0 10px;
 }
 
 .detail-product-content-left,
-.detail-product-content-right {
+.detail-product-content-right,
+.admin-system-content-left,
+.admin-system-content-right,
+.profile-user-content-left,
+.profile-user-content-right {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   justify-content: center;
@@ -198,19 +206,27 @@ body {
   aspect-ratio: 1 / 1;
 }
 
-.detail-product-content-block {
+.detail-product-content-block,
+.admin-system-content-block,
+.profile-user-content-block {
   padding: 0 10px !important;
-}
-
-.detail-product-content-right {
-  padding: 16px;
-}
-
-.detail-product-content-right:not(:last-child) {
   margin-bottom: 10px;
 }
 
-.detail-product-content-left {
+.detail-product-content-right,
+.admin-system-content-right,
+.profile-user-content-right {
+  padding: 16px;
+}
+
+.detail-product-content-right:not(:last-child),
+.admin-system-content-right:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.detail-product-content-left,
+.admin-system-content-left,
+.profile-user-content-left {
   padding: 16px;
   position: sticky;
   top: 66px;
@@ -357,14 +373,30 @@ footer {
   margin-top: 30px;
 }
 
-.profile-user-content-block {
-  padding: 10px !important;
-}
-
-.detail-product-content-left {
+.detail-product-content-left,
+.profile-user-content-left,
+.admin-system-content-left {
   padding: 10px;
 }
 
-.detail-product-content-left-block {
-  padding: 16px;
+.detail-product-content-left-block,
+.profile-user-content-left-block,
+.admin-system-content-left-block {
+  padding: 6px;
+}
+
+.admin-system-content-left-block .ant-menu {
+  border: none !important;
+}
+
+.admin-product-add-user,
+.admin-product-add-product {
+  padding-bottom: 10px;
+}
+
+.admin-title {
+  font-size: 16px;
+  font-weight: bold;
+  border-right: 5px solid rgb(112, 198, 125);
+  text-transform: uppercase;
 }

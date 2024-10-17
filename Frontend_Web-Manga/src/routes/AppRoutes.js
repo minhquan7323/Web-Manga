@@ -27,8 +27,8 @@ const AppRoutes = () => {
                 <Route path="signin" element={<SignIn />} />
                 <Route path="signup" element={<SignUp />} />
                 <Route path="profileuser" element={<Profile />} />
+                <Route path="system/admin" element={user && isCheckAdmin ? <Admin /> : <NotFound />} />
             </Route>
-            <Route path="system/admin" element={user && isCheckAdmin ? <Admin /> : <NotFound />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );
