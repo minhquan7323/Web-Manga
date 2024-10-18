@@ -12,7 +12,7 @@ function AdminUser() {
 
             <div className='admin-system-content-right bg'>
                 <div className="admin-product-add-user">
-                    <button type="button" class="btn btn-outline-success">Add user</button>
+                    <button type="button" className="btn btn-outline-success">Add user</button>
                 </div>
                 <TableComponent />
             </div>

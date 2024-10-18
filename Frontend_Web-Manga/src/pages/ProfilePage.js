@@ -1,12 +1,12 @@
 import * as UserService from '../services/UserService.js'
-import { useEffect, useState } from 'react';
-import { useMutationHooks } from '../hooks/useMutationHook.js';
+import { useEffect, useState } from 'react'
+import { useMutationHooks } from '../hooks/useMutationHook.js'
 import Loading from '../components/Loading/Loading.js'
-import * as message from "../components/Message/Message.js";
-import { useSelector, useDispatch } from 'react-redux';
-import { updateUser } from '../redux/userSlide.js';
-import { getBase64 } from '../utils.js';
-import { Button, Upload } from 'antd';
+import * as message from "../components/Message/Message.js"
+import { useSelector, useDispatch } from 'react-redux'
+import { updateUser } from '../redux/userSlide.js'
+import { getBase64 } from '../utils.js'
+import { Button, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 
 const ProfilePage = () => {
@@ -21,31 +21,30 @@ const ProfilePage = () => {
 
     const mutation = useMutationHooks(
         async (data) => {
-            const { id, access_token, ...rests } = data;
-            await UserService.updateUser(id, rests, access_token);
+            const { id, access_token, ...rests } = data
+            await UserService.updateUser(id, rests, access_token)
         }
-    );
+    )
 
     const { data, isSuccess, isError } = mutation
 
     const isLoading = mutation.isPending
     useEffect(() => {
         if (user) {
-            setName(user?.name || '');
-            setPhone(user?.phone || '');
-            setAvatar(user?.avatar || '');
-            setAddress(user?.address || '');
-            setEmail(user?.email || '');
-            setPassword(user?.password || '');
+            setName(user?.name || '')
+            setPhone(user?.phone || '')
+            setAvatar(user?.avatar || '')
+            setAddress(user?.address || '')
+            setEmail(user?.email || '')
+            setPassword(user?.password || '')
         }
-    }, [user, isSuccess, isError]);
+    }, [user, isSuccess, isError])
 
 
     useEffect(() => {
         if (isSuccess) {
             message.success()
-            if (user?.access_token != null)
-                handleGetDetailsUser(user?.id, user?.access_token, dispatch)
+            handleGetDetailsUser(user?.id, user?.access_token, dispatch)
         }
         else if (isError) {
             message.error()
@@ -61,12 +60,15 @@ const ProfilePage = () => {
         setPhone(value)
     }
     const handleOnChangeAvatar = async (info) => {
-        const file = info.fileList[0]?.originFileObj;
+        const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await getBase64(file);
-            setAvatar(preview);
+            const preview = await getBase64(file)
+            setAvatar(preview)
         }
-    };
+    }
+    const beforeUpload = (file) => {
+        return false
+    }
     const handleOnChangeAddress = (value) => {
         setAddress(value)
     }
@@ -127,7 +129,7 @@ const ProfilePage = () => {
                                     <input type="password" className="form-control" id="password" placeholder="password" value={password} onChange={(e) => handleOnChangePassword(e.target.value)} disabled />
                                     <label htmlFor="password">Password</label>
                                 </div>
-                                <Upload onChange={handleOnChangeAvatar} showUploadList={false} maxCount={1}>
+                                <Upload beforeUpload={beforeUpload} onChange={handleOnChangeAvatar} showUploadList={false} maxCount={1}>
                                     <Button icon={<UploadOutlined />}>Select file</Button>
                                 </Upload>
                                 {avatar && (
@@ -147,7 +149,7 @@ const ProfilePage = () => {
                 </div>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default ProfilePage;
+export default ProfilePage

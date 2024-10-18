@@ -400,3 +400,21 @@ footer {
   border-right: 5px solid rgb(112, 198, 125);
   text-transform: uppercase;
 }
+
+.admin-system-content-right .modal-body label {
+  margin-left: 10px !important;
+}
+
+.admin-system-content-right .modal-body .form-floating {
+  padding: 5px !important;
+}
+
+.admin-system-content-right .modal-body img {
+  width: 100%;
+  min-width: 60px;
+  max-width: 100px;
+  border-radius: 8px;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+  margin-left: 10px;
+}
