@@ -41,6 +41,7 @@ function AdminProduct() {
     )
     const { data, isSuccess, isError } = mutation
     const isLoading = mutation.isPending
+
     const mutationUpdate = useMutationHooks(
         async (data) => {
             const { id, access_token, ...rests } = data
@@ -50,6 +51,16 @@ function AdminProduct() {
     )
     const { data: dataUpdated, isSuccess: isSuccessUpdated, isError: isErrorUpdated } = mutationUpdate
     const isLoadingUpdated = mutationUpdate.isPending
+
+    const mutationDelete = useMutationHooks(
+        async (data) => {
+            const { id, access_token } = data
+            const res = await ProductService.deleteProduct(id, access_token)
+            return res
+        }
+    )
+    const { data: dataDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted } = mutationDelete
+    const isLoadingDeleted = mutationDelete.isPending
 
     const fetchAllProduct = async () => {
         const res = await ProductService.getAllProduct()
@@ -72,7 +83,6 @@ function AdminProduct() {
         setIsLoadingDetails(false)
     }
 
-
     useEffect(() => {
         if (rowSelected) {
             fetchGetDetailsProduct(rowSelected)
@@ -86,12 +96,14 @@ function AdminProduct() {
         retryDelay: 1000,
     })
     const { isLoading: isLoadingProducts, data: products } = queryProduct
+
     const columns = [
         {
             title: 'Name',
             dataIndex: 'name',
             render: (text) => <div className="admin-table-name">{text}</div>,
-            width: 100
+            width: 100,
+            sorter: (a, b) => a.name.length - b.name.length
         },
         {
             title: 'Image',
@@ -106,10 +118,12 @@ function AdminProduct() {
         {
             title: 'Price',
             dataIndex: 'price',
+            sorter: (a, b) => a.price - b.price
         },
         {
             title: 'Quantity',
             dataIndex: 'countInStock',
+            sorter: (a, b) => a.countInStock - b.countInStock
         },
         {
             title: 'action',
@@ -118,7 +132,11 @@ function AdminProduct() {
             width: 50,
             render: (_, record) => (
                 <div className="admin-table-action">
-                    <span><i className="fas fa-trash"></i></span>
+                    <span
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalDelete">
+                        <i className="fas fa-trash"></i>
+                    </span>
                     <span
                         onClick={() => {
                             setRowSelected(record._id);
@@ -135,22 +153,31 @@ function AdminProduct() {
     const dataTable = products?.data?.length && products?.data?.map((product) => {
         return { ...product, key: product._id }
     })
+
     useEffect(() => {
         if (isSuccess && data?.status === 'OK') {
-            message.success('Product added successfully!')
+            message.success()
             handleCancel()
-        } else if (isError || (isSuccess && data?.status === 'ERR')) {
-            message.error(data?.message)
+        } else if (isError) {
+            message.error()
         }
     }, [data, isSuccess, isError])
     useEffect(() => {
         if (isSuccessUpdated && dataUpdated?.status === 'OK') {
-            message.success('Product updated successfully!')
+            message.success()
             handleCancel()
-        } else if (isErrorUpdated || (isSuccessUpdated && dataUpdated?.status === 'ERR')) {
-            message.error(data?.message)
+        } else if (isErrorUpdated) {
+            message.error()
         }
     }, [dataUpdated, isSuccessUpdated, isErrorUpdated])
+    useEffect(() => {
+        if (isSuccessDeleted && dataDeleted?.status === 'OK') {
+            message.success()
+            handleCancel()
+        } else if (isErrorDeleted) {
+            message.error()
+        }
+    }, [dataDeleted, isSuccessDeleted, isErrorDeleted])
 
     const handleOnchange = (e) => {
         setStateProduct({
@@ -168,6 +195,7 @@ function AdminProduct() {
     const handleCancel = () => {
         const modalAddElement = document.getElementById('modalAdd');
         const modalEditElement = document.getElementById('modalEdit');
+        const modalDeleteElement = document.getElementById('modalDelete');
 
         if (modalAddElement) {
             const modalAddInstance = Modal.getInstance(modalAddElement);
@@ -175,11 +203,16 @@ function AdminProduct() {
                 modalAddInstance.hide();
             }
         }
-
         if (modalEditElement) {
             const modalEditInstance = Modal.getInstance(modalEditElement);
             if (modalEditInstance) {
                 modalEditInstance.hide();
+            }
+        }
+        if (modalDeleteElement) {
+            const modalDeleteInstance = Modal.getInstance(modalDeleteElement);
+            if (modalDeleteInstance) {
+                modalDeleteInstance.hide();
             }
         }
 
@@ -218,6 +251,14 @@ function AdminProduct() {
         })
     }
 
+    const deleteProduct = () => {
+        mutationDelete.mutate({ id: rowSelected, access_token: user?.access_token }, {
+            onSettled: () => {
+                queryProduct.refetch()
+            }
+        })
+    }
+
     const handleOnChangeImage = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
@@ -228,7 +269,6 @@ function AdminProduct() {
             })
         }
     }
-
     const handleOnChangeImageDetails = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
@@ -239,12 +279,12 @@ function AdminProduct() {
             })
         }
     }
-
     const beforeUpload = (file) => {
         return false
     }
 
-    const isFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type !== '' && stateProduct.price !== '' && stateProduct.countInStock !== ''
+    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type !== '' && stateProduct.price !== '' && stateProduct.countInStock !== ''
+    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type !== '' && stateDetailsProduct.price !== '' && stateDetailsProduct.countInStock !== '';
 
     return (
         <>
@@ -304,7 +344,7 @@ function AdminProduct() {
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancel}>Close</button>
                                     <Loading isLoading={isLoading}>
-                                        <button type="button" className="btn btn-primary" onClick={createProduct} disabled={!isFormValid}>Add</button>
+                                        <button type="button" className="btn btn-primary" onClick={createProduct} disabled={!isProductFormValid}>Add</button>
                                     </Loading>
                                 </div>
                             </div>
@@ -357,10 +397,33 @@ function AdminProduct() {
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancel}>Close</button>
                                         <Loading isLoading={isLoadingUpdated}>
-                                            <button type="button" className="btn btn-primary" onClick={updateProduct} disabled={false}>Edit</button>
+                                            <button type="button" className="btn btn-primary" onClick={updateProduct} disabled={!isDetailsProductFormValid}>Edit</button>
                                         </Loading>
                                     </div>
                                 </Loading>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="modal fade" id="modalDelete" tabIndex="-1" aria-labelledby="modalDelete" aria-hidden="true">
+                        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h1 className="modal-title fs-5" id="modalDelete">Delete product</h1>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCancel}></button>
+                                </div>
+
+                                <div className="modal-body">
+                                    <div className="body">
+                                        <div>Are you sure you want to delete this product?</div>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancel}>Close</button>
+                                    <Loading isLoading={isLoadingDeleted}>
+                                        <button type="button" className="btn btn-danger" onClick={deleteProduct}>Delete</button>
+                                    </Loading>
+                                </div>
                             </div>
                         </div>
                     </div>

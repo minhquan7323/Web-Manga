@@ -15,9 +15,11 @@ function App() {
 
     useEffect(() => {
         const { storageData, decoded } = handleDecoded()
-        if (decoded?.id) {
+        if (decoded?.id != undefined) {
             handleGetDetailsUser(decoded?.id, storageData)
+            console.log('zz');
         }
+        else console.log('zz1');
     }, [])
 
     const handleDecoded = () => {

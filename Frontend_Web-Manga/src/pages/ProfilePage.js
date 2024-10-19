@@ -119,7 +119,7 @@ const ProfilePage = () => {
                                 </div>
                                 <div className="form-floating mb-3">
                                     <input type="address" className="form-control" id="address" placeholder="123, a, b" value={address} onChange={(e) => handleOnChangeAddress(e.target.value)} />
-                                    <label htmlFor="phone">Address</label>
+                                    <label htmlFor="address">Address</label>
                                 </div>
                                 <div className="col-6 form-floating mb-3">
                                     <input type="email" className="form-control" id="email" placeholder="name@example.com" value={email} onChange={(e) => handleOnChangeEmail(e.target.value)} disabled />
