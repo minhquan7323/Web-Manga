@@ -179,13 +179,14 @@ body {
 .detail-product,
 .admin-system,
 .profile-user {
-  padding: 10px 10px 0 10px !important;
+  padding: 10px 0 0 0 !important;
 }
 
 .detail-product-box,
 .admin-system-box,
 .profile-user-box {
   padding: 0 10px;
+  margin: 0 !important;
 }
 
 .detail-product-content-left,
@@ -397,7 +398,6 @@ footer {
 .admin-title {
   font-size: 16px;
   font-weight: bold;
-  border-right: 5px solid rgb(112, 198, 125);
   text-transform: uppercase;
 }
 
@@ -417,4 +417,47 @@ footer {
   object-fit: cover;
   aspect-ratio: 1 / 1;
   margin-left: 10px;
+}
+
+.admin-system-content-right table img {
+  width: 100%;
+  width: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
+.admin-table-action {
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-table-action span {
+  cursor: pointer;
+}
+
+.admin-table-action .fa-trash {
+  color: red;
+}
+
+.admin-table-action .fa-edit {
+  color: orange;
+}
+
+/* .admin-system-content-right td {
+  padding: 10px !important;
+} */
+
+.admin-table-name {
+  max-width: 100px;
+  max-height: 42px;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  text-overflow: ellipsis;
 }

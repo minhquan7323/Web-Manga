@@ -1,44 +1,9 @@
 import { Table } from "antd";
 import React from "react";
+import Loading from '../components/Loading/Loading'
 
 const TableComponent = (props) => {
-    const { selectionType = 'checkbox' } = props
-
-    const columns = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            // render: (text) => <a>{text}</a>
-        },
-        {
-            title: 'age',
-            dataIndex: 'age',
-        },
-        {
-            title: 'address',
-            dataIndex: 'address',
-        }
-    ]
-    const data = [
-        {
-            key: '1',
-            name: 'test 1',
-            age: 12,
-            address: 'hcm'
-        },
-        {
-            key: '2',
-            name: 'test 2',
-            age: 12,
-            address: 'hcm'
-        },
-        {
-            key: '3',
-            name: 'test 3',
-            age: 12,
-            address: 'hcm'
-        },
-    ]
+    const { selectionType = 'checkbox', data = [], isLoading = false, columns = [] } = props
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -51,14 +16,21 @@ const TableComponent = (props) => {
     }
 
     return (
-        <Table
-            rowSelection={{
-                type: selectionType,
-                ...rowSelection
-            }}
-            columns={columns}
-            dataSource={data}
-        />
+        <Loading isLoading={isLoading}>
+            <Table
+                bordered
+                rowSelection={{
+                    type: selectionType,
+                    ...rowSelection
+                }}
+                columns={columns}
+                dataSource={data}
+                scroll={{
+                    x: 'max-content',
+                }}
+                {...props}
+            />
+        </Loading>
     )
 }
 

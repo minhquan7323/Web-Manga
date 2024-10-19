@@ -24,7 +24,6 @@ const ProductPage = () => {
         retry: 3,
         retryDelay: 1000,
     });
-    console.log('data', products);
     return (
         <Container style={{ maxWidth: '100%', margin: '0 auto' }}>
             <Row className='block-content'>

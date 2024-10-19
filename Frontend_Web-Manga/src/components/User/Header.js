@@ -124,7 +124,7 @@ const Header = () => {
                             </>
                         ) : (
                             <NavLink to="/signin" className='nav-link signin-button'>
-                                <Button variant="primary">Sign In</Button>
+                                <Button variant="primary" onClick={() => setNavbarExpanded(false)}>Sign In</Button>
                             </NavLink>
                         )}
                     </Loading>

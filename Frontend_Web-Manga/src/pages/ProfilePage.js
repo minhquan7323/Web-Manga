@@ -10,7 +10,7 @@ import { Button, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 
 const ProfilePage = () => {
-    const user = useSelector((state) => state.user)
+    const user = useSelector((state) => state?.user)
     const dispatch = useDispatch()
     const [name, setName] = useState('')
     const [phone, setPhone] = useState('')
