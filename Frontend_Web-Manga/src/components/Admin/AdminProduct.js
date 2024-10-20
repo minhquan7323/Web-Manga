@@ -62,6 +62,16 @@ function AdminProduct() {
     const { data: dataDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted } = mutationDelete
     const isLoadingDeleted = mutationDelete.isPending
 
+    const mutationDeleteMany = useMutationHooks(
+        async (data) => {
+            const { access_token, ...ids } = data
+            const res = await ProductService.deleteManyProducts(ids, access_token)
+            return res
+        }
+    )
+    const { data: dataDeletedMany, isSuccess: isSuccessDeletedMany, isError: isErrorDeletedMany } = mutationDeleteMany
+    const isLoadingDeletedMany = mutationDeleteMany.isPending
+
     const fetchAllProduct = async () => {
         const res = await ProductService.getAllProduct()
         return res
@@ -102,7 +112,7 @@ function AdminProduct() {
             title: 'Name',
             dataIndex: 'name',
             render: (text) => <div className="admin-table-name">{text}</div>,
-            width: 100,
+            width: 150,
             sorter: (a, b) => a.name.length - b.name.length
         },
         {
@@ -178,6 +188,14 @@ function AdminProduct() {
             message.error()
         }
     }, [dataDeleted, isSuccessDeleted, isErrorDeleted])
+    useEffect(() => {
+        if (isSuccessDeletedMany && dataDeletedMany?.status === 'OK') {
+            message.success()
+            handleCancel()
+        } else if (isErrorDeletedMany) {
+            message.error()
+        }
+    }, [dataDeletedMany, isSuccessDeletedMany, isErrorDeletedMany])
 
     const handleOnchange = (e) => {
         setStateProduct({
@@ -250,9 +268,15 @@ function AdminProduct() {
             }
         })
     }
-
     const deleteProduct = () => {
         mutationDelete.mutate({ id: rowSelected, access_token: user?.access_token }, {
+            onSettled: () => {
+                queryProduct.refetch()
+            }
+        })
+    }
+    const deleteManyProducts = (ids) => {
+        mutationDeleteMany.mutate({ ids: ids, access_token: user?.access_token }, {
             onSettled: () => {
                 queryProduct.refetch()
             }
@@ -430,6 +454,7 @@ function AdminProduct() {
                 </div>
 
                 <TableComponent
+                    deleteMany={deleteManyProducts}
                     columns={columns}
                     data={dataTable}
                     isLoading={isLoadingProducts}

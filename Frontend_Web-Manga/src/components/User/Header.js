@@ -91,16 +91,16 @@ const Header = () => {
                                             <Popover.Body>
                                                 <div className='header-account'>
                                                     <div onClick={handleProfileUser}>
-                                                        info acc
-                                                    </div>
-                                                    <div onClick={handleSignOut}>
-                                                        log out acc
+                                                        User information
                                                     </div>
                                                     {user?.isAdmin ? (
                                                         <div onClick={handleSystemManagement}>
-                                                            system management
+                                                            System management
                                                         </div>
                                                     ) : (<></>)}
+                                                    <div onClick={handleSignOut}>
+                                                        Sign out
+                                                    </div>
                                                 </div>
                                             </Popover.Body>
                                         </Popover>
@@ -111,7 +111,7 @@ const Header = () => {
                                     <Navbar.Text className='header-user'>
                                         <span className='header-user-icon'>
                                             {userAvatar ? (
-                                                <img src={userAvatar} alt="avatar" style={{ height: '32px' }} />
+                                                <img src={userAvatar} alt="avatar" />
                                             ) : (
                                                 <i className="fa-solid fa-user"></i>
                                             )}

@@ -11,7 +11,7 @@ import { Modal } from "bootstrap/dist/js/bootstrap.bundle.min.js"
 import { useQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
 
-function AdminProduct() {
+function AdminUser() {
     const [stateUser, setStateUser] = useState({
         name: '',
         phone: '',
@@ -62,6 +62,16 @@ function AdminProduct() {
     const { data: dataDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted } = mutationDelete
     const isLoadingDeleted = mutationDelete.isPending
 
+    const mutationDeleteMany = useMutationHooks(
+        async (data) => {
+            const { access_token, ...ids } = data
+            const res = await UserService.deleteManyUsers(ids, access_token)
+            return res
+        }
+    )
+    const { data: dataDeletedMany, isSuccess: isSuccessDeletedMany, isError: isErrorDeletedMany } = mutationDeleteMany
+    const isLoadingDeletedMany = mutationDeleteMany.isPending
+
     const fetchAllUser = async () => {
         const res = await UserService.getAllUser(user?.access_token)
         return res
@@ -103,7 +113,7 @@ function AdminProduct() {
             title: 'Name',
             dataIndex: 'name',
             render: (text) => <div className="admin-table-name">{text}</div>,
-            width: 100,
+            width: 150,
             sorter: (a, b) => a.name.length - b.name.length
         },
         {
@@ -171,6 +181,14 @@ function AdminProduct() {
             message.error()
         }
     }, [dataDeleted, isSuccessDeleted, isErrorDeleted])
+    useEffect(() => {
+        if (isSuccessDeletedMany && dataDeletedMany?.status === 'OK') {
+            message.success()
+            handleCancel()
+        } else if (isErrorDeletedMany) {
+            message.error()
+        }
+    }, [dataDeletedMany, isSuccessDeletedMany, isErrorDeletedMany])
 
     const handleOnchange = (e) => {
         setStateUser({
@@ -245,6 +263,14 @@ function AdminProduct() {
 
     const deleteUser = () => {
         mutationDelete.mutate({ id: rowSelected, access_token: user?.access_token }, {
+            onSettled: () => {
+                queryUser.refetch()
+            }
+        })
+    }
+
+    const deleteManyUsers = (ids) => {
+        mutationDeleteMany.mutate({ ids: ids, access_token: user?.access_token }, {
             onSettled: () => {
                 queryUser.refetch()
             }
@@ -351,7 +377,7 @@ function AdminProduct() {
                                                         <Button icon={<UploadOutlined />}>Avatar</Button>
                                                     </Upload>
                                                     {stateDetailsUser?.avatar && (
-                                                        <img src={stateDetailsUser?.avatar} alt="Product" />
+                                                        <img src={stateDetailsUser?.avatar} alt="avt" />
                                                     )}
                                                 </div>
                                                 <div className="form-floating mb-3 col-12">
@@ -413,6 +439,7 @@ function AdminProduct() {
                 </div>
 
                 <TableComponent
+                    deleteMany={deleteManyUsers}
                     columns={columns}
                     data={dataTable}
                     isLoading={isLoadingUsers}
@@ -428,4 +455,4 @@ function AdminProduct() {
     )
 }
 
-export default AdminProduct
+export default AdminUser

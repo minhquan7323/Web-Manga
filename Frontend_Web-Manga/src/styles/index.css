@@ -34,6 +34,13 @@ body {
   padding-left: 10px;
 }
 
+.header-user-icon img {
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
 .fixed-navbar {
   position: fixed;
   top: 0;
@@ -378,6 +385,14 @@ footer {
 .profile-user-content-left,
 .admin-system-content-left {
   padding: 10px;
+}
+
+.profile-user-avatar {
+  padding: 0 !important;
+  width: 100px !important;
+  border-radius: 50%;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
 }
 
 .detail-product-content-left-block,

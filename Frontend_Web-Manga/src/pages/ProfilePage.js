@@ -130,10 +130,10 @@ const ProfilePage = () => {
                                     <label htmlFor="password">Password</label>
                                 </div>
                                 <Upload beforeUpload={beforeUpload} onChange={handleOnChangeAvatar} showUploadList={false} maxCount={1}>
-                                    <Button icon={<UploadOutlined />}>Select file</Button>
+                                    <Button icon={<UploadOutlined />}>Avatar</Button>
                                 </Upload>
                                 {avatar && (
-                                    <img src={avatar} />
+                                    <img src={avatar} className='profile-user-avatar' />
                                 )}
                             </div>
                             <Loading isLoading={isLoading}>
