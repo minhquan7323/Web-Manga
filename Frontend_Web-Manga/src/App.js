@@ -20,6 +20,47 @@ function App() {
         }
     }, [])
 
+    // UserService.axiosJWT.interceptors.request.use(async (config) => {
+    //     const { decoded } = handleDecoded()
+    //     const currentTime = new Date()
+    //     if (decoded?.exp < Math.floor(currentTime.getTime() / 1000)) {
+    //         const data = await UserService.refreshToken()
+    //         config.headers['token'] = `Bearer ${data?.access_token}`
+    //     }
+    //     return config
+    // }, function (error) {
+    //     return Promise.reject(error)
+    // })
+    UserService.axiosJWT.interceptors.request.use(async (config) => {
+        const { decoded } = handleDecoded()
+        const currentTime = new Date()
+        if (decoded?.exp < Math.floor(currentTime.getTime() / 1000)) {
+            const data = await UserService.refreshToken()
+            localStorage.setItem('access_token', JSON.stringify(data?.access_token))
+            config.headers['token'] = `Bearer ${data?.access_token}`
+        }
+        return config
+    }, function (error) {
+        return Promise.reject(error)
+    })
+    // UserService.axiosJWT.interceptors.request.use(async (config) => {
+    //     const { decoded } = handleDecoded()
+    //     const currentTime = new Date().getTime() / 1000
+    //     if (decoded?.exp < currentTime) {
+    //         try {
+    //             const data = await UserService.refreshToken()
+    //             localStorage.setItem('access_token', JSON.stringify(data?.access_token))
+    //             config.headers['token'] = `Bearer ${data?.access_token}`
+    //         } catch (error) {
+    //             console.error('Failed to refresh token:', error)
+    //             return Promise.reject(error)
+    //         }
+    //     }
+    //     return config
+    // }, function (error) {
+    //     return Promise.reject(error)
+    // })
+
     const handleDecoded = () => {
         let storageData = localStorage.getItem('access_token')
         let decoded = {}
@@ -48,47 +89,6 @@ function App() {
     //     }
     //     return { decoded, storageData }
     // }
-
-    // UserService.axiosJWT.interceptors.request.use(async (config) => {
-    //     const { decoded } = handleDecoded()
-    //     const currentTime = new Date()
-    //     if (decoded?.exp < Math.floor(currentTime.getTime() / 1000)) {
-    //         const data = await UserService.refreshToken()
-    //         config.headers['token'] = `Bearer ${data?.access_token}`
-    //     }
-    //     return config
-    // }, function (error) {
-    //     return Promise.reject(error)
-    // })
-    // UserService.axiosJWT.interceptors.request.use(async (config) => {
-    //     const { decoded } = handleDecoded()
-    //     const currentTime = new Date()
-    //     if (decoded?.exp < Math.floor(currentTime.getTime() / 1000)) {
-    //         const data = await UserService.refreshToken()
-    //         localStorage.setItem('access_token', JSON.stringify(data?.access_token))
-    //         config.headers['token'] = `Bearer ${data?.access_token}`
-    //     }
-    //     return config
-    // }, function (error) {
-    //     return Promise.reject(error)
-    // })
-    UserService.axiosJWT.interceptors.request.use(async (config) => {
-        const { decoded } = handleDecoded()
-        const currentTime = new Date().getTime() / 1000
-        if (decoded?.exp < currentTime) {
-            try {
-                const data = await UserService.refreshToken()
-                localStorage.setItem('access_token', JSON.stringify(data?.access_token))
-                config.headers['token'] = `Bearer ${data?.access_token}`
-            } catch (error) {
-                console.error('Failed to refresh token:', error)
-                return Promise.reject(error)
-            }
-        }
-        return config
-    }, function (error) {
-        return Promise.reject(error)
-    })
 
     const handleGetDetailsUser = async (id, access_token) => {
         const res = await UserService.getDetailsUser(id, access_token)

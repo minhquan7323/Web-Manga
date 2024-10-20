@@ -2,20 +2,22 @@ import React from 'react';
 // import Badge from 'react-bootstrap/Badge';
 import Col from 'react-bootstrap/Col';
 import { Card } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 
 const ProductCard = (props) => {
-    const { countInStock, description, image, name, price, rating, type } = props
+    const { countInStock, description, image, name, price, rating, type, id } = props
+
+    const navigate = useNavigate()
+    const handleDetailsProduct = (id) => {
+        navigate(`/product/details/${id}`)
+    }
+
     return (
         <Col xs={6} sm={4} md={3} lg={3} className="product">
-            <Card className='product-card'>
-                {/* <NavLink to={`/product/${product._id}`}> */}
+            <Card className='product-card' onClick={() => handleDetailsProduct(id)}>
                 <Card.Img variant="top" src={image} className='product-card-img' alt={name} />
-                {/* </NavLink> */}
                 <Card.Body className='product-card-body'>
-                    {/* <NavLink to={`/product/${product._id}`}> */}
                     <Card.Text className="product-card-title">{name}</Card.Text>
-                    {/* </NavLink> */}
                     <Card.Text className="product-card-price">
                         {price} đ
                     </Card.Text>

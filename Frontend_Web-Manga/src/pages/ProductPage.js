@@ -1,44 +1,42 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import ProductCard from '../components/User/ProductCard'
-import Toolbar from '../components/User/Toolbar'
-import Pagination from '../components/User/Pagination'
-import * as ProductService from '../services/ProductService.js'
-import { useSelector } from 'react-redux'
-import Loading from '../components/Loading/Loading.js'
-import { useDebounce } from '../hooks/useDebounce.js'
+import React, { useRef, useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import ProductCard from '../components/User/ProductCard';
+import Toolbar from '../components/User/Toolbar';
+import Pagination from '../components/User/Pagination';
+import * as ProductService from '../services/ProductService';
+import { useSelector } from 'react-redux';
+import Loading from '../components/Loading/Loading';
+import { useDebounce } from '../hooks/useDebounce';
+import { useQuery } from '@tanstack/react-query';
 
 const ProductPage = () => {
-    const searchProduct = useSelector((state) => state?.product?.search)
-    const searchDebounce = useDebounce(searchProduct, 100)
-    const refSearch = useRef()
-    const [loading, setLoading] = useState(false)
-    const [stateProducts, setStateProducts] = useState([])
+    const searchProduct = useSelector((state) => state?.product?.search);
+    const searchDebounce = useDebounce(searchProduct, 100);
+    const refSearch = useRef(false);
+    const [limit, setLimit] = useState(12);
 
-    const fetchAllProduct = async (search) => {
-        setLoading(true)
+    const fetchAllProduct = async (context) => {
+        const limit = context.queryKey[1];
+        const search = searchDebounce || '';
+
         try {
-            const res = await ProductService.getAllProduct(search)
-            if (search.length > 0 || refSearch.current) {
-                setStateProducts(res?.data)
-            } else {
-                setStateProducts([])
-            }
+            const res = await ProductService.getAllProduct(search, limit);
+            return res?.data || [];
         } catch (error) {
-            console.error('Error fetching products:', error)
-        } finally {
-            setLoading(false)
+            console.error('Error fetching products:', error);
+            return [];
         }
-    }
+    };
 
-    useEffect(() => {
-        if (refSearch.current) {
-            fetchAllProduct(searchDebounce)
-        }
-        refSearch.current = true
-    }, [searchDebounce])
+    const { isLoading, data: products } = useQuery({
+        queryKey: ['products', limit],
+        queryFn: fetchAllProduct,
+        retry: 3,
+        retryDelay: 1000,
+        enabled: !!limit,
+    });
 
     return (
         <Container style={{ maxWidth: '100%', margin: '0 auto' }}>
@@ -59,10 +57,10 @@ const ProductPage = () => {
                 <Col xs={12} sm={12} md={9} lg={9} className='product-box'>
                     <div className='bg'>
                         <Toolbar />
-                        <Loading isLoading={loading}>
+                        <Loading isLoading={isLoading}>
                             <Row className="products">
-                                {stateProducts?.map((product) => {
-                                    return <ProductCard
+                                {products?.map((product) => (
+                                    <ProductCard
                                         key={product._id}
                                         countInStock={product.countInStock}
                                         description={product.description}
@@ -71,8 +69,9 @@ const ProductPage = () => {
                                         price={product.price.toLocaleString().replace(/,/g, '.')}
                                         rating={product.rating}
                                         type={product.type}
+                                        id={product._id}
                                     />
-                                })}
+                                ))}
                             </Row>
                         </Loading>
                         <Pagination />
@@ -80,7 +79,7 @@ const ProductPage = () => {
                 </Col>
             </Row>
         </Container>
-    )
-}
+    );
+};
 
-export default ProductPage
+export default ProductPage;
