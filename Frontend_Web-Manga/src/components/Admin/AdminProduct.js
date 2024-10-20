@@ -128,7 +128,8 @@ function AdminProduct() {
         {
             title: 'Price',
             dataIndex: 'price',
-            sorter: (a, b) => a.price - b.price
+            sorter: (a, b) => a.price - b.price,
+            render: (price) => price.toLocaleString().replace(/,/g, '.')
         },
         {
             title: 'Quantity',

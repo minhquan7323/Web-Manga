@@ -12,6 +12,7 @@ import Popover from 'react-bootstrap/Popover'
 import * as UserService from '../../services/UserService'
 import * as message from "../../components/Message/Message.js"
 import { resetUser } from '../../redux/userSlide'
+import { searchProduct } from '../../redux/productSlide.js'
 
 const Header = () => {
     const user = useSelector((state) => state.user)
@@ -22,6 +23,7 @@ const Header = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [showPopover, setShowPopover] = useState(false)
     const [navbarExpanded, setNavbarExpanded] = useState(false)
+    const [search, setSearch] = useState('')
 
     useEffect(() => {
         setIsLoading(true)
@@ -57,11 +59,15 @@ const Header = () => {
 
     const adminPath = useLocation().pathname.startsWith('/system/admin')
 
+    const onSearch = () => {
+        dispatch(searchProduct(search))
+    }
+
     return (
         <Navbar expand="lg" className="bg-body-tertiary fixed-top" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }} expanded={navbarExpanded}>
             <Container fluid>
                 <Navbar.Brand>Logo</Navbar.Brand>
-                <Navbar.Toggle onClick={() => setNavbarExpanded(!navbarExpanded)} /> {/* Toggle state on click */}
+                <Navbar.Toggle onClick={() => setNavbarExpanded(!navbarExpanded)} />
                 <Navbar.Collapse id="navbarScroll">
                     {!adminPath ? (
                         <>
@@ -71,8 +77,10 @@ const Header = () => {
                                 <NavLink to="/Cart" className='nav-link' onClick={() => setNavbarExpanded(false)}>Cart</NavLink>
                             </Nav>
                             <Form className="d-flex item-center">
-                                <Form.Control type="search" placeholder="Search" className="me-2" aria-label="Search" />
-                                <Button variant="outline-success">Search</Button>
+                                <Form.Control value={search} onChange={(e) => setSearch(e.target.value)} type="search" placeholder="Search here" className="me-2" aria-label="Search" />
+                                <Button variant="outline-success" onClick={onSearch} >
+                                    Search
+                                </Button>
                             </Form>
                         </>
                     ) : null}

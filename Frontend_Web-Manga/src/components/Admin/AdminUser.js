@@ -23,7 +23,6 @@ function AdminUser() {
         name: '',
         phone: '',
         email: '',
-        password: '',
         avatar: '',
         address: '',
         isAdmin: ''
@@ -302,7 +301,7 @@ function AdminUser() {
     }
 
     const isUserFormValid = stateUser.name !== '' && stateUser.phone !== '' && stateUser.email !== '' && stateUser.password !== '' && stateUser.confirmPassword !== ''
-    const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.image !== '' && stateDetailsUser.type !== '' && stateDetailsUser.price !== '' && stateDetailsUser.countInStock !== '';
+    const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.avatar !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.email !== '' && stateDetailsUser.isAdmin !== ''
 
     return (
         <>
