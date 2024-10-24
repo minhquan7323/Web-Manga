@@ -1,46 +1,46 @@
 import Carousel from 'react-bootstrap/Carousel';
-import React, { useEffect, useRef, useState } from 'react'
-import Container from 'react-bootstrap/Container'
+import React, { useState } from 'react'
 import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 import ProductCard from '../components/User/ProductCard'
-import Toolbar from '../components/User/Toolbar'
-import Pagination from '../components/User/Pagination'
 import * as ProductService from '../services/ProductService.js'
 import { useSelector } from 'react-redux'
 import Loading from '../components/Loading/Loading.js'
-import { useDebounce } from '../hooks/useDebounce.js'
 import { useQuery } from '@tanstack/react-query'
 
-function rdimg() {
-    return `https://picsum.photos/2000/800?random=${Math.floor(Math.random() * 1000)}`;
-}
+// function rdimg() {
+//     return `https://picsum.photos/2000/800?random=${Math.floor(Math.random() * 1000)}`;
+// }
+
 function HomePage() {
     const searchProduct = useSelector((state) => state?.product?.search)
-    const searchDebounce = useDebounce(searchProduct, 100)
     const [loading, setLoading] = useState(false)
     const [limit, setLimit] = useState(4)
 
     const fetchAllProduct = async (context) => {
-        const limit = context?.queryKey[1]
-        const search = context?.queryKey[2]
-        // setLoading(true)
-        const res = await ProductService.getAllProduct(search, limit)
-        // setLoading(false)
-        return res
+        const limit = context.queryKey[1]
+        const search = context.queryKey[2]
+        const types = context.queryKey[3] || []
+
+        let res
+        if (types.length > 0 || (search && search.length > 0)) {
+            res = await ProductService.getAllProduct(search, types, limit)
+        } else {
+            res = await ProductService.getAllProduct('', [], limit)
+        }
+        return res?.data || []
     }
 
     const { isLoading, data: products } = useQuery({
-        queryKey: ['products', limit, searchDebounce],
+        queryKey: ['products', limit, searchProduct],
         queryFn: fetchAllProduct,
         retry: 3,
         retryDelay: 1000,
-        keepPreviousData: true
+        enabled: !!limit,
     })
 
     return (
         <>
-            <Carousel>
+            {/* <Carousel>
                 <Carousel.Item interval={3500}>
                     <img src={rdimg()} className="d-block w-100" alt='img 1' />
                     <Carousel.Caption>
@@ -64,14 +64,14 @@ function HomePage() {
                         </p>
                     </Carousel.Caption>
                 </Carousel.Item>
-            </Carousel>
+            </Carousel> */}
 
             <Loading isLoading={loading || isLoading}>
                 <Row className="products">
-                    {products?.data?.map((product) => {
+                    {products?.map((product) => {
                         return <ProductCard
                             key={product._id}
-                            countInStock={product.countInStock}
+                            stock={product.stock}
                             description={product.description}
                             image={product.image}
                             name={product.name}
@@ -82,7 +82,7 @@ function HomePage() {
                         />
                     })}
                 </Row>
-                <button onClick={() => setLimit((prev) => prev + 4)}>show more</button>
+                <button className='btn btn-primary' onClick={() => setLimit((prev) => prev + 4)}>show more</button>
             </Loading>
         </>
     );

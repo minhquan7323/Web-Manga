@@ -14,13 +14,13 @@ import { useSelector } from 'react-redux';
 
 const AppRoutes = () => {
     const user = useSelector((state) => state.user)
-
     const isCheckAdmin = user.isAdmin
 
     return (
         <Routes>
             <Route path="/" element={<App />}>
                 <Route path="product" element={<Product />} />
+                <Route path="product/type/:type" element={<Product />} />
                 <Route path="product/details/:id" element={<DetailProduct />} />
                 <Route path="cart" element={<Cart />} />
                 <Route index element={<Home />} />
@@ -33,5 +33,4 @@ const AppRoutes = () => {
         </Routes>
     );
 };
-
 export default AppRoutes;

@@ -2,9 +2,9 @@ const ProductService = require('../services/ProductService')
 
 const createProduct = async (req, res) => {
     try {
-        const { name, image, type, price, countInStock, rating, description } = req.body
+        const { name, image, type, price, stock, rating, description } = req.body
 
-        if (!name || !image || !type || !price || !countInStock) {
+        if (!name || !image || !type || !price || !stock) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The input is require'
@@ -107,12 +107,22 @@ const allProduct = async (req, res) => {
         })
     }
 }
-
+const getAllTypeProduct = async (req, res) => {
+    try {
+        const response = await ProductService.getAllTypeProduct()
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
 module.exports = {
     createProduct,
     updateProduct,
     detailsProduct,
     deleteProduct,
     allProduct,
-    deleteManyProducts
+    deleteManyProducts,
+    getAllTypeProduct
 }

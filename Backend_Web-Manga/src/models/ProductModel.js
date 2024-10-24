@@ -3,9 +3,9 @@ const productSchema = new moongoose.Schema(
     {
         name: { type: String, require: true, unique: true },
         image: { type: String, require: true },
-        type: { type: String, require: true },
+        type: { type: [String], require: true },
         price: { type: Number, require: true },
-        countInStock: { type: Number, require: true },
+        stock: { type: Number, require: true },
         rating: { type: Number },
         description: { type: String },
         supplier: { type: String },

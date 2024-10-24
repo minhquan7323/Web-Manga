@@ -2,16 +2,40 @@ import axios from "axios"
 
 export const axiosJWT = axios.create()
 
-export const getAllProduct = async (search, limit) => {
-    let res = {};
+// export const getAllProduct = async (search, limit) => {
+//     let res = {}
+//     if (search?.length > 0) {
+//         res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?filter=name&filter=${search}&limit=${limit}`)
+//     } else {
+//         res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?limit=${limit}`)
+//     }
+//     return res.data
+// }
+export const getAllProduct = async (search, types, limit, page) => {
+    let filterParams = []
     if (search?.length > 0) {
-        res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?filter=name&filter=${search}&limit=${limit}`);
-    } else if (search?.length > 0) {
-        res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?limit=${limit}`);
-    } else {
-        res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall`);
+        filterParams.push(`filter=name&filter=${search}`)
     }
-    return res.data;
+    if (types?.length > 0) {
+        types.forEach(type => {
+            filterParams.push(`filter=type&filter=${type}`)
+        })
+    }
+    const queryString = filterParams.length > 0 ? `&${filterParams.join('&')}` : ''
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?limit=${limit}&page=${page}${queryString}`)
+    return res.data
+}
+
+
+export const getTypeProduct = async (types) => {
+    const filterParams = types.map(type => `filter=type&filter=${type}`).join('&')
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?${filterParams}`)
+    return res.data
+}
+
+export const getAllTypeProduct = async () => {
+    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getalltypeproduct`)
+    return res.data
 }
 
 export const createProduct = async (data) => {

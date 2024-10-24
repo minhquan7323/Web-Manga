@@ -16,7 +16,7 @@ const DetailProductPage = () => {
     }
 
     const increaseQuantity = () => {
-        if (quantity < productDetails?.countInStock) {
+        if (quantity < productDetails?.stock) {
             setQuantity(quantity + 1)
         }
     }

@@ -5,7 +5,7 @@ import { Card } from 'react-bootstrap';
 import { useNavigate, NavLink } from 'react-router-dom';
 
 const ProductCard = (props) => {
-    const { countInStock, description, image, name, price, rating, type, id } = props
+    const { stock, description, image, name, price, rating, type, id } = props
 
     const navigate = useNavigate()
     const handleDetailsProduct = (id) => {

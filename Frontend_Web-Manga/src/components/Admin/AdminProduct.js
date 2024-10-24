@@ -12,20 +12,21 @@ import { useQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
 
 function AdminProduct() {
+    const productTypes = ['Comedy', 'Shounen', 'Adventure', 'Drama', 'Action', 'Fantasy', 'Sci Fi', 'Slice Of Life', 'School Life', 'Supernatural', 'Seinen', 'Romance', 'Historical', 'Mystery', 'Non-Human Protagonists', 'Elemental', 'Powers', 'Mature', 'Tragedy', 'Family Friendly', 'Gender Bender', 'Shoujo', 'Sport', 'Psychological', 'Horror', 'Harem', 'Monsters', 'Ecchi', 'Josei', 'Shounen-Ai', 'Other']
     const [stateProduct, setStateProduct] = useState({
         name: '',
         image: '',
-        type: '',
+        type: [],
         price: '',
-        countInStock: '',
+        stock: '',
         description: ''
     })
     const [stateDetailsProduct, setStateDetailsProduct] = useState({
         name: '',
         image: '',
-        type: '',
+        type: [],
         price: '',
-        countInStock: '',
+        stock: '',
         description: ''
     })
     const [rowSelected, setRowSelected] = useState('')
@@ -34,8 +35,8 @@ function AdminProduct() {
 
     const mutation = useMutationHooks(
         async (data) => {
-            const { name, image, type, price, countInStock, description } = data
-            const res = await ProductService.createProduct({ name, image, type, price, countInStock, description })
+            const { name, image, type, price, stock, description } = data
+            const res = await ProductService.createProduct({ name, image, type, price, stock, description })
             return res
         }
     )
@@ -86,7 +87,7 @@ function AdminProduct() {
                 image: res.data.image,
                 type: res.data.type,
                 price: res.data.price,
-                countInStock: res.data.countInStock,
+                stock: res.data.stock,
                 description: res.data.description
             })
         }
@@ -124,6 +125,7 @@ function AdminProduct() {
         {
             title: 'Type',
             dataIndex: 'type',
+            render: (types) => types.join(', ')
         },
         {
             title: 'Price',
@@ -132,9 +134,9 @@ function AdminProduct() {
             render: (price) => price.toLocaleString().replace(/,/g, '.')
         },
         {
-            title: 'Quantity',
-            dataIndex: 'countInStock',
-            sorter: (a, b) => a.countInStock - b.countInStock
+            title: 'Stock',
+            dataIndex: 'stock',
+            sorter: (a, b) => a.stock - b.stock
         },
         {
             title: 'action',
@@ -150,7 +152,7 @@ function AdminProduct() {
                     </span>
                     <span
                         onClick={() => {
-                            setRowSelected(record._id);
+                            setRowSelected(record._id)
                         }}
                         data-bs-toggle="modal"
                         data-bs-target="#modalEdit">
@@ -212,26 +214,26 @@ function AdminProduct() {
     }
 
     const handleCancel = () => {
-        const modalAddElement = document.getElementById('modalAdd');
-        const modalEditElement = document.getElementById('modalEdit');
-        const modalDeleteElement = document.getElementById('modalDelete');
+        const modalAddElement = document.getElementById('modalAdd')
+        const modalEditElement = document.getElementById('modalEdit')
+        const modalDeleteElement = document.getElementById('modalDelete')
 
         if (modalAddElement) {
-            const modalAddInstance = Modal.getInstance(modalAddElement);
+            const modalAddInstance = Modal.getInstance(modalAddElement)
             if (modalAddInstance) {
-                modalAddInstance.hide();
+                modalAddInstance.hide()
             }
         }
         if (modalEditElement) {
-            const modalEditInstance = Modal.getInstance(modalEditElement);
+            const modalEditInstance = Modal.getInstance(modalEditElement)
             if (modalEditInstance) {
-                modalEditInstance.hide();
+                modalEditInstance.hide()
             }
         }
         if (modalDeleteElement) {
-            const modalDeleteInstance = Modal.getInstance(modalDeleteElement);
+            const modalDeleteInstance = Modal.getInstance(modalDeleteElement)
             if (modalDeleteInstance) {
-                modalDeleteInstance.hide();
+                modalDeleteInstance.hide()
             }
         }
 
@@ -240,7 +242,7 @@ function AdminProduct() {
             image: '',
             type: '',
             price: '',
-            countInStock: '',
+            stock: '',
             description: ''
         })
     }
@@ -308,8 +310,37 @@ function AdminProduct() {
         return false
     }
 
-    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type !== '' && stateProduct.price !== '' && stateProduct.countInStock !== ''
-    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type !== '' && stateDetailsProduct.price !== '' && stateDetailsProduct.countInStock !== '';
+    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type !== '' && stateProduct.price !== '' && stateProduct.stock !== ''
+    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type !== '' && stateDetailsProduct.price !== '' && stateDetailsProduct.stock !== ''
+
+    const handleCheckboxChange = (e) => {
+        const { value, checked } = e.target
+        if (checked) {
+            setStateProduct((prevState) => ({
+                ...prevState,
+                type: [...prevState.type, value]
+            }))
+        } else {
+            setStateProduct((prevState) => ({
+                ...prevState,
+                type: prevState.type.filter((item) => item !== value)
+            }))
+        }
+    }
+    const handleCheckboxChangeDetails = (e) => {
+        const { value, checked } = e.target
+        if (checked) {
+            setStateDetailsProduct((prevState) => ({
+                ...prevState,
+                type: [...prevState.type, value]
+            }))
+        } else {
+            setStateDetailsProduct((prevState) => ({
+                ...prevState,
+                type: prevState.type.filter((item) => item !== value)
+            }))
+        }
+    }
 
     return (
         <>
@@ -343,22 +374,37 @@ function AdminProduct() {
                                                     <img src={stateProduct?.image} />
                                                 )}
                                             </div>
-                                            <div className="form-floating mb-3 col-8">
+                                            <div className="form-floating mb-3 col-12">
                                                 <input type="name" className="form-control" id="name" placeholder="name" value={stateProduct.name} name="name" onChange={handleOnchange} required />
                                                 <label htmlFor="name">Name</label>
-                                            </div>
-                                            <div className="form-floating mb-3 col-4">
-                                                <input type="countInStock" className="form-control" id="countInStock" placeholder="countInStock" value={stateProduct.countInStock} name="countInStock" onChange={handleOnchange} required />
-                                                <label htmlFor="countInStock">Quantity</label>
-                                            </div>
-                                            <div className="form-floating mb-3 col-6">
-                                                <input type="type" className="form-control" id="type" placeholder="type" value={stateProduct.type} name="type" onChange={handleOnchange} required />
-                                                <label htmlFor="type">Type</label>
                                             </div>
                                             <div className="form-floating mb-3 col-6">
                                                 <input type="price" className="form-control" id="price" placeholder="price" value={stateProduct.price} name="price" onChange={handleOnchange} required />
                                                 <label htmlFor="price">Price</label>
                                             </div>
+                                            <div className="form-floating mb-3 col-6">
+                                                <input type="stock" className="form-control" id="stock" placeholder="stock" value={stateProduct.stock} name="stock" onChange={handleOnchange} required />
+                                                <label htmlFor="stock">Stock</label>
+                                            </div>
+                                            <b>Type</b>
+                                            {productTypes.map((type) => (
+                                                <div className="form-floating mb-0 col-md-6" key={type}>
+                                                    <div className="form-check">
+                                                        <input
+                                                            type="checkbox"
+                                                            id={`type-${type}`}
+                                                            name="type"
+                                                            value={type}
+                                                            className="form-check-input"
+                                                            checked={stateProduct?.type.includes(type)}
+                                                            onChange={handleCheckboxChange}
+                                                        />
+                                                        <label className="form-check-label" htmlFor={`type-${type}`}>
+                                                            {type}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            ))}
                                             <div className="form-floating mb-3 col-12">
                                                 <textarea type="description" className="form-control" id="description" placeholder="description" value={stateProduct.description} name="description" onChange={handleOnchange} />
                                                 <label htmlFor="description">Description</label>
@@ -380,13 +426,13 @@ function AdminProduct() {
                         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h1 className="modal-title fs-5" id="modalEdit">Edit product</h1>
+                                    <h1 className="modal-title fs-5" id="modalEdit">Add product</h1>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCancel}></button>
                                 </div>
-                                <Loading isLoading={isLoadingDetails}>
 
-                                    <div className="modal-body">
-                                        <div className="body">
+                                <div className="modal-body">
+                                    <div className="body">
+                                        <Loading isLoading={isLoadingDetails}>
                                             <div className="row">
                                                 <div className="form-floating mb-3 col-12">
                                                     <Upload beforeUpload={beforeUpload} onChange={handleOnChangeImageDetails} showUploadList={false} maxCount={1}>
@@ -396,36 +442,51 @@ function AdminProduct() {
                                                         <img src={stateDetailsProduct?.image} alt="Product" />
                                                     )}
                                                 </div>
-                                                <div className="form-floating mb-3 col-8">
+                                                <div className="form-floating mb-3 col-12">
                                                     <input type="name" className="form-control" id="name" placeholder="name" value={stateDetailsProduct.name} name="name" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="name">Name</label>
-                                                </div>
-                                                <div className="form-floating mb-3 col-4">
-                                                    <input type="countInStock" className="form-control" id="countInStock" placeholder="countInStock" value={stateDetailsProduct.countInStock} name="countInStock" onChange={handleOnchangeDetails} required />
-                                                    <label htmlFor="countInStock">Quantity</label>
-                                                </div>
-                                                <div className="form-floating mb-3 col-6">
-                                                    <input type="type" className="form-control" id="type" placeholder="type" value={stateDetailsProduct.type} name="type" onChange={handleOnchangeDetails} required />
-                                                    <label htmlFor="type">Type</label>
                                                 </div>
                                                 <div className="form-floating mb-3 col-6">
                                                     <input type="price" className="form-control" id="price" placeholder="price" value={stateDetailsProduct.price} name="price" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="price">Price</label>
                                                 </div>
+                                                <div className="form-floating mb-3 col-6">
+                                                    <input type="stock" className="form-control" id="stock" placeholder="stock" value={stateDetailsProduct.stock} name="stock" onChange={handleOnchangeDetails} required />
+                                                    <label htmlFor="stock">Stock</label>
+                                                </div>
+                                                <b>Type</b>
+                                                {productTypes.map((type) => (
+                                                    <div className="form-floating mb-0 col-md-6" key={type}>
+                                                        <div className="form-check">
+                                                            <input
+                                                                type="checkbox"
+                                                                id={`type-${type}`}
+                                                                name="type"
+                                                                value={type}
+                                                                className="form-check-input"
+                                                                checked={stateProduct?.type.includes(type)}
+                                                                onChange={handleCheckboxChange}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={`type-${type}`}>
+                                                                {type}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                ))}
                                                 <div className="form-floating mb-3 col-12">
                                                     <textarea type="description" className="form-control" id="description" placeholder="description" value={stateDetailsProduct.description} name="description" onChange={handleOnchangeDetails} />
                                                     <label htmlFor="description">Description</label>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancel}>Close</button>
-                                        <Loading isLoading={isLoadingUpdated}>
-                                            <button type="button" className="btn btn-primary" onClick={updateProduct} disabled={!isDetailsProductFormValid}>Edit</button>
                                         </Loading>
                                     </div>
-                                </Loading>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancel}>Close</button>
+                                    <Loading isLoading={isLoadingUpdated}>
+                                        <button type="button" className="btn btn-primary" onClick={updateProduct} disabled={!isDetailsProductFormValid}>Edit</button>
+                                    </Loading>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -462,9 +523,9 @@ function AdminProduct() {
                     onRow={(record, rowIndex) => {
                         return {
                             onClick: (event) => {
-                                setRowSelected(record._id);
+                                setRowSelected(record._id)
                             }
-                        };
+                        }
                     }} />
             </div>
         </>

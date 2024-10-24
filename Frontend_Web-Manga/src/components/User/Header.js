@@ -77,7 +77,19 @@ const Header = () => {
                                 <NavLink to="/Cart" className='nav-link' onClick={() => setNavbarExpanded(false)}>Cart</NavLink>
                             </Nav>
                             <Form className="d-flex item-center">
-                                <Form.Control value={search} onChange={(e) => setSearch(e.target.value)} type="search" placeholder="Search here" className="me-2" aria-label="Search" />
+                                <Form.Control
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    type="search"
+                                    placeholder="Search here"
+                                    className="me-2"
+                                    aria-label="Search"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                />
                                 <Button variant="outline-success" onClick={onSearch} >
                                     Search
                                 </Button>

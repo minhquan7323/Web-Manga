@@ -2,7 +2,7 @@ const Product = require('../models/ProductModel')
 
 const createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
-        const { name, image, type, price, countInStock, rating, description } = newProduct
+        const { name, image, type, price, stock, rating, description } = newProduct
         try {
             const checkProduct = await Product.findOne({
                 name: name
@@ -18,7 +18,7 @@ const createProduct = (newProduct) => {
                 image,
                 type,
                 price,
-                countInStock,
+                stock,
                 rating,
                 description
             })
@@ -131,8 +131,27 @@ const allProduct = (limit, page, sort, filter) => {
         try {
             const totalProduct = await Product.countDocuments();
 
+            // if (filter) {
+            //     const allProductFilter = await Product.find({ [filter[0]]: { '$regex': filter[1] } }).limit(limit).skip((page - 1) * limit)
+            //     resolve({
+            //         status: 'OK',
+            //         message: 'Success',
+            //         data: allProductFilter,
+            //         totalProduct: totalProduct,
+            //         currentPage: Number(page),
+            //         totalPage: Math.ceil(totalProduct / limit)
+            //     });
+            // }
             if (filter) {
-                const allProductFilter = await Product.find({ [filter[0]]: { '$regex': filter[1] } }).limit(limit).skip((page - 1) * limit)
+                const query = filter.map((f, index) => {
+                    if (index % 2 === 0) {
+                        return { [f]: { '$regex': filter[index + 1], '$options': 'i' } };
+                    }
+                    return null;
+                }).filter(Boolean);
+
+                const allProductFilter = await Product.find({ '$or': query }).limit(limit).skip((page - 1) * limit);
+
                 resolve({
                     status: 'OK',
                     message: 'Success',
@@ -171,13 +190,26 @@ const allProduct = (limit, page, sort, filter) => {
         }
     });
 }
-
-
+const getAllTypeProduct = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allType = await Product.distinct('type')
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: allType
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
 module.exports = {
     createProduct,
     updateProduct,
     detailsProduct,
     deleteProduct,
     allProduct,
-    deleteManyProducts
+    deleteManyProducts,
+    getAllTypeProduct
 }
