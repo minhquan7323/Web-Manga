@@ -5,6 +5,7 @@ import Loading from '../components/Loading/Loading'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addOrderProduct } from '../redux/orderSlide'
+import { convertPrice } from '../utils'
 
 const DetailProductPage = () => {
     const { id: productId } = useParams()
@@ -57,7 +58,6 @@ const DetailProductPage = () => {
         }
     }
 
-
     return (
         <Loading isLoading={isLoading}>
             <div className="container detail-product" style={{ maxWidth: '100%', margin: '0 auto' }}>
@@ -87,7 +87,7 @@ const DetailProductPage = () => {
                                 </div>
                             </div>
                             <h1 className="fs-1 detail-product-price">
-                                {productDetails?.price ? `${productDetails.price.toLocaleString().replace(/,/g, '.')} đ` : 'N/A'}
+                                {productDetails?.price ? `${convertPrice(productDetails.price)} VND` : 'N/A'}
                             </h1>
                             <br />
                             <div className="row">

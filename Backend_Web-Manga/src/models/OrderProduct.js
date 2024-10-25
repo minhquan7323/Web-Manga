@@ -19,7 +19,7 @@ const orderSchema = new moongoose.Schema(
         shippingAddress: {
             fullName: { type: String, require: true },
             address: { type: String, require: true },
-            city: { type: String, require: true },
+            // city: { type: String, require: true },
             phone: { type: Number, require: true },
         },
         paymentMethod: { type: String, require: true },

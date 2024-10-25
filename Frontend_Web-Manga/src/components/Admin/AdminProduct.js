@@ -520,9 +520,9 @@ function AdminProduct() {
                     columns={columns}
                     data={dataTable}
                     isLoading={isLoadingProducts}
-                    onRow={(record, rowIndex) => {
+                    onRow={(record) => {
                         return {
-                            onClick: (event) => {
+                            onClick: () => {
                                 setRowSelected(record._id)
                             }
                         }

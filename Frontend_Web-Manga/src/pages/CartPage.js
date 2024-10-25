@@ -1,24 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { decreaseAmount, increaseAmount, removeOrderProduct } from '../redux/orderSlide'
+import { decreaseAmount, increaseAmount, removeOrderProduct, removeAllOrderProduct, selectedOrder } from '../redux/orderSlide'
+import { convertPrice } from '../utils'
+import { useNavigate } from 'react-router-dom'
+import { Modal } from 'bootstrap/dist/js/bootstrap.bundle.min'
+import { useMutationHooks } from '../hooks/useMutationHook'
+import * as UserService from '../services/UserService'
+import Loading from '../components/Loading/Loading'
+import * as message from "../components/Message/Message"
+import { updateUser } from '../redux/userSlide'
 
 const CartPage = () => {
     const order = useSelector((state) => state.order)
+    const user = useSelector((state) => state.user)
     const [listChecked, setListChecked] = useState([])
     const dispatch = useDispatch()
 
+    const [stateDetailsUser, setStateDetailsUser] = useState({
+        name: '',
+        phone: '',
+        address: ''
+    })
+
     const decreaseQuantity = (idProduct) => {
-        // if (quantity > 1) {
-        //     setQuantity(quantity - 1)
-        // }
         dispatch(decreaseAmount({ idProduct }))
     }
     const increaseQuantity = (idProduct) => {
-        // if (quantity < 10) {
-        //     setQuantity(quantity + 1)
-        // }
         dispatch(increaseAmount({ idProduct }))
-
     }
     const handleOnChangeCheck = (e) => {
         if (listChecked.includes(e.target.value)) {
@@ -27,6 +35,11 @@ const CartPage = () => {
         } else {
             setListChecked([...listChecked, e.target.value])
         }
+    }
+
+    const navigate = useNavigate()
+    const handleDetailsProduct = (id) => {
+        navigate(`/product/details/${id}`)
     }
 
     const handleOnChangeCheckAll = (e) => {
@@ -40,6 +53,11 @@ const CartPage = () => {
             setListChecked([])
         }
     }
+
+    useEffect(() => {
+        dispatch(selectedOrder({ listChecked }))
+    }, [listChecked])
+
     const handleChange = (e) => {
         // const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1))
         // setQuantity(value)
@@ -49,12 +67,112 @@ const CartPage = () => {
 
     }
     const handleRemoveAllOrderProduct = () => {
-        if (listChecked?.length > 1) {
-
-            dispatch(handleRemoveAllOrderProduct({ listChecked }))
+        if (listChecked?.length > 0) {
+            dispatch(removeAllOrderProduct({ listChecked }))
         }
-
     }
+
+
+    const priceMemo = useMemo(() => {
+        const result = order?.orderItemsSelected?.reduce((total, cur) => {
+            return total + ((cur.price * cur.amount))
+        }, 0)
+        return result
+    }, [order])
+    const priceDiscountMemo = useMemo(() => {
+        const result = order?.orderItemsSelected?.reduce((total, cur) => {
+            return total + ((cur.discount * cur.amount))
+        }, 0)
+        if (Number(result)) {
+            return result
+        } else {
+            return 0
+        }
+    }, [order])
+    const deliveryPriceMemo = useMemo(() => {
+        if (priceMemo > 100000)
+            return 30000
+        else if (priceMemo === 0)
+            return 0
+        else
+            return 15000
+    }, [priceMemo])
+    const totalAmountMemo = useMemo(() => {
+        return priceMemo + deliveryPriceMemo
+    }, [priceMemo, deliveryPriceMemo])
+
+    const handleAddToCart = () => {
+        if (!user?.phone || !user?.address || !user?.name) {
+            const modalUpdateInfoElement = document.getElementById('modalUpdateInfo');
+            if (modalUpdateInfoElement) {
+                const modalUpdateInfoInstance = new Modal(modalUpdateInfoElement);
+                modalUpdateInfoInstance.show();
+                setStateDetailsUser({
+                    name: user?.name,
+                    address: user?.address,
+                    phone: user?.phone
+                })
+            }
+        }
+        else {
+            console.log('ok');
+
+        }
+        // else if (!order.orderItemsSelected?.length) {
+        //     message.error()
+        // }
+    };
+
+    const mutationUpdate = useMutationHooks(
+        async (data) => {
+            const { id, access_token, ...rests } = data
+            const res = await UserService.updateUser(id, rests, access_token)
+            if (res?.status == 'OK') {
+                handleCancel()
+                dispatch(updateUser({ ...rests }))
+                message.success()
+            }
+            return res
+        }
+    )
+    const { data: dataUpdated, isSuccess: isSuccessUpdated, isError: isErrorUpdated } = mutationUpdate
+    const isLoadingUpdated = mutationUpdate.isPending
+
+    const handleOnchangeDetails = (e) => {
+        setStateDetailsUser({
+            ...stateDetailsUser,
+            [e.target.name]: e.target.value
+        })
+    }
+    const handleUpdateUser = () => {
+        const { name, address, phone } = stateDetailsUser
+        if (name && address && phone) {
+            mutationUpdate.mutate({ id: user?.id, ...stateDetailsUser, access_token: user?.access_token })
+        }
+    }
+
+    const handleCancel = () => {
+        const modalUpdateInfoElement = document.getElementById('modalUpdateInfo');
+        if (modalUpdateInfoElement) {
+            const modalUpdateInfoInstance = Modal.getInstance(modalUpdateInfoElement)
+            if (modalUpdateInfoInstance) {
+                modalUpdateInfoInstance.hide()
+            }
+        }
+    }
+    useEffect(() => {
+        const modalElement = document.getElementById('modalUpdateInfo')
+        const handleModalHidden = () => {
+            handleCancel()
+        }
+        modalElement.addEventListener('hidden.bs.modal', handleModalHidden)
+        return () => {
+            modalElement.removeEventListener('hidden.bs.modal', handleModalHidden)
+        }
+    }, [])
+
+    const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.address !== ''
+
     return (
         <>
             <div>
@@ -87,14 +205,15 @@ const CartPage = () => {
                                         </div>
                                     </div>
                                     <div className='col-1 item-center p-0'>
-                                        <i className="fas fa-trash-can" onClick={handleRemoveAllOrderProduct} style={{ cursor: 'pointer' }}></i>
+                                        {listChecked?.length > 0 ? (
+                                            <i className="fas fa-trash-can" onClick={handleRemoveAllOrderProduct} style={{ cursor: 'pointer' }}></i>
+                                        ) : null}
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className='col-8 cart-item-block'>
-
                             <div className='cart-item-inner bg'>
                                 {order?.orderItems?.map((orderItem) => {
                                     return (
@@ -103,7 +222,7 @@ const CartPage = () => {
                                                 <input className="form-check-input" checked={listChecked.includes(orderItem.product)} onChange={handleOnChangeCheck} type="checkbox" value={orderItem.product} aria-label="..." />
                                             </div>
                                             <div className='col-2 cart-product-img p-0'>
-                                                <img src={orderItem.image} alt='img' />
+                                                <img src={orderItem.image} alt='img' onClick={() => handleDetailsProduct(orderItem.product)} style={{ cursor: 'pointer' }} />
                                             </div>
                                             <div className='col-8 row cart-product-group-info p-0'>
                                                 <div className='col-6 cart-product-info p-0'>
@@ -111,7 +230,7 @@ const CartPage = () => {
                                                         <h5>{orderItem.name}</h5>
                                                     </div>
                                                     <div className='cart-product-price-original'>
-                                                        <h6>{orderItem.price.toLocaleString().replace(/,/g, '.')} VND</h6>
+                                                        <h6>{convertPrice(orderItem.price)} VND</h6>
                                                     </div>
                                                 </div>
                                                 <div className='col-6 row cart-product-number p-0'>
@@ -127,12 +246,12 @@ const CartPage = () => {
                                                         </div>
                                                     </div>
                                                     <div className='col-6 cart-product-price-total p-0'>
-                                                        <h6 className='m-0'><b>{(orderItem.price * orderItem.amount).toLocaleString().replace(/,/g, '.')} VND</b></h6>
+                                                        <h6 className='m-0'><b>{convertPrice((orderItem.price * orderItem.amount))} VND</b></h6>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className='col-1 cart-product-remove p-0'>
-                                                <i className="fas fa-trash-can" onClick={() => handleDeleteOrder(order.product)} style={{ cursor: 'pointer' }}></i>
+                                                <i className="fas fa-trash-can" onClick={() => handleDeleteOrder(orderItem.product)} style={{ cursor: 'pointer' }}></i>
                                             </div>
                                         </div>
                                     )
@@ -141,19 +260,84 @@ const CartPage = () => {
                             </div>
 
                         </div>
+
                         <div className='col-4'>
                             <div className=' cart-total-block'>
                                 <div className='cart-total-inner bg'>
                                     <div className='cart-total'>
                                         <div>
-                                            <h6><b>Total amount</b></h6>
+                                            <p>Total estimated amount</p>
                                         </div>
                                         <div className='cart-total-number'>
-                                            <h5><b>999000 VND</b></h5>
+                                            <p><b>{convertPrice(priceMemo)} VND</b></p>
                                         </div>
                                     </div>
-                                    <button type="button" className="btn btn-danger cart-payment-btn btn-lg">Proceed to Payment</button>
+                                    <div className='cart-total'>
+                                        <div>
+                                            <p>Shipping fee</p>
+                                        </div>
+                                        <div className='cart-total-number'>
+                                            <p><b>{convertPrice(deliveryPriceMemo)} VND</b></p>
+                                        </div>
+                                    </div>
+                                    <div className='cart-total'>
+                                        <div>
+                                            <h5><b>Total amount</b></h5>
+                                        </div>
+                                        <div className='cart-total-number'>
+                                            <h5><b>{convertPrice(totalAmountMemo)} VND</b></h5>
+                                        </div>
+                                    </div>
+                                    {listChecked?.length > 0 ? (
+                                        <button
+                                            type="button"
+                                            onClick={handleAddToCart}
+                                            className="btn btn-danger cart-payment-btn btn-lg">
+                                            Proceed to Payment
+                                        </button>
+
+                                    ) : (
+                                        <button type="button" style={{ cursor: 'not-allowed' }} className="btn btn-secondary cart-payment-btn btn-lg">Proceed to Payment</button>
+                                    )}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="modal fade" id="modalUpdateInfo" tabIndex="-1" aria-labelledby="modalUpdateInfo" aria-hidden="true">
+                        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h1 className="modal-title fs-5" id="modalUpdateInfo">Update information</h1>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCancel}></button>
+                                </div>
+
+                                <Loading isLoading={isLoadingUpdated}>
+                                    <div className="modal-body">
+                                        <div className="body">
+                                            <div className="row">
+                                                <div className="form-floating mb-3 col-12">
+                                                    <input type="name" className="form-control" id="nameDetail" placeholder="name" value={stateDetailsUser.name} name="name" onChange={handleOnchangeDetails} required />
+                                                    <label htmlFor="name">Name</label>
+                                                </div>
+                                                <div className="form-floating mb-3 col-6">
+                                                    <input type="tel" className="form-control" id="phoneDetail" placeholder="0123123123" value={stateDetailsUser.phone} name="phone" onChange={handleOnchangeDetails} required />
+                                                    <label htmlFor="phone">Phone</label>
+                                                </div>
+                                                <div className="form-floating mb-3 col-6">
+                                                    <input type="address" className="form-control" id="addressDetail" placeholder="address" value={stateDetailsUser.address || ''} name="address" onChange={handleOnchangeDetails} required />
+                                                    <label htmlFor="address">Address</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancel}>Close</button>
+                                        {/* <Loading isLoading={isLoadingUpdated}> */}
+                                        <button type="button" className="btn btn-primary" onClick={handleUpdateUser} disabled={!isDetailsUserFormValid}>Update</button>
+                                        {/* </Loading> */}
+                                    </div>
+                                </Loading>
                             </div>
                         </div>
                     </div>

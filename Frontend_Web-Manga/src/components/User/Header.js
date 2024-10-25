@@ -76,11 +76,19 @@ const Header = () => {
                             <Nav className="me-auto my-2 my-lg-0">
                                 <NavLink to="/" className='nav-link' onClick={() => setNavbarExpanded(false)}>Home</NavLink>
                                 <NavLink to="/Product" className='nav-link' onClick={() => setNavbarExpanded(false)}>Product</NavLink>
-                                <NavLink to="/Cart" className='nav-link' onClick={() => setNavbarExpanded(false)}>
-                                    Cart
-                                    <Badge bg="warning" text="dark">
-                                        {order?.orderItems?.length}
-                                    </Badge>
+                                <NavLink to="/Cart" className='nav-link position-relative' onClick={() => setNavbarExpanded(false)}>
+                                    Cart <i className="fas fa-cart-shopping"></i>
+                                    {/* <span class="position-absolute top-10  translate-middle badge rounded-pill bg-danger">
+                                        99+
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span> */}
+                                    {order?.orderItems?.length > 0 ? (
+                                        <Badge className='translate-middle badge rounded-pill' style={{ marginLeft: '5px', minWidth: '22px', padding: '5px' }} bg="warning" text="dark">
+                                            {order?.orderItems?.length}
+                                        </Badge>
+                                    ) : null
+                                    }
+
                                 </NavLink>
                             </Nav>
                             <Form className="d-flex item-center">

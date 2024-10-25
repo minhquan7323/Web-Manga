@@ -9,6 +9,7 @@ import * as ProductService from '../services/ProductService';
 import { useSelector } from 'react-redux';
 import Loading from '../components/Loading/Loading';
 import { useQuery } from '@tanstack/react-query';
+import { convertPrice } from '../utils';
 
 const ProductPage = () => {
     const searchProduct = useSelector((state) => state?.product?.search);
@@ -118,7 +119,7 @@ const ProductPage = () => {
                                         description={product.description}
                                         image={product.image}
                                         name={product.name}
-                                        price={product.price.toLocaleString().replace(/,/g, '.')}
+                                        price={convertPrice(product.price)}
                                         rating={product.rating}
                                         type={product.type}
                                         id={product._id}

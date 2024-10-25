@@ -12,6 +12,7 @@ export const axiosJWT = axios.create()
 //     return res.data
 // }
 export const getAllProduct = async (search, types, limit, page) => {
+    let res = {}
     let filterParams = []
     if (search?.length > 0) {
         filterParams.push(`filter=name&filter=${search}`)
@@ -21,8 +22,14 @@ export const getAllProduct = async (search, types, limit, page) => {
             filterParams.push(`filter=type&filter=${type}`)
         })
     }
+    if (page) {
+        filterParams.push(`page=${page}`)
+    }
+    if (limit) {
+        filterParams.push(`limit=${limit}`)
+    }
     const queryString = filterParams.length > 0 ? `&${filterParams.join('&')}` : ''
-    const res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?limit=${limit}&page=${page}${queryString}`)
+    res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?${queryString}`)
     return res.data
 }
 

@@ -130,7 +130,7 @@ const allProduct = (limit, page, sort, filter) => {
     return new Promise(async (resolve, reject) => {
         try {
             const totalProduct = await Product.countDocuments();
-
+            let allProduct = []
             // if (filter) {
             //     const allProductFilter = await Product.find({ [filter[0]]: { '$regex': filter[1] } }).limit(limit).skip((page - 1) * limit)
             //     resolve({
@@ -175,8 +175,11 @@ const allProduct = (limit, page, sort, filter) => {
                     totalPage: Math.ceil(totalProduct / limit)
                 });
             }
-
-            const allProduct = await Product.find().limit(limit).skip((page - 1) * limit)
+            if (!limit) {
+                allProduct = await Product.find()
+            } else {
+                allProduct = await Product.find().limit(limit).skip((page - 1) * limit)
+            }
             resolve({
                 status: 'OK',
                 message: 'Success',
