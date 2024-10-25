@@ -2,25 +2,27 @@ import React, { useState } from 'react'
 import * as ProductService from '../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import Loading from '../components/Loading/Loading'
-import { useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { addOrderProduct } from '../redux/orderSlide'
 
 const DetailProductPage = () => {
     const { id: productId } = useParams()
-
+    const user = useSelector((state) => state?.user)
+    const navigate = useNavigate()
+    const location = useLocation()
+    const dispatch = useDispatch()
     const [quantity, setQuantity] = useState(1)
-
     const decreaseQuantity = () => {
         if (quantity > 1) {
             setQuantity(quantity - 1)
         }
     }
-
     const increaseQuantity = () => {
         if (quantity < productDetails?.stock) {
             setQuantity(quantity + 1)
         }
     }
-
     const handleChange = (e) => {
         const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1))
         setQuantity(value)
@@ -38,6 +40,23 @@ const DetailProductPage = () => {
         queryFn: () => fetchGetDetailsProduct(productId),
         enabled: !!productId,
     })
+
+    const handleAddOrderProduct = () => {
+        if (!user?.id) {
+            navigate('/signin', { state: location?.pathname })
+        } else {
+            dispatch(addOrderProduct({
+                orderItem: {
+                    name: productDetails?.name,
+                    amount: quantity,
+                    image: productDetails?.image,
+                    price: productDetails?.price,
+                    product: productDetails?._id
+                }
+            }))
+        }
+    }
+
 
     return (
         <Loading isLoading={isLoading}>
@@ -87,7 +106,7 @@ const DetailProductPage = () => {
                                     </div>
                                 </div>
                                 <div className="col-5">
-                                    <button type="button" className="btn btn-outline-danger">
+                                    <button onClick={handleAddOrderProduct} type="button" className="btn btn-outline-danger">
                                         <i className="fa-solid fa-cart-shopping"></i> Add to cart
                                     </button>
                                 </div>

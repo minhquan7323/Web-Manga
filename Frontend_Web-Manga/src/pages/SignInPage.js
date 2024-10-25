@@ -1,19 +1,20 @@
-import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
+import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import '../../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'
 
 import * as UserService from '../services/UserService.js'
-import * as message from "../components/Message/Message.js";
-import { useEffect, useState } from 'react';
-import { useMutationHooks } from '../hooks/useMutationHook.js';
+import * as message from "../components/Message/Message.js"
+import { useEffect, useState } from 'react'
+import { useMutationHooks } from '../hooks/useMutationHook.js'
 import Loading from '../components/Loading/Loading.js'
-import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode";
+import { useLocation, useNavigate } from 'react-router-dom'
+import { jwtDecode } from "jwt-decode"
 import { useDispatch } from 'react-redux'
-import { updateUser } from '../redux/userSlide.js';
+import { updateUser } from '../redux/userSlide.js'
 
 
 function SignInPage() {
     const navigate = useNavigate()
+    const location = useLocation()
 
     const dispatch = useDispatch()
 
@@ -31,7 +32,7 @@ function SignInPage() {
 
     useEffect(() => {
         if (data && data?.status === 'OK') {
-            message.success();
+            message.success()
             localStorage.setItem('access_token', JSON.stringify(data?.access_token))
             if (data?.access_token) {
                 const decoded = jwtDecode(data?.access_token)
@@ -39,11 +40,15 @@ function SignInPage() {
                     handleGetDetailsUser(decoded?.id, data?.access_token)
                 }
             }
-            navigate('/');
+            if (location?.state) {
+                navigate(location?.state)
+            } else {
+                navigate('/')
+            }
         } else if (isError || (data && data?.status === 'ERR')) {
-            message.error(data?.message);
+            message.error(data?.message)
         }
-    }, [data, isError, navigate]);
+    }, [data, isError, navigate])
 
     const handleGetDetailsUser = async (id, access_token) => {
         const res = await UserService.getDetailsUser(id, access_token)
@@ -108,7 +113,7 @@ function SignInPage() {
                 </div>
             </div>
         </>
-    );
+    )
 }
 
-export default SignInPage;
+export default SignInPage

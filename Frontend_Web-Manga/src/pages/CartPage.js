@@ -1,27 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { decreaseAmount, increaseAmount, removeOrderProduct } from '../redux/orderSlide'
 
 const CartPage = () => {
-    const [quantity, setQuantity] = useState(1);
+    const order = useSelector((state) => state.order)
+    const [listChecked, setListChecked] = useState([])
+    const dispatch = useDispatch()
 
-    const decreaseQuantity = () => {
-        if (quantity > 1) {
-            setQuantity(quantity - 1);
+    const decreaseQuantity = (idProduct) => {
+        // if (quantity > 1) {
+        //     setQuantity(quantity - 1)
+        // }
+        dispatch(decreaseAmount({ idProduct }))
+    }
+    const increaseQuantity = (idProduct) => {
+        // if (quantity < 10) {
+        //     setQuantity(quantity + 1)
+        // }
+        dispatch(increaseAmount({ idProduct }))
+
+    }
+    const handleOnChangeCheck = (e) => {
+        if (listChecked.includes(e.target.value)) {
+            const newListChecked = listChecked.filter((item) => item !== e.target.value)
+            setListChecked(newListChecked)
+        } else {
+            setListChecked([...listChecked, e.target.value])
         }
-    };
+    }
 
-    const increaseQuantity = () => {
-        if (quantity < 10) {
-            setQuantity(quantity + 1);
+    const handleOnChangeCheckAll = (e) => {
+        if (e.target.checked) {
+            const newListChecked = []
+            order?.orderItems?.forEach((item) => {
+                newListChecked.push(item?.product)
+            })
+            setListChecked(newListChecked)
+        } else {
+            setListChecked([])
         }
-    };
-
+    }
     const handleChange = (e) => {
-        const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1));
-        setQuantity(value);
-    };
+        // const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1))
+        // setQuantity(value)
+    }
+    const handleDeleteOrder = (idProduct) => {
+        dispatch(removeOrderProduct({ idProduct }))
 
-    function rdimg() {
-        return `https://picsum.photos/400/100?random=${Math.floor(Math.random() * 1000)}`;
+    }
+    const handleRemoveAllOrderProduct = () => {
+        if (listChecked?.length > 1) {
+
+            dispatch(handleRemoveAllOrderProduct({ listChecked }))
+        }
+
     }
     return (
         <>
@@ -37,15 +69,15 @@ const CartPage = () => {
                             <div className='cart-item-header-inner bg'>
                                 <div className='row cart-item-header'>
                                     <div className='col-1 cart-item-header-check item-center'>
-                                        <input className="form-check-input m-0" type="checkbox" value="" aria-label="..." />
+                                        <input onChange={handleOnChangeCheckAll} checked={listChecked?.length === order?.orderItems?.length} className="form-check-input m-0" type="checkbox" value="" aria-label="..." />
                                     </div>
                                     <div className='col-2 p-0'>
                                         Select all
                                     </div>
                                     <div className='col-8 row item-center p-0'>
-                                        <div className='col-7'>
+                                        <div className='col-6'>
                                         </div>
-                                        <div className='col-5 row p-0' >
+                                        <div className='col-6 row p-0' >
                                             <div className='col-6 item-center p-0'>
                                                 Amount
                                             </div>
@@ -54,166 +86,60 @@ const CartPage = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className='col-1 p-0'>
+                                    <div className='col-1 item-center p-0'>
+                                        <i className="fas fa-trash-can" onClick={handleRemoveAllOrderProduct} style={{ cursor: 'pointer' }}></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div className='col-8 cart-item-block'>
 
                             <div className='cart-item-inner bg'>
-                                <div className='row cart-item-product'>
-                                    <div className='col-1 cart-product-check'>
-                                        <input className="form-check-input" type="checkbox" value="" aria-label="..." />
-                                    </div>
-                                    <div className='col-2 cart-product-img p-0'>
-                                        <img src={rdimg()} alt='img' />
-                                    </div>
-                                    <div className='col-8 row cart-product-group-info p-0'>
-                                        <div className='col-7 cart-product-info p-0'>
-                                            <div className='cart-product-title'>
-                                                <h4>title</h4>
+                                {order?.orderItems?.map((orderItem) => {
+                                    return (
+                                        <div className='row cart-item-product' key={orderItem.product}>
+                                            <div className='col-1 cart-product-check'>
+                                                <input className="form-check-input" checked={listChecked.includes(orderItem.product)} onChange={handleOnChangeCheck} type="checkbox" value={orderItem.product} aria-label="..." />
                                             </div>
-                                            <div className='cart-product-price-original'>
-                                                <h6>33000 VND</h6>
+                                            <div className='col-2 cart-product-img p-0'>
+                                                <img src={orderItem.image} alt='img' />
                                             </div>
-                                        </div>
-                                        <div className='col-5 row cart-product-number p-0'>
-                                            <div className='col-6 item-center p-0'>
-                                                <div className="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
-                                                    <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
-                                                        <i className="fas fa-minus"></i>
-                                                    </button>
-                                                    <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '35px', minWidth: '35px', color: 'black' }} />
-                                                    <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
-                                                        <i className="fas fa-plus"></i>
-                                                    </button>
+                                            <div className='col-8 row cart-product-group-info p-0'>
+                                                <div className='col-6 cart-product-info p-0'>
+                                                    <div className='cart-product-title'>
+                                                        <h5>{orderItem.name}</h5>
+                                                    </div>
+                                                    <div className='cart-product-price-original'>
+                                                        <h6>{orderItem.price.toLocaleString().replace(/,/g, '.')} VND</h6>
+                                                    </div>
+                                                </div>
+                                                <div className='col-6 row cart-product-number p-0'>
+                                                    <div className='col-6 item-center p-0'>
+                                                        <div className="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
+                                                            <button type="button" className="btn btn-outline-secondary" onClick={() => decreaseQuantity(orderItem.product)}>
+                                                                <i className="fas fa-minus"></i>
+                                                            </button>
+                                                            <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={orderItem.amount} onChange={handleChange} style={{ maxWidth: '35px', minWidth: '35px', color: 'black' }} />
+                                                            <button type="button" className="btn btn-outline-secondary" onClick={() => increaseQuantity(orderItem.product)}>
+                                                                <i className="fas fa-plus"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div className='col-6 cart-product-price-total p-0'>
+                                                        <h6 className='m-0'><b>{(orderItem.price * orderItem.amount).toLocaleString().replace(/,/g, '.')} VND</b></h6>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className='col-6 cart-product-price-total p-0'>
-                                                <h6 className='m-0'><b>150000 VND</b></h6>
+                                            <div className='col-1 cart-product-remove p-0'>
+                                                <i className="fas fa-trash-can" onClick={() => handleDeleteOrder(order.product)} style={{ cursor: 'pointer' }}></i>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className='col-1 cart-product-remove p-0'>
-                                        <i className="fas fa-trash-can"></i>
-                                    </div>
-                                </div>
-                                <hr style={{ width: '95%', margin: '0 auto' }} />
-                                <div className='row cart-item-product'>
-                                    <div className='col-1 cart-product-check'>
-                                        <input className="form-check-input" type="checkbox" value="" aria-label="..." />
-                                    </div>
-                                    <div className='col-2 cart-product-img p-0'>
-                                        <img src={rdimg()} alt='img' />
-                                    </div>
-                                    <div className='col-8 row cart-product-group-info p-0'>
-                                        <div className='col-7 cart-product-info p-0'>
-                                            <div className='cart-product-title'>
-                                                <h4>title</h4>
-                                            </div>
-                                            <div className='cart-product-price-original'>
-                                                <h6>33000 VND</h6>
-                                            </div>
-                                        </div>
-                                        <div className='col-5 row cart-product-number p-0'>
-                                            <div className='col-6 item-center p-0'>
-                                                <div className="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
-                                                    <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
-                                                        <i className="fas fa-minus"></i>
-                                                    </button>
-                                                    <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '35px', minWidth: '35px', color: 'black' }} />
-                                                    <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
-                                                        <i className="fas fa-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div className='col-6 cart-product-price-total p-0'>
-                                                <h6 className='m-0'><b>150000 VND</b></h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='col-1 cart-product-remove p-0'>
-                                        <i className="fas fa-trash-can"></i>
-                                    </div>
-                                </div>
-                                <hr style={{ width: '95%', margin: '0 auto' }} />
-                                <div className='row cart-item-product'>
-                                    <div className='col-1 cart-product-check'>
-                                        <input className="form-check-input" type="checkbox" value="" aria-label="..." />
-                                    </div>
-                                    <div className='col-2 cart-product-img p-0'>
-                                        <img src={rdimg()} alt='img' />
-                                    </div>
-                                    <div className='col-8 row cart-product-group-info p-0'>
-                                        <div className='col-7 cart-product-info p-0'>
-                                            <div className='cart-product-title'>
-                                                <h4>title</h4>
-                                            </div>
-                                            <div className='cart-product-price-original'>
-                                                <h6>33000 VND</h6>
-                                            </div>
-                                        </div>
-                                        <div className='col-5 row cart-product-number p-0'>
-                                            <div className='col-6 item-center p-0'>
-                                                <div className="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
-                                                    <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
-                                                        <i className="fas fa-minus"></i>
-                                                    </button>
-                                                    <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '35px', minWidth: '35px', color: 'black' }} />
-                                                    <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
-                                                        <i className="fas fa-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div className='col-6 cart-product-price-total p-0'>
-                                                <h6 className='m-0'><b>150000 VND</b></h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='col-1 cart-product-remove p-0'>
-                                        <i className="fas fa-trash-can"></i>
-                                    </div>
-                                </div>
-                                <hr style={{ width: '95%', margin: '0 auto' }} />
-                                <div className='row cart-item-product'>
-                                    <div className='col-1 cart-product-check'>
-                                        <input className="form-check-input" type="checkbox" value="" aria-label="..." />
-                                    </div>
-                                    <div className='col-2 cart-product-img p-0'>
-                                        <img src={rdimg()} alt='img' />
-                                    </div>
-                                    <div className='col-8 row cart-product-group-info p-0'>
-                                        <div className='col-7 cart-product-info p-0'>
-                                            <div className='cart-product-title'>
-                                                <h4>title</h4>
-                                            </div>
-                                            <div className='cart-product-price-original'>
-                                                <h6>33000 VND</h6>
-                                            </div>
-                                        </div>
-                                        <div className='col-5 row cart-product-number p-0'>
-                                            <div className='col-6 item-center p-0'>
-                                                <div className="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
-                                                    <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
-                                                        <i className="fas fa-minus"></i>
-                                                    </button>
-                                                    <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '35px', minWidth: '35px', color: 'black' }} />
-                                                    <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
-                                                        <i className="fas fa-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div className='col-6 cart-product-price-total p-0'>
-                                                <h6 className='m-0'><b>150000 VND</b></h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className='col-1 cart-product-remove p-0'>
-                                        <i className="fas fa-trash-can"></i>
-                                    </div>
-                                </div>
+                                    )
+                                })}
+                                {/* <hr style={{ width: '95%', margin: '0 auto' }} /> */}
                             </div>
+
                         </div>
                         <div className='col-4'>
                             <div className=' cart-total-block'>
@@ -234,7 +160,7 @@ const CartPage = () => {
                 </div>
             </div>
         </>
-    );
+    )
 }
 
-export default CartPage;
+export default CartPage

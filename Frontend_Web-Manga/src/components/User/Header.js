@@ -1,4 +1,5 @@
 import Button from 'react-bootstrap/Button'
+import Badge from 'react-bootstrap/Badge'
 import React, { useEffect, useState } from 'react'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
@@ -16,6 +17,7 @@ import { searchProduct } from '../../redux/productSlide.js'
 
 const Header = () => {
     const user = useSelector((state) => state.user)
+    const order = useSelector((state) => state.order)
     const [userName, setUserName] = useState('')
     const [userAvatar, setUserAvatar] = useState('')
     const navigate = useNavigate()
@@ -74,7 +76,12 @@ const Header = () => {
                             <Nav className="me-auto my-2 my-lg-0">
                                 <NavLink to="/" className='nav-link' onClick={() => setNavbarExpanded(false)}>Home</NavLink>
                                 <NavLink to="/Product" className='nav-link' onClick={() => setNavbarExpanded(false)}>Product</NavLink>
-                                <NavLink to="/Cart" className='nav-link' onClick={() => setNavbarExpanded(false)}>Cart</NavLink>
+                                <NavLink to="/Cart" className='nav-link' onClick={() => setNavbarExpanded(false)}>
+                                    Cart
+                                    <Badge bg="warning" text="dark">
+                                        {order?.orderItems?.length}
+                                    </Badge>
+                                </NavLink>
                             </Nav>
                             <Form className="d-flex item-center">
                                 <Form.Control
