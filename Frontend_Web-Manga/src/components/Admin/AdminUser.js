@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import TableComponent from "../Table"
-import { getBase64 } from '../../utils'
+import { resizeImage } from '../../utils'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Upload } from 'antd'
 import * as UserService from '../../services/UserService.js'
@@ -279,7 +279,7 @@ function AdminUser() {
     const handleOnChangeImage = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await getBase64(file)
+            const preview = await resizeImage(file, 1920, 1080, 0.7);
             setStateUser({
                 ...stateUser,
                 avatar: preview
@@ -289,7 +289,7 @@ function AdminUser() {
     const handleOnChangeImageDetails = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await getBase64(file)
+            const preview = await resizeImage(file, 1920, 1080, 0.7);
             setStateDetailsUser({
                 ...stateDetailsUser,
                 avatar: preview

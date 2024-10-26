@@ -5,7 +5,7 @@ import Loading from '../components/Loading/Loading.js'
 import * as message from "../components/Message/Message.js"
 import { useSelector, useDispatch } from 'react-redux'
 import { updateUser } from '../redux/userSlide.js'
-import { getBase64 } from '../utils.js'
+import { resizeImage } from '../utils.js'
 import { Button, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 
@@ -62,7 +62,7 @@ const ProfilePage = () => {
     const handleOnChangeAvatar = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await getBase64(file)
+            const preview = await resizeImage(file, 1920, 1080, 0.7)
             setAvatar(preview)
         }
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import TableComponent from "../Table"
-import { getBase64 } from '../../utils'
+import { resizeImage } from '../../utils'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Upload } from 'antd'
 import * as ProductService from '../../services/ProductService.js'
@@ -287,25 +287,27 @@ function AdminProduct() {
     }
 
     const handleOnChangeImage = async (info) => {
-        const file = info.fileList[0]?.originFileObj
+        const file = info.fileList[0]?.originFileObj;
         if (file) {
-            const preview = await getBase64(file)
+            const preview = await resizeImage(file, 1920, 1080, 0.7);
             setStateProduct({
                 ...stateProduct,
                 image: preview
-            })
+            });
         }
-    }
+    };
+
     const handleOnChangeImageDetails = async (info) => {
-        const file = info.fileList[0]?.originFileObj
+        const file = info.fileList[0]?.originFileObj;
         if (file) {
-            const preview = await getBase64(file)
+            const preview = await resizeImage(file, 1920, 1080, 0.7);
             setStateDetailsProduct({
                 ...stateDetailsProduct,
                 image: preview
-            })
+            });
         }
-    }
+    };
+
     const beforeUpload = (file) => {
         return false
     }
