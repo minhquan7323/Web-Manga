@@ -9,6 +9,7 @@ import * as UserService from '../services/UserService'
 import Loading from '../components/Loading/Loading'
 import * as message from "../components/Message/Message"
 import { updateUser } from '../redux/userSlide'
+import Step from '../components/User/Step'
 
 const CartPage = () => {
     const order = useSelector((state) => state.order)
@@ -159,7 +160,7 @@ const CartPage = () => {
     const handleUpdateUser = () => {
         const { name, address, phone } = stateDetailsUser
         if (name && address && phone) {
-            mutationUpdate.reset();
+            // mutationUpdate.reset();
             mutationUpdate.mutate({ id: user?.id, ...stateDetailsUser, access_token: user?.access_token })
             dispatch(updateUser({ name, address, phone }))
         }
@@ -188,6 +189,21 @@ const CartPage = () => {
 
     const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.address !== ''
 
+    const itemsDelivery = [
+        {
+            title: 'Finished',
+            description: '1'
+        },
+        {
+            title: 'In progress',
+            description: '22'
+        },
+        {
+            title: 'Waiting',
+            description: '333'
+        }
+    ]
+
     return (
         <>
             <div>
@@ -198,37 +214,40 @@ const CartPage = () => {
                 </div>
                 <div className='container cart-container' style={{ maxWidth: '100%', margin: '0 auto' }}>
                     <div className='row'>
-                        <div className='col-8 cart-item-header-block'>
-                            <div className='cart-item-header-inner bg'>
-                                <div className='row cart-item-header'>
-                                    <div className='col-1 cart-item-header-check item-center'>
-                                        <input onChange={handleOnChangeCheckAll} checked={listChecked?.length === order?.orderItems?.length} className="form-check-input m-0" type="checkbox" value="" aria-label="..." />
+                        <div className='col-8 cart-item-block'>
+                            <div className='col-12 cart-item-header-block p-0' >
+                                <div className='cart-item-header-inner bg'>
+                                    <div className='row cart-item-header'>
+                                        <Step current={0} items={itemsDelivery} />
                                     </div>
-                                    <div className='col-2 p-0'>
-                                        Select all
-                                    </div>
-                                    <div className='col-8 row item-center p-0'>
-                                        <div className='col-6'>
+                                    <hr style={{ width: '95%', margin: '0 auto' }} />
+                                    <div className='row cart-item-header'>
+                                        <div className='col-1 cart-item-header-check item-center'>
+                                            <input onChange={handleOnChangeCheckAll} checked={listChecked?.length === order?.orderItems?.length} className="form-check-input m-0" type="checkbox" value="" aria-label="..." />
                                         </div>
-                                        <div className='col-6 row p-0' >
-                                            <div className='col-6 item-center p-0'>
-                                                Amount
+                                        <div className='col-2 p-0'>
+                                            Select all
+                                        </div>
+                                        <div className='col-8 row item-center p-0'>
+                                            <div className='col-6'>
                                             </div>
-                                            <div className='col-6 item-center p-0'>
-                                                Total amount
+                                            <div className='col-6 row p-0' >
+                                                <div className='col-6 item-center p-0'>
+                                                    Amount
+                                                </div>
+                                                <div className='col-6 item-center p-0'>
+                                                    Total amount
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className='col-1 item-center p-0'>
-                                        {listChecked?.length > 0 ? (
-                                            <i className="fas fa-trash-can" onClick={handleRemoveAllOrderProduct} style={{ cursor: 'pointer' }}></i>
-                                        ) : null}
+                                        <div className='col-1 item-center p-0'>
+                                            {listChecked?.length > 0 ? (
+                                                <i className="fas fa-trash-can" onClick={handleRemoveAllOrderProduct} style={{ cursor: 'pointer' }}></i>
+                                            ) : null}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className='col-8 cart-item-block'>
                             <div className='cart-item-inner bg'>
                                 {order?.orderItems?.map((orderItem) => {
                                     return (
@@ -277,7 +296,7 @@ const CartPage = () => {
                         </div>
 
                         <div className='col-4'>
-                            <div className=' cart-total-block'>
+                            <div className=' cart-total-block p-0'>
                                 <div className='cart-total-inner bg'>
                                     <div className='cart-total'>
                                         <div>
@@ -304,7 +323,7 @@ const CartPage = () => {
                                             <p>Discount</p>
                                         </div>
                                         <div className='cart-total-number'>
-                                            <p><b>0 VND</b></p>
+                                            <p><b>0 %</b></p>
                                         </div>
                                     </div>
                                     <div className='cart-total'>

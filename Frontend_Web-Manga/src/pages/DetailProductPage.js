@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addOrderProduct } from '../redux/orderSlide'
 import { convertPrice } from '../utils'
+import * as message from "../components/Message/Message"
 
 const DetailProductPage = () => {
     const { id: productId } = useParams()
@@ -55,6 +56,7 @@ const DetailProductPage = () => {
                     product: productDetails?._id
                 }
             }))
+            message.success()
         }
     }
 

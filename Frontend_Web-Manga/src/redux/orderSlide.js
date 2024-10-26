@@ -33,20 +33,18 @@ export const orderSlice = createSlice({
             const { idProduct } = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product === idProduct)
             const itemOrderSelected = state?.orderItemsSelected?.find((item) => item?.product === idProduct)
-            if (itemOrder) {
-                itemOrder.amount++
+            itemOrder.amount++
+            if (itemOrderSelected)
                 itemOrderSelected.amount++
-            }
         },
         decreaseAmount: (state, action) => {
             const { idProduct } = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product === idProduct)
             const itemOrderSelected = state?.orderItemsSelected?.find((item) => item?.product === idProduct)
-
-            if (itemOrder && itemOrder.amount > 1) {
+            if (itemOrder.amount > 1)
                 itemOrder.amount--
+            if (itemOrderSelected && itemOrderSelected.amount > 1)
                 itemOrderSelected.amount--
-            }
         },
         removeOrderProduct: (state, action) => {
             const { idProduct } = action.payload

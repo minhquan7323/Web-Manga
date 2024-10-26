@@ -9,6 +9,7 @@ import { useMutationHooks } from '../../hooks/useMutationHook.js'
 import Loading from '../Loading/Loading.js'
 import { Modal } from "bootstrap/dist/js/bootstrap.bundle.min.js"
 import { useQuery } from "@tanstack/react-query"
+import { Modal as BootstrapModal } from 'bootstrap'
 import { useSelector } from "react-redux"
 
 function AdminUser() {
@@ -134,17 +135,13 @@ function AdminUser() {
             width: 50,
             render: (_, record) => (
                 <div className="admin-table-action">
-                    <span
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalDelete">
+                    <span onClick={() => handleModalOpen('modalDelete')}>
                         <i className="fas fa-trash"></i>
                     </span>
-                    <span
-                        onClick={() => {
-                            setRowSelected(record._id);
-                        }}
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEdit">
+                    <span onClick={() => {
+                        handleModalOpen('modalEdit')
+                        setRowSelected(record._id)
+                    }}>
                         <i className="fas fa-edit"></i>
                     </span>
                 </div>
@@ -202,29 +199,19 @@ function AdminUser() {
         })
     }
 
-    const handleCancel = () => {
-        const modalAddElement = document.getElementById('modalAdd');
-        const modalEditElement = document.getElementById('modalEdit');
-        const modalDeleteElement = document.getElementById('modalDelete');
 
-        if (modalAddElement) {
-            const modalAddInstance = Modal.getInstance(modalAddElement);
-            if (modalAddInstance) {
-                modalAddInstance.hide();
+    const handleCancel = () => {
+        const modalIds = ['modalAdd', 'modalEdit', 'modalDelete']
+
+        modalIds.forEach(modalId => {
+            const modalElement = document.getElementById(modalId)
+            if (modalElement) {
+                const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+                if (modalInstance) {
+                    modalInstance.hide()
+                }
             }
-        }
-        if (modalEditElement) {
-            const modalEditInstance = Modal.getInstance(modalEditElement);
-            if (modalEditInstance) {
-                modalEditInstance.hide();
-            }
-        }
-        if (modalDeleteElement) {
-            const modalDeleteInstance = Modal.getInstance(modalDeleteElement);
-            if (modalDeleteInstance) {
-                modalDeleteInstance.hide();
-            }
-        }
+        })
 
         setStateUser({
             name: '',
@@ -232,18 +219,26 @@ function AdminUser() {
             email: '',
             password: '',
             confirmPassword: ''
-        })
-    }
+        });
+    };
+
     useEffect(() => {
-        const modalElement = document.getElementById('modalAdd')
-        const handleModalHidden = () => {
-            handleCancel()
+        const modalDeleteElement = document.getElementById('modalDelete');
+
+        if (modalDeleteElement) {
+            const modalInstance = new Modal(modalDeleteElement);
+            const handleModalHidden = () => {
+                handleCancel();
+            };
+
+            modalDeleteElement.addEventListener('hidden.bs.modal', handleModalHidden);
+
+            return () => {
+                modalDeleteElement.removeEventListener('hidden.bs.modal', handleModalHidden);
+            };
         }
-        modalElement.addEventListener('hidden.bs.modal', handleModalHidden)
-        return () => {
-            modalElement.removeEventListener('hidden.bs.modal', handleModalHidden)
-        }
-    }, [])
+    }, [handleCancel]);
+
 
     const signUpUser = () => {
         mutation.mutate(stateUser, {
@@ -300,6 +295,25 @@ function AdminUser() {
         return false
     }
 
+    const handleModalOpen = (modalType) => {
+        const modalElement = document.getElementById(modalType)
+        if (modalType === 'modalAdd' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+        if (modalType === 'modalEdit' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+        if (modalType === 'modalDelete' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+    }
+
     const isUserFormValid = stateUser.name !== '' && stateUser.phone !== '' && stateUser.email !== '' && stateUser.password !== '' && stateUser.confirmPassword !== ''
     const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.avatar !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.email !== '' && stateDetailsUser.isAdmin !== ''
 
@@ -313,7 +327,7 @@ function AdminUser() {
 
             <div className='admin-system-content-right bg'>
                 <div className="admin-user-add-user">
-                    <button type="button" className="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAdd">
+                    <button type="button" onClick={() => handleModalOpen('modalAdd')} className="btn btn-outline-success">
                         Add user
                     </button>
 

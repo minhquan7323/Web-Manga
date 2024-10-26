@@ -7,7 +7,7 @@ import * as ProductService from '../../services/ProductService.js'
 import * as message from "../Message/Message.js"
 import { useMutationHooks } from '../../hooks/useMutationHook.js'
 import Loading from '../Loading/Loading.js'
-import { Modal } from "bootstrap/dist/js/bootstrap.bundle.min.js"
+import { Modal as BootstrapModal } from 'bootstrap'
 import { useQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
 
@@ -47,6 +47,7 @@ function AdminProduct() {
         async (data) => {
             const { id, access_token, ...rests } = data
             const res = await ProductService.updateProduct(id, rests, access_token)
+
             return res
         }
     )
@@ -77,9 +78,9 @@ function AdminProduct() {
         const res = await ProductService.getAllProduct()
         return res
     }
+
     const fetchGetDetailsProduct = async (rowSelected) => {
         setIsLoadingDetails(true)
-
         const res = await ProductService.getDetailsProduct(rowSelected)
         if (res?.data) {
             setStateDetailsProduct({
@@ -145,20 +146,17 @@ function AdminProduct() {
             width: 50,
             render: (_, record) => (
                 <div className="admin-table-action">
-                    <span
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalDelete">
+                    <span onClick={() => handleModalOpen('modalDelete')}>
                         <i className="fas fa-trash"></i>
                     </span>
-                    <span
-                        onClick={() => {
-                            setRowSelected(record._id)
-                        }}
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalEdit">
+                    <span onClick={() => {
+                        handleModalOpen('modalEdit')
+                        setRowSelected(record._id)
+                    }}>
                         <i className="fas fa-edit"></i>
                     </span>
                 </div>
+
             )
         }
     ]
@@ -214,28 +212,17 @@ function AdminProduct() {
     }
 
     const handleCancel = () => {
-        const modalAddElement = document.getElementById('modalAdd')
-        const modalEditElement = document.getElementById('modalEdit')
-        const modalDeleteElement = document.getElementById('modalDelete')
+        const modalIds = ['modalAdd', 'modalEdit', 'modalDelete']
 
-        if (modalAddElement) {
-            const modalAddInstance = Modal.getInstance(modalAddElement)
-            if (modalAddInstance) {
-                modalAddInstance.hide()
+        modalIds.forEach(modalId => {
+            const modalElement = document.getElementById(modalId)
+            if (modalElement) {
+                const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+                if (modalInstance) {
+                    modalInstance.hide()
+                }
             }
-        }
-        if (modalEditElement) {
-            const modalEditInstance = Modal.getInstance(modalEditElement)
-            if (modalEditInstance) {
-                modalEditInstance.hide()
-            }
-        }
-        if (modalDeleteElement) {
-            const modalDeleteInstance = Modal.getInstance(modalDeleteElement)
-            if (modalDeleteInstance) {
-                modalDeleteInstance.hide()
-            }
-        }
+        })
 
         setStateProduct({
             name: '',
@@ -246,6 +233,7 @@ function AdminProduct() {
             description: ''
         })
     }
+
     useEffect(() => {
         const modalElement = document.getElementById('modalAdd')
         const handleModalHidden = () => {
@@ -256,6 +244,25 @@ function AdminProduct() {
             modalElement.removeEventListener('hidden.bs.modal', handleModalHidden)
         }
     }, [])
+
+    const handleModalOpen = (modalType) => {
+        const modalElement = document.getElementById(modalType)
+        if (modalType === 'modalAdd' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+        if (modalType === 'modalEdit' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+        if (modalType === 'modalDelete' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+    }
 
     const createProduct = () => {
         mutation.mutate(stateProduct, {
@@ -287,26 +294,26 @@ function AdminProduct() {
     }
 
     const handleOnChangeImage = async (info) => {
-        const file = info.fileList[0]?.originFileObj;
+        const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await resizeImage(file, 1920, 1080, 0.7);
+            const preview = await resizeImage(file, 1920, 1080, 0.7)
             setStateProduct({
                 ...stateProduct,
                 image: preview
-            });
+            })
         }
-    };
+    }
 
     const handleOnChangeImageDetails = async (info) => {
-        const file = info.fileList[0]?.originFileObj;
+        const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await resizeImage(file, 1920, 1080, 0.7);
+            const preview = await resizeImage(file, 1920, 1080, 0.7)
             setStateDetailsProduct({
                 ...stateDetailsProduct,
                 image: preview
-            });
+            })
         }
-    };
+    }
 
     const beforeUpload = (file) => {
         return false
@@ -315,20 +322,14 @@ function AdminProduct() {
     const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type !== '' && stateProduct.price !== '' && stateProduct.stock !== ''
     const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type !== '' && stateDetailsProduct.price !== '' && stateDetailsProduct.stock !== ''
 
-    const handleCheckboxChange = (e) => {
-        const { value, checked } = e.target
-        if (checked) {
-            setStateProduct((prevState) => ({
-                ...prevState,
-                type: [...prevState.type, value]
-            }))
-        } else {
-            setStateProduct((prevState) => ({
-                ...prevState,
-                type: prevState.type.filter((item) => item !== value)
-            }))
-        }
+    const handleCheckboxChange = (type) => {
+        setStateDetailsProduct((prev) => {
+            const isChecked = prev.type.includes(type)
+            const newTypes = isChecked ? prev.type.filter(t => t !== type) : [...prev.type, type]
+            return { ...prev, type: newTypes }
+        })
     }
+
     const handleCheckboxChangeDetails = (e) => {
         const { value, checked } = e.target
         if (checked) {
@@ -354,7 +355,7 @@ function AdminProduct() {
 
             <div className='admin-system-content-right bg'>
                 <div className="admin-product-add-product">
-                    <button type="button" className="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAdd">
+                    <button type="button" onClick={() => handleModalOpen('modalAdd')} className="btn btn-outline-success">
                         Add product
                     </button>
 
@@ -466,8 +467,8 @@ function AdminProduct() {
                                                                 name="type"
                                                                 value={type}
                                                                 className="form-check-input"
-                                                                checked={stateProduct?.type.includes(type)}
-                                                                onChange={handleCheckboxChange}
+                                                                checked={stateDetailsProduct?.type?.includes(type)}
+                                                                onChange={() => handleCheckboxChange(type)}
                                                             />
                                                             <label className="form-check-label" htmlFor={`type-${type}`}>
                                                                 {type}
@@ -475,6 +476,7 @@ function AdminProduct() {
                                                         </div>
                                                     </div>
                                                 ))}
+
                                                 <div className="form-floating mb-3 col-12">
                                                     <textarea type="description" className="form-control" id="description" placeholder="description" value={stateDetailsProduct.description} name="description" onChange={handleOnchangeDetails} />
                                                     <label htmlFor="description">Description</label>

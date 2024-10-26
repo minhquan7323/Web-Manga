@@ -12,6 +12,7 @@ import Admin from '../pages/AdminPage';
 import NotFound from '../pages/NotFoundPage';
 import { useSelector } from 'react-redux';
 import Payment from '../pages/PaymentPage';
+import OrderSuccess from '../pages/OrderSuccessPage';
 
 const AppRoutes = () => {
     const user = useSelector((state) => state.user)
@@ -28,6 +29,7 @@ const AppRoutes = () => {
                 <Route path="signin" element={<SignIn />} />
                 <Route path="signup" element={<SignUp />} />
                 <Route path="payment" element={<Payment />} />
+                <Route path="ordersuccess" element={<OrderSuccess />} />
                 <Route path="profileuser" element={<Profile />} />
                 <Route path="system/admin" element={user && isCheckAdmin ? <Admin /> : <NotFound />} />
             </Route>

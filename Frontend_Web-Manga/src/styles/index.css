@@ -476,3 +476,7 @@ footer {
   white-space: normal;
   text-overflow: ellipsis;
 }
+
+.cart-item-payment {
+  padding: 16px;
+}

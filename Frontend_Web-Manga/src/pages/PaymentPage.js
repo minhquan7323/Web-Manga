@@ -1,22 +1,21 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeAllOrderProduct, selectedOrder } from '../redux/orderSlide'
 import { convertPrice } from '../utils'
 import { useNavigate } from 'react-router-dom'
 import { Modal as BootstrapModal } from 'bootstrap'
 import { useMutationHooks } from '../hooks/useMutationHook'
 import * as OrderService from '../services/OrderService'
-import * as UserService from '../services/UserService'
 import Loading from '../components/Loading/Loading'
 import * as message from "../components/Message/Message"
 import { updateUser } from '../redux/userSlide'
+import { removeAllOrderProduct } from '../redux/orderSlide'
 
 const PaymentPage = () => {
     const order = useSelector((state) => state.order)
     const user = useSelector((state) => state.user)
 
-    // const [delivery, setDelivery] = useState('fast')
-    // const [payment, setPayment] = useState('later_money')
+    const [delivery, setDelivery] = useState('fast')
+    const [payment, setPayment] = useState('later_money')
 
     const dispatch = useDispatch()
 
@@ -66,7 +65,7 @@ const PaymentPage = () => {
                 fullName: user?.name,
                 address: user?.address,
                 phone: user?.phone,
-                paymentMethod: ' method',
+                paymentMethod: payment,
                 itemsPrice: priceMemo,
                 shippingPrice: deliveryPriceMemo,
                 totalPrice: totalAmountMemo,
@@ -109,8 +108,21 @@ const PaymentPage = () => {
             const { id, access_token, ...rests } = data
             const res = await OrderService.createOrder(rests, access_token)
             if (res?.status == 'OK') {
+                const arrayOrdered = []
+                order?.orderItemsSelected?.forEach(element => {
+                    arrayOrdered.push(element.product)
+                });
+                dispatch(removeAllOrderProduct({ listChecked: arrayOrdered }))
                 handleCancel()
                 message.success()
+                navigate('/ordersuccess', {
+                    state: {
+                        delivery,
+                        payment,
+                        order: order?.orderItemsSelected,
+                        totalAmountMemo: totalAmountMemo
+                    }
+                })
             }
             return res
         }
@@ -125,9 +137,13 @@ const PaymentPage = () => {
         })
     }
 
-    // const handleDelivery = (e) => {
-    //     setDelivery(e.target.value)
-    // }
+    const handleDelivery = (e) => {
+        setDelivery(e.target.value)
+
+    }
+    const handlePayment = (e) => {
+        setPayment(e.target.value)
+    }
 
     const handleUpdateUser = () => {
         const { name, address, phone, avatar, email } = stateDetailsUser
@@ -171,67 +187,109 @@ const PaymentPage = () => {
                 </div>
                 <div className='container cart-container' style={{ maxWidth: '100%', margin: '0 auto' }}>
                     <div className='row'>
-                        <div className='col-8 cart-item-block'>
-
+                        <div className='col-8 cart-item-header-block'>
+                            <div className='cart-item-block p-0'>
+                                <div className='cart-item-inner bg'>
+                                    <div className='cart-item-payment'>
+                                        <div>
+                                            <div>
+                                                <h4>Delivery method</h4>
+                                            </div>
+                                            <div className="form-check">
+                                                <input className="form-check-input" onChange={handleDelivery} value="fast" type="radio" name="flexRadioDefaultDelivery" id="flexRadioDefault1" checked={delivery === 'fast'} />
+                                                <label className="form-check-label" htmlFor="flexRadioDefault1">
+                                                    fast
+                                                </label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input className="form-check-input" onChange={handleDelivery} value="standard" type="radio" name="flexRadioDefaultDelivery" id="flexRadioDefault2" checked={delivery === 'standard'} />
+                                                <label className="form-check-label" htmlFor="flexRadioDefault2">
+                                                    standard
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div>
+                                            <div>
+                                                <h4>Payment method</h4>
+                                            </div>
+                                            <div className="form-check">
+                                                <input className="form-check-input" onChange={handlePayment} value="later_money" type="radio" name="flexRadioDefaultPayment" id="flexRadioDefault3" checked={payment === 'later_money'} />
+                                                <label className="form-check-label" htmlFor="flexRadioDefault3">
+                                                    pay later
+                                                </label>
+                                            </div>
+                                            <div className="form-check">
+                                                <input className="form-check-input" onChange={handlePayment} value="now_money" type="radio" name="flexRadioDefaultPayment" id="flexRadioDefault4" checked={payment === 'now_money'} />
+                                                <label className="form-check-label" htmlFor="flexRadioDefault4">
+                                                    pay now
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div className='col-4'>
-                            <div className=' cart-total-block'>
-                                <div className='cart-total-inner bg'>
-                                    <div className='cart-total'>
-                                        <div>
-                                            <p>Address</p>
-                                        </div>
-                                        <div className='cart-total-number'>
-                                            <p><b>{user?.address}</b></p>
-                                        </div>
-                                        {/* <div>
+                            <Loading isLoading={isLoadingAddOrder}>
+                                <div className=' cart-total-block p-0'>
+                                    <div className='cart-total-inner bg'>
+                                        <div className='cart-total'>
+                                            <div>
+                                                <p>Address</p>
+                                            </div>
+                                            <div className='cart-total-number'>
+                                                <p><b>{user?.address}</b></p>
+                                            </div>
+                                            {/* <div>
                                             <p onClick={handleChangeAddress}><b>Change</b></p>
                                         </div> */}
-                                    </div>
-                                    <hr />
-                                    <div className='cart-total'>
-                                        <div>
-                                            <p>Estimated amount</p>
                                         </div>
-                                        <div className='cart-total-number'>
-                                            <p><b>{convertPrice(priceMemo)} VND</b></p>
+                                        <hr />
+                                        <div className='cart-total'>
+                                            <div>
+                                                <p>Estimated amount</p>
+                                            </div>
+                                            <div className='cart-total-number'>
+                                                <p><b>{convertPrice(priceMemo)} VND</b></p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className='cart-total'>
-                                        <div>
-                                            <p>Discount</p>
+                                        <div className='cart-total'>
+                                            <div>
+                                                <p>Discount</p>
+                                            </div>
+                                            <div className='cart-total-number'>
+                                                <p><b>0 %</b></p>
+                                            </div>
                                         </div>
-                                        <div className='cart-total-number'>
-                                            <p><b>0 VND</b></p>
+                                        <div className='cart-total'>
+                                            <div>
+                                                <p>Shipping fee</p>
+                                            </div>
+                                            <div className='cart-total-number'>
+                                                <p><b>{convertPrice(deliveryPriceMemo)} VND</b></p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className='cart-total'>
-                                        <div>
-                                            <p>Shipping fee</p>
+                                        <div className='cart-total'>
+                                            <div>
+                                                <h5><b>Total amount</b></h5>
+                                            </div>
+                                            <div className='cart-total-number'>
+                                                <h5><b>{convertPrice(totalAmountMemo)} VND</b></h5>
+                                            </div>
                                         </div>
-                                        <div className='cart-total-number'>
-                                            <p><b>{convertPrice(deliveryPriceMemo)} VND</b></p>
-                                        </div>
-                                    </div>
-                                    <div className='cart-total'>
-                                        <div>
-                                            <h5><b>Total amount</b></h5>
-                                        </div>
-                                        <div className='cart-total-number'>
-                                            <h5><b>{convertPrice(totalAmountMemo)} VND</b></h5>
-                                        </div>
-                                    </div>
 
-                                    <button
-                                        type="button"
-                                        onClick={() => handleAddOrder()}
-                                        className="btn btn-danger cart-payment-btn btn-lg">
-                                        Pay now
-                                    </button>
-                                    {/* <button type="button" style={{ cursor: 'not-allowed' }} className="btn btn-secondary cart-payment-btn btn-lg">Proceed to Payment</button> */}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleAddOrder()}
+                                            className="btn btn-danger cart-payment-btn btn-lg">
+                                            Pay now
+                                        </button>
+                                        {/* <button type="button" style={{ cursor: 'not-allowed' }} className="btn btn-secondary cart-payment-btn btn-lg">Proceed to Payment</button> */}
+                                    </div>
                                 </div>
-                            </div>
+                            </Loading>
                         </div>
                     </div>
 
