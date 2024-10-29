@@ -54,11 +54,9 @@ export const deleteUser = async (id, access_token) => {
 }
 
 export const refreshToken = async () => {
-    const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/user/refreshtoken`, {}, {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/refreshtoken`, {}, {
         withCredentials: true
-    }
-    )
+    })
     return res.data
 }
 

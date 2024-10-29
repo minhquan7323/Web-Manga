@@ -40,21 +40,28 @@ const Header = () => {
         message.success()
         navigate('/')
         dispatch(resetUser())
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('user_id')
+        // localStorage.removeItem('access_token')
+        // localStorage.removeItem('user_id')
         setIsLoading(false)
         setShowPopover(false)
         setNavbarExpanded(false)
     }
 
-    const handleProfileUser = () => {
-        navigate('/profileuser')
-        setShowPopover(false)
-        setNavbarExpanded(false)
-    }
-
-    const handleSystemManagement = () => {
-        navigate('/system/admin')
+    const handleClickNav = (type) => {
+        if (type === 'myorder') {
+            navigate(`/myorder`, {
+                state: {
+                    id: user?.id,
+                    access_token: user?.access_token
+                }
+            })
+        } else if (type === 'admin') {
+            navigate('/system/admin')
+        } else if (type === 'profileuser') {
+            navigate('/profileuser')
+        } else {
+            handleSignOut()
+        }
         setShowPopover(false)
         setNavbarExpanded(false)
     }
@@ -68,7 +75,8 @@ const Header = () => {
     return (
         <Navbar expand="lg" className="bg-body-tertiary fixed-top" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }} expanded={navbarExpanded}>
             <Container fluid>
-                <Navbar.Brand>Logo</Navbar.Brand>
+
+                <Navbar.Brand><NavLink to="/" className='nav-link'>Logo</NavLink></Navbar.Brand>
                 <Navbar.Toggle onClick={() => setNavbarExpanded(!navbarExpanded)} />
                 <Navbar.Collapse id="navbarScroll">
                     {!adminPath ? (
@@ -125,15 +133,18 @@ const Header = () => {
                                             {/* <Popover.Header as="h3">{`Popover ${'bottom'}`}</Popover.Header> */}
                                             <Popover.Body>
                                                 <div className='header-account'>
-                                                    <div onClick={handleProfileUser}>
+                                                    <div onClick={() => handleClickNav('profileuser')}>
                                                         User information
                                                     </div>
+                                                    <div onClick={() => handleClickNav('myorder')}>
+                                                        My order
+                                                    </div>
                                                     {user?.isAdmin ? (
-                                                        <div onClick={handleSystemManagement}>
+                                                        <div onClick={() => handleClickNav('admin')}>
                                                             System management
                                                         </div>
                                                     ) : (<></>)}
-                                                    <div onClick={handleSignOut}>
+                                                    <div onClick={() => handleClickNav()}>
                                                         Sign out
                                                     </div>
                                                 </div>

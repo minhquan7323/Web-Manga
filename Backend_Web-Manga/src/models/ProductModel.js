@@ -11,7 +11,8 @@ const productSchema = new moongoose.Schema(
         supplier: { type: String },
         publisher: { type: String },
         author: { type: String },
-        cover: { type: String }
+        cover: { type: String },
+        selled: { type: Number }
     },
     {
         timestamps: true

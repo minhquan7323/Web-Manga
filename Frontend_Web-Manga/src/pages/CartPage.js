@@ -26,9 +26,15 @@ const CartPage = () => {
     const decreaseQuantity = (idProduct) => {
         dispatch(decreaseAmount({ idProduct }))
     }
-    const increaseQuantity = (idProduct) => {
-        dispatch(increaseAmount({ idProduct }))
+    const increaseQuantity = (idProduct, limited) => {
+        if (!limited)
+            dispatch(increaseAmount({ idProduct }))
     }
+    const handleChange = (e) => {
+        // const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1))
+        // setQuantity(value)
+    }
+
     const handleOnChangeCheck = (e) => {
         if (listChecked.includes(e.target.value)) {
             const newListChecked = listChecked.filter((item) => item !== e.target.value)
@@ -59,10 +65,6 @@ const CartPage = () => {
         dispatch(selectedOrder({ listChecked }))
     }, [listChecked])
 
-    const handleChange = (e) => {
-        // const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1))
-        // setQuantity(value)
-    }
     const handleDeleteOrder = (idProduct) => {
         dispatch(removeOrderProduct({ idProduct }))
 
@@ -82,7 +84,8 @@ const CartPage = () => {
     }, [order])
     const priceDiscountMemo = useMemo(() => {
         const result = order?.orderItemsSelected?.reduce((total, cur) => {
-            return total + ((cur.discount * cur.amount))
+            const totalDiscount = cur.discount ? cur.discount : 0
+            return total + (priceMemo * (totalDiscount * cur.amount) / 100)
         }, 0)
         if (Number(result)) {
             return result
@@ -160,7 +163,7 @@ const CartPage = () => {
     const handleUpdateUser = () => {
         const { name, address, phone } = stateDetailsUser
         if (name && address && phone) {
-            // mutationUpdate.reset();
+            // mutationUpdate.reset()
             mutationUpdate.mutate({ id: user?.id, ...stateDetailsUser, access_token: user?.access_token })
             dispatch(updateUser({ name, address, phone }))
         }
@@ -189,20 +192,8 @@ const CartPage = () => {
 
     const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.address !== ''
 
-    const itemsDelivery = [
-        {
-            title: 'Finished',
-            description: '1'
-        },
-        {
-            title: 'In progress',
-            description: '22'
-        },
-        {
-            title: 'Waiting',
-            description: '333'
-        }
-    ]
+
+
 
     return (
         <>
@@ -217,10 +208,10 @@ const CartPage = () => {
                         <div className='col-8 cart-item-block'>
                             <div className='col-12 cart-item-header-block p-0' >
                                 <div className='cart-item-header-inner bg'>
-                                    <div className='row cart-item-header'>
-                                        <Step current={0} items={itemsDelivery} />
+                                    {/* <div className='row cart-item-header'>
+                                        <Step current={0} />
                                     </div>
-                                    <hr style={{ width: '95%', margin: '0 auto' }} />
+                                    <hr style={{ width: '95%', margin: '0 auto' }} /> */}
                                     <div className='row cart-item-header'>
                                         <div className='col-1 cart-item-header-check item-center'>
                                             <input onChange={handleOnChangeCheckAll} checked={listChecked?.length === order?.orderItems?.length} className="form-check-input m-0" type="checkbox" value="" aria-label="..." />
@@ -273,8 +264,8 @@ const CartPage = () => {
                                                             <button type="button" className="btn btn-outline-secondary" onClick={() => decreaseQuantity(orderItem.product)}>
                                                                 <i className="fas fa-minus"></i>
                                                             </button>
-                                                            <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={orderItem.amount} onChange={handleChange} style={{ maxWidth: '35px', minWidth: '35px', color: 'black' }} />
-                                                            <button type="button" className="btn btn-outline-secondary" onClick={() => increaseQuantity(orderItem.product)}>
+                                                            <input type="number" className="form-control text-center btn btn-outline-secondary disabled" onChange={handleChange} value={orderItem.amount} min="1" max={orderItem.stock} style={{ maxWidth: '35px', minWidth: '35px', color: 'black' }} />
+                                                            <button type="button" className="btn btn-outline-secondary" onClick={() => increaseQuantity(orderItem.product, orderItem.amount === orderItem.stock)}>
                                                                 <i className="fas fa-plus"></i>
                                                             </button>
                                                         </div>

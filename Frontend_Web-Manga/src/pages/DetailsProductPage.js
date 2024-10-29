@@ -8,26 +8,29 @@ import { addOrderProduct } from '../redux/orderSlide'
 import { convertPrice } from '../utils'
 import * as message from "../components/Message/Message"
 
-const DetailProductPage = () => {
+const DetailsProductPage = () => {
     const { id: productId } = useParams()
     const user = useSelector((state) => state?.user)
     const navigate = useNavigate()
     const location = useLocation()
     const dispatch = useDispatch()
     const [quantity, setQuantity] = useState(1)
+
     const decreaseQuantity = () => {
         if (quantity > 1) {
             setQuantity(quantity - 1)
         }
     }
+
     const increaseQuantity = () => {
         if (quantity < productDetails?.stock) {
             setQuantity(quantity + 1)
         }
     }
+
     const handleChange = (e) => {
-        const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1))
-        setQuantity(value)
+        // const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1))
+        // setQuantity(value)
     }
 
     const fetchGetDetailsProduct = async (productId) => {
@@ -53,7 +56,8 @@ const DetailProductPage = () => {
                     amount: quantity,
                     image: productDetails?.image,
                     price: productDetails?.price,
-                    product: productDetails?._id
+                    product: productDetails?._id,
+                    stock: productDetails?.stock,
                 }
             }))
             message.success()
@@ -87,6 +91,9 @@ const DetailProductPage = () => {
                                 <div className="col-6">
                                     Publisher: <span>{productDetails?.publisher || 'N/A'}</span>
                                 </div>
+                                <div className="col-6">
+                                    Stock: <span>{productDetails?.stock || 'N/A'}</span>
+                                </div>
                             </div>
                             <h1 className="fs-1 detail-product-price">
                                 {productDetails?.price ? `${convertPrice(productDetails.price)} VND` : 'N/A'}
@@ -101,7 +108,7 @@ const DetailProductPage = () => {
                                         <button type="button" className="btn btn-outline-secondary" onClick={decreaseQuantity}>
                                             <i className="fas fa-minus"></i>
                                         </button>
-                                        <input type="number" className="form-control text-center btn btn-outline-secondary disabled" value={quantity} onChange={handleChange} min="1" max="10" style={{ maxWidth: '55px', color: 'black' }} />
+                                        <input type="number" className="form-control text-center" value={quantity} onChange={handleChange} min="1" max={productDetails.stock} style={{ maxWidth: '55px', color: 'black' }} />
                                         <button type="button" className="btn btn-outline-secondary" onClick={increaseQuantity}>
                                             <i className="fas fa-plus"></i>
                                         </button>
@@ -131,7 +138,6 @@ const DetailProductPage = () => {
                         </div>
                         <div className="detail-product-content-right bg">
                             <h3>Description</h3>
-                            {/* <h6>{productDetails?.description || 'No description available.'}</h6> */}
                             <p>{productDetails?.description || ''}</p>
                         </div>
                     </div>
@@ -141,4 +147,4 @@ const DetailProductPage = () => {
     )
 }
 
-export default DetailProductPage
+export default DetailsProductPage

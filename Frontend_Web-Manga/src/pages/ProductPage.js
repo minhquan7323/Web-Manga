@@ -17,9 +17,10 @@ const ProductPage = () => {
     const [selectedTypes, setSelectedTypes] = useState([])
     const [pagination, setPagination] = useState({
         page: 1,
-        limit: 4,
+        limit: 12,
         total: 0
     })
+    const [visibleTypes, setVisibleTypes] = useState(6)
 
     const fetchAllProduct = async (context) => {
         const limit = context.queryKey[1]
@@ -89,6 +90,14 @@ const ProductPage = () => {
         setPagination({ ...pagination, page })
     }
 
+    const handleShowMoreTypes = () => {
+        setVisibleTypes(typeProducts.length)
+    }
+
+    const handleShowLessTypes = () => {
+        setVisibleTypes(6)
+    }
+
     return (
         <>
             <nav style={{ '--bs-breadcrumb-divider': '>' }} aria-label="breadcrumb">
@@ -102,30 +111,52 @@ const ProductPage = () => {
                 </ol>
             </nav>
 
-
-
             <Container style={{ maxWidth: '100%', margin: '0 auto' }}>
                 <Row className='block-content'>
                     <Col xs={12} sm={12} md={12} lg={3} className='sidebar-box'>
                         <div className='bg'>
                             <div className='sidebar'>
-                                <h1>Genres</h1>
-                                {typeProducts?.map((item) => (
-                                    <div key={item} style={{ padding: '8px', borderBottom: '1px solid #ccc' }}>
-                                        <input
-                                            type="checkbox"
-                                            id={`checkbox-${item}`}
-                                            checked={selectedTypes.includes(item)}
-                                            onChange={() => handleTypeChange(item)}
-                                        />
-                                        <label htmlFor={`checkbox-${item}`} style={{ marginLeft: '8px' }}>
-                                            {item}
-                                        </label>
-                                    </div>
-                                ))}
-                                {/* <div>
-                                <button className='btn btn-danger'>Filter</button>
-                            </div> */}
+                                <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Genres</p>
+                                <Container style={{ maxWidth: '100%', margin: '0 auto' }}>
+                                    <Row>
+                                        {typeProducts?.slice(0, visibleTypes).map((item) => (
+                                            <Col xs={6} sm={4} md={3} lg={6} key={item} style={{ padding: '0px' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`checkbox-${item}`}
+                                                    checked={selectedTypes.includes(item)}
+                                                    onChange={() => handleTypeChange(item)}
+                                                />
+                                                <label htmlFor={`checkbox-${item}`} style={{ fontSize: '14px', marginLeft: '5px' }}>
+                                                    {item}
+                                                </label>
+                                            </Col>
+                                        ))}
+                                    </Row>
+                                </Container>
+                                <div className='item-center'>
+                                    {visibleTypes < typeProducts.length ? (
+                                        <button onClick={handleShowMoreTypes} className='btn btn-outline-warning mt-2'>
+                                            See More
+                                        </button>
+                                    ) : (
+                                        <button onClick={handleShowLessTypes} className='btn btn-warning mt-2'>
+                                            See Less
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                            <hr style={{ width: '90%', margin: '0 auto' }} />
+                            <div className='sidebar'>
+                                <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Price</p>
+                            </div>
+                            <hr style={{ width: '90%', margin: '0 auto' }} />
+                            <div className='sidebar'>
+                                <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Suppliers</p>
+                            </div>
+                            <hr style={{ width: '90%', margin: '0 auto' }} />
+                            <div className='sidebar'>
+                                <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Form</p>
                             </div>
                         </div>
                     </Col>

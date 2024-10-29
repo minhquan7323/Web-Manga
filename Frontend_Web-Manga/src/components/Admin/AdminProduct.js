@@ -126,6 +126,7 @@ function AdminProduct() {
         {
             title: 'Type',
             dataIndex: 'type',
+            width: 250,
             render: (types) => types.join(', ')
         },
         {

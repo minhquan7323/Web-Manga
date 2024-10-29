@@ -9,6 +9,7 @@ const orderSchema = new moongoose.Schema(
                 amount: { type: Number, require: true },
                 image: { type: String, require: true },
                 price: { type: Number, require: true },
+                discount: { type: Number },
                 product: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'Product',
