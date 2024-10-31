@@ -20,7 +20,7 @@ const ProductPage = () => {
         limit: 12,
         total: 0
     })
-    const [visibleTypes, setVisibleTypes] = useState(6)
+    const [visibleTypes, setVisibleTypes] = useState(8)
 
     const fetchAllProduct = async (context) => {
         const limit = context.queryKey[1]
@@ -95,7 +95,7 @@ const ProductPage = () => {
     }
 
     const handleShowLessTypes = () => {
-        setVisibleTypes(6)
+        setVisibleTypes(8)
     }
 
     return (

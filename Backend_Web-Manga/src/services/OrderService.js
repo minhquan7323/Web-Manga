@@ -3,7 +3,7 @@ const Product = require('../models/ProductModel')
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems, fullName, address, phone, paymentMethod, itemsPrice, shippingPrice, totalPrice, user } = newOrder
+        const { orderItems, fullName, address, phone, paymentMethod, itemsPrice, shippingPrice, totalPrice, user, isPaid, paidAt } = newOrder
         try {
             const promises = orderItems.map(async (order) => {
                 const productData = await Product.findByIdAndUpdate(
@@ -24,41 +24,53 @@ const createOrder = (newOrder) => {
                     }
                 )
                 if (productData) {
-                    const createOrder = await Order.create({
-                        orderItems,
-                        shippingAddress: {
-                            fullName,
-                            address,
-                            phone
-                        },
-                        paymentMethod,
-                        itemsPrice,
-                        shippingPrice,
-                        totalPrice,
-                        user: user
-                    })
-
-                    if (createOrder) {
-                        return {
-                            status: 'OK',
-                            message: 'SUCCESS'
-                        }
-                    } else {
-                        return {
-                            status: 'OK',
-                            message: 'ERR',
-                            id: order.product
-                        }
+                    return {
+                        status: 'OK',
+                        message: 'SUCCESS'
+                    }
+                }
+                else {
+                    return {
+                        status: 'OK',
+                        message: 'ERR',
+                        id: order.product
                     }
                 }
             })
             const results = await Promise.all(promises)
             const newData = results && results.filter((item) => item.id)
             if (newData.length) {
+                const arrId = []
+                newData.forEach((item) => {
+                    arrId.push(item.id)
+                })
                 resolve({
                     status: 'ERR',
                     message: `Product id:${newData.join(',')} out of stock`
                 })
+            } else {
+                const createOrder = await Order.create({
+                    orderItems,
+                    shippingAddress: {
+                        fullName,
+                        address,
+                        phone
+                    },
+                    paymentMethod,
+                    itemsPrice,
+                    shippingPrice,
+                    totalPrice,
+                    user: user,
+                    isPaid: isPaid,
+                    paidAt: paidAt
+                })
+
+                if (createOrder) {
+                    resolve({
+                        status: 'OK',
+                        message: 'SUCCESS'
+                    })
+                }
             }
             resolve({
                 status: 'OK',

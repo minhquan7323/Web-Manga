@@ -8,6 +8,8 @@ import { updateUser } from '../redux/userSlide.js'
 import { resizeImage } from '../utils.js'
 import { Button, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Col, Row } from 'react-bootstrap'
 
 const ProfilePage = () => {
     const user = useSelector((state) => state?.user)
@@ -18,6 +20,8 @@ const ProfilePage = () => {
     const [address, setAddress] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const navigate = useNavigate()
+    const location = useLocation()
 
     const mutation = useMutationHooks(
         async (data) => {
@@ -95,14 +99,49 @@ const ProfilePage = () => {
         const res = await UserService.getDetailsUser(id, access_token)
         dispatch(updateUser({ ...res?.data, access_token: access_token }))
     }
+
+
+    const pages = [
+        { key: 'profile', label: 'My account', iconClass: 'fas fa-user', path: '/profileuser' },
+        { key: 'myorder', label: 'My purchase', iconClass: 'fas fa-receipt', path: '/myorder' },
+    ]
     return (
         <>
             <div className="container profile-user" style={{ maxWidth: '100%', margin: '0 auto' }}>
                 <div className='row profile-user-box p-0'>
                     <div className="col-12 col-xs-12 col-sm-4 col-md-3 col-lg-3 profile-user-content-block">
                         <div className='profile-user-content-left bg'>
+                            <span>
+                                {user?.avatar ? (
+                                    <>
+                                        <Row>
+                                            <Col xs={3} sm={3} md={3} lg={3} className='my-order-user-img item-center'>
+                                                <img src={user?.avatar} alt="avatar" />
+                                            </Col>
+                                            <Col xs={9} sm={9} md={9} lg={9} className='my-order-user'>
+                                                <div>
+                                                    {user?.name}
+                                                </div>
+                                                <div className="my-order-edit-profile-btn">
+                                                    <i class="fas fa-pen"></i> Edit profile
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </>
+                                ) : (
+                                    <i className="fa-solid fa-user"></i>
+                                )}
+                            </span>
                             <div className='profile-user-content-left-block'>
-                                User information
+                                {pages.map((page) => (
+                                    <div
+                                        key={page.key}
+                                        onClick={() => navigate(page.path)}
+                                        className={location.pathname.includes(page.path) ? 'active' : ''}
+                                    >
+                                        <i className={page.iconClass}></i> {page.label}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>

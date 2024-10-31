@@ -58,7 +58,6 @@ const loginUser = async (req, res) => {
             httpOnly: true,
             secure: false,
             sameSite: 'strict'
-
         })
         return res.status(200).json(newResponse)
     } catch (e) {
@@ -169,7 +168,7 @@ const getDetailsUser = async (req, res) => {
     }
 }
 
-const refreshTokenJwtService = async (req, res) => {
+const refreshTokenJwtController = async (req, res) => {
     try {
         const token = req.cookies.refresh_token
         if (!token) {
@@ -195,6 +194,6 @@ module.exports = {
     deleteUser,
     getAllUser,
     getDetailsUser,
-    refreshTokenJwtService,
+    refreshTokenJwtController,
     deleteManyUsers
 }

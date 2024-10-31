@@ -58,7 +58,12 @@ const Header = () => {
         } else if (type === 'admin') {
             navigate('/system/admin')
         } else if (type === 'profileuser') {
-            navigate('/profileuser')
+            navigate('/profileuser', {
+                state: {
+                    id: user?.id,
+                    access_token: user?.access_token
+                }
+            })
         } else {
             handleSignOut()
         }

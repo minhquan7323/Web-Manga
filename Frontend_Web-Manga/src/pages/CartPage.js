@@ -247,7 +247,7 @@ const CartPage = () => {
                                                 <input className="form-check-input" checked={listChecked.includes(orderItem.product)} onChange={handleOnChangeCheck} type="checkbox" value={orderItem.product} aria-label="..." />
                                             </div>
                                             <div className='col-2 cart-product-img p-0'>
-                                                <img src={orderItem.image} alt='img' onClick={() => handleDetailsProduct(orderItem.product)} style={{ cursor: 'pointer' }} />
+                                                <img src={orderItem.image} alt='img' onClick={() => handleDetailsProduct(orderItem.product)} />
                                             </div>
                                             <div className='col-8 row cart-product-group-info p-0'>
                                                 <div className='col-6 cart-product-info p-0'>

@@ -22,7 +22,7 @@ export function getItem(label, key, icon, children, type) {
         icon,
         children,
         type
-    };
+    }
 }
 
 export const convertPrice = (price) => {
@@ -36,38 +36,38 @@ export const convertPrice = (price) => {
 
 export const resizeImage = (file, maxWidth = 1920, maxHeight = 1080, quality = 0.7) =>
     new Promise((resolve, reject) => {
-        const img = new Image();
-        const reader = new FileReader();
+        const img = new Image()
+        const reader = new FileReader()
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file)
         reader.onload = (e) => {
-            img.src = e.target.result;
-        };
+            img.src = e.target.result
+        }
 
         img.onload = () => {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
+            const canvas = document.createElement("canvas")
+            const ctx = canvas.getContext("2d")
 
-            let width = img.width;
-            let height = img.height;
+            let width = img.width
+            let height = img.height
 
             if (width > maxWidth || height > maxHeight) {
-                const widthRatio = maxWidth / width;
-                const heightRatio = maxHeight / height;
-                const ratio = Math.min(widthRatio, heightRatio);
-                width = Math.floor(width * ratio);
-                height = Math.floor(height * ratio);
+                const widthRatio = maxWidth / width
+                const heightRatio = maxHeight / height
+                const ratio = Math.min(widthRatio, heightRatio)
+                width = Math.floor(width * ratio)
+                height = Math.floor(height * ratio)
             }
 
-            canvas.width = width;
-            canvas.height = height;
+            canvas.width = width
+            canvas.height = height
 
-            ctx.drawImage(img, 0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height)
 
-            resolve(canvas.toDataURL("image/jpeg", quality));
-        };
+            resolve(canvas.toDataURL("image/jpeg", quality))
+        }
 
         img.onerror = (error) => {
-            reject(error);
-        };
-    });
+            reject(error)
+        }
+    })

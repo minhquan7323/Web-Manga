@@ -1,6 +1,8 @@
 import axios from "axios"
 
-export const axiosJWT = axios.create()
+import * as UserService from './UserService'
+
+export const axiosJWT = UserService.axiosJWT
 
 // export const getAllProduct = async (search, limit) => {
 //     let res = {}

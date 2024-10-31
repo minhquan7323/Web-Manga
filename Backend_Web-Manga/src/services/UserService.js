@@ -59,12 +59,12 @@ const loginUser = (userLogin) => {
                 })
             }
 
-            const access_token = genneralAccessToken({
+            const access_token = await genneralAccessToken({
                 id: checkUser.id,
                 isAdmin: checkUser.isAdmin
             })
 
-            const refresh_token = genneralRefreshToken({
+            const refresh_token = await genneralRefreshToken({
                 id: checkUser.id,
                 isAdmin: checkUser.isAdmin
             })

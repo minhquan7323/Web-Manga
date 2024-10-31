@@ -57,8 +57,7 @@ function AdminProduct() {
     const mutationDelete = useMutationHooks(
         async (data) => {
             const { id, access_token } = data
-            const res = await ProductService.deleteProduct(id, access_token)
-            return res
+            await ProductService.deleteProduct(id, access_token)
         }
     )
     const { data: dataDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted } = mutationDelete
@@ -430,7 +429,7 @@ function AdminProduct() {
                         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div className="modal-content">
                                 <div className="modal-header">
-                                    <h1 className="modal-title fs-5" id="modalEdit">Add product</h1>
+                                    <h1 className="modal-title fs-5" id="modalEdit">Update product</h1>
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCancel}></button>
                                 </div>
 
@@ -460,7 +459,7 @@ function AdminProduct() {
                                                 </div>
                                                 <b>Type</b>
                                                 {productTypes.map((type) => (
-                                                    <div className="form-floating mb-0 col-md-6" key={type}>
+                                                    <div className="form-floating mb-0 col-6" key={type}>
                                                         <div className="form-check">
                                                             <input
                                                                 type="checkbox"

@@ -1,48 +1,45 @@
-import React, { useState } from 'react';
-import { UserOutlined, ProductOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
-import { getItem } from "../utils";
-import AdminUser from '../components/Admin/AdminUser';
-import AdminProduct from '../components/Admin/AdminProduct';
+import React, { useState } from 'react'
+import { UserOutlined, ProductOutlined } from '@ant-design/icons'
+import { Menu } from 'antd'
+import { getItem } from "../utils"
+import AdminUser from '../components/Admin/AdminUser'
+import AdminProduct from '../components/Admin/AdminProduct'
 
 const AdminPage = () => {
     const items = [
         getItem('User', 'user', <UserOutlined />),
         getItem('Product', 'product', <ProductOutlined />)
-    ];
+    ]
 
     const renderPage = (key) => {
         switch (key) {
             case 'user':
-                return (
-                    <AdminUser />
-                )
+                return <AdminUser />
             case 'product':
-                return (
-                    <AdminProduct />
-                )
+                return <AdminProduct />
             default:
-                return (
-                    <><AdminProduct /></>
-                )
+                return <AdminProduct />
         }
     }
 
-    const rootSubmenuKeys = ['user', 'product'];
-    const [openKeys, setOpenKeys] = useState(['user']);
-    const [keySelected, setKeySelected] = useState('')
+    const rootSubmenuKeys = ['user', 'product']
+    const [keySelected, setKeySelected] = useState('product')
+    const [openKeys, setOpenKeys] = useState([keySelected])
 
     const onOpenChange = (keys) => {
-        const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
+        const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1)
         if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-            setOpenKeys(keys);
+            setOpenKeys(keys)
         } else {
-            setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+            setOpenKeys(latestOpenKey ? [latestOpenKey] : [])
         }
-    };
+    }
+
     const handleOnClick = ({ key }) => {
         setKeySelected(key)
+        setOpenKeys([key])
     }
+
     return (
         <>
             <div className="container admin-system" style={{ maxWidth: '100%', margin: '0 auto' }}>
@@ -56,6 +53,7 @@ const AdminPage = () => {
                                     onOpenChange={onOpenChange}
                                     items={items}
                                     onClick={handleOnClick}
+                                    selectedKeys={[keySelected]}
                                 />
                             </div>
                         </div>
@@ -66,7 +64,7 @@ const AdminPage = () => {
                 </div>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default AdminPage;
+export default AdminPage

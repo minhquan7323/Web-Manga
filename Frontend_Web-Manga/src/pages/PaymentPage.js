@@ -5,15 +5,18 @@ import { useNavigate } from 'react-router-dom'
 import { Modal as BootstrapModal } from 'bootstrap'
 import { useMutationHooks } from '../hooks/useMutationHook'
 import * as OrderService from '../services/OrderService'
+import * as PaymentService from '../services/PaymentService'
 import Loading from '../components/Loading/Loading'
 import * as message from "../components/Message/Message"
 import { updateUser } from '../redux/userSlide'
 import { removeAllOrderProduct } from '../redux/orderSlide'
+import { PayPalButton } from "react-paypal-button-v2";
 
 const PaymentPage = () => {
     const order = useSelector((state) => state.order)
     const user = useSelector((state) => state.user)
 
+    const [sdkReady, setSdkReady] = useState(false)
     const [delivery, setDelivery] = useState('fast')
     const [payment, setPayment] = useState('later_money')
 
@@ -174,8 +177,43 @@ const PaymentPage = () => {
         }
     }, [])
 
-
     const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.address !== ''
+
+    const onSuccessPaypal = (details, data) => {
+        mutationAddOrder.mutate({
+            access_token: user?.access_token,
+            orderItems: order?.orderItemsSelected,
+            fullName: user?.name,
+            address: user?.address,
+            phone: user?.phone,
+            paymentMethod: payment,
+            itemsPrice: priceMemo,
+            shippingPrice: deliveryPriceMemo,
+            totalPrice: totalAmountMemo,
+            user: user?.id,
+            isPaid: true,
+            // paidAt: details.update_time
+        })
+    }
+
+    const addPaypalScript = async () => {
+        const { data } = await PaymentService.getConfig()
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.src = `https://sandbox.paypal.com/sdk/js?client-id=${data}`
+        script.async = true
+        script.onload = () => {
+            setSdkReady(true)
+        }
+        document.body.appendChild(script)
+    }
+    useEffect(() => {
+        if (!window.paypal)
+            addPaypalScript()
+        else
+            setSdkReady(true)
+
+    })
 
     return (
         <>
@@ -187,7 +225,7 @@ const PaymentPage = () => {
                 </div>
                 <div className='container cart-container' style={{ maxWidth: '100%', margin: '0 auto' }}>
                     <div className='row'>
-                        <div className='col-8 cart-item-header-block'>
+                        <div className='col-12 col-xs-12 col-sm-6 col-md-6 col-lg-8 cart-item-header-block'>
                             <div className='cart-item-block p-0'>
                                 <div className='cart-item-inner bg'>
                                     <div className='cart-item-payment'>
@@ -220,9 +258,9 @@ const PaymentPage = () => {
                                                 </label>
                                             </div>
                                             <div className="form-check">
-                                                <input className="form-check-input" onChange={handlePayment} value="now_money" type="radio" name="flexRadioDefaultPayment" id="flexRadioDefault4" checked={payment === 'now_money'} />
-                                                <label className="form-check-label" htmlFor="flexRadioDefault4">
-                                                    pay now
+                                                <input className="form-check-input" onChange={handlePayment} value="paypal" type="radio" name="flexRadioDefaultPayment" id="flexRadioDefault5" checked={payment === 'paypal'} />
+                                                <label className="form-check-label" htmlFor="flexRadioDefault5">
+                                                    Paypal
                                                 </label>
                                             </div>
                                         </div>
@@ -231,7 +269,7 @@ const PaymentPage = () => {
                             </div>
                         </div>
 
-                        <div className='col-4'>
+                        <div className='col-12 col-xs-12 col-sm-6 col-md-6 col-lg-4'>
                             <Loading isLoading={isLoadingAddOrder}>
                                 <div className=' cart-total-block p-0'>
                                     <div className='cart-total-inner bg'>
@@ -279,13 +317,24 @@ const PaymentPage = () => {
                                                 <h5><b>{convertPrice(totalAmountMemo)} VND</b></h5>
                                             </div>
                                         </div>
+                                        {payment === 'paypal' && sdkReady ? (
+                                            <PayPalButton
+                                                amount={Math.round(totalAmountMemo / 25000)}
+                                                // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                                                onSuccess={onSuccessPaypal}
+                                                onError={() => {
+                                                    alert("Transaction completed err");
 
-                                        <button
-                                            type="button"
-                                            onClick={() => handleAddOrder()}
-                                            className="btn btn-danger cart-payment-btn btn-lg">
-                                            Pay now
-                                        </button>
+                                                }}
+                                            />
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => handleAddOrder()}
+                                                className="btn btn-danger cart-payment-btn btn-lg">
+                                                Order
+                                            </button>
+                                        )}
                                         {/* <button type="button" style={{ cursor: 'not-allowed' }} className="btn btn-secondary cart-payment-btn btn-lg">Proceed to Payment</button> */}
                                     </div>
                                 </div>

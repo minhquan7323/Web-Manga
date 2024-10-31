@@ -19,21 +19,21 @@ const genneralRefreshToken = (payload) => {
 const refreshTokenJwtService = (token) => {
     return new Promise((resolve, reject) => {
         try {
-            jwt.verify(token, process.env.REFRESH_TOKEN, (err, user) => {
+            jwt.verify(token, process.env.REFRESH_TOKEN, async (err, user) => {
                 if (err) {
                     resolve({
                         status: 'ERR',
                         message: 'The authenication'
                     })
                 }
-                const access_token = genneralAccessToken({
+                const access_token = await genneralAccessToken({
                     id: user?.id,
                     isAdmin: user?.isAdmin
                 })
                 resolve({
                     status: 'OK',
-                    message: 'Success',
-                    access_token: access_token
+                    message: 'SUCCESS',
+                    access_token
                 })
             })
         } catch (e) {

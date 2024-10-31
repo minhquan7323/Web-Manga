@@ -34,7 +34,8 @@ body {
   padding-left: 10px;
 }
 
-.header-user-icon img {
+.header-user-icon img,
+.my-order-user-img img {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
@@ -185,12 +186,14 @@ body {
 
 .detail-product,
 .admin-system,
-.profile-user {
+.profile-user,
+.my-order {
   padding: 10px 0 0 0 !important;
 }
 
 .detail-product-box,
 .admin-system-box,
+.my-order-box,
 .profile-user-box {
   padding: 0 10px;
   margin: 0 !important;
@@ -200,6 +203,8 @@ body {
 .detail-product-content-right,
 .admin-system-content-left,
 .admin-system-content-right,
+.my-order-content-right,
+.my-order-content-left,
 .profile-user-content-left,
 .profile-user-content-right {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -216,6 +221,7 @@ body {
 
 .detail-product-content-block,
 .admin-system-content-block,
+.my-order-content-block,
 .profile-user-content-block {
   padding: 0 10px !important;
   margin-bottom: 10px;
@@ -223,6 +229,7 @@ body {
 
 .detail-product-content-right,
 .admin-system-content-right,
+.my-order-content-right,
 .profile-user-content-right {
   padding: 16px;
 }
@@ -234,6 +241,7 @@ body {
 
 .detail-product-content-left,
 .admin-system-content-left,
+.my-order-content-left,
 .profile-user-content-left {
   padding: 16px;
   position: sticky;
@@ -261,16 +269,6 @@ input[type="number"] {
   appearance: textfield;
   -moz-appearance: textfield;
 }
-
-/* input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-} */
 
 .sub-img-detail-product {
   padding: 10px 5px 0 5px;
@@ -334,13 +332,15 @@ footer {
   border: 1px solid #5d5d5d;
 }
 
-.cart-product-img img {
+.cart-product-img img,
+.my-order-img img {
   width: 100%;
   min-width: 60px;
   max-width: 100px;
   border-radius: 8px;
   object-fit: cover;
   aspect-ratio: 1 / 1;
+  cursor: pointer;
 }
 
 .cart-item-product,
@@ -383,6 +383,7 @@ footer {
 
 .detail-product-content-left,
 .profile-user-content-left,
+.my-order-content-left,
 .admin-system-content-left {
   padding: 10px;
 }
@@ -397,6 +398,7 @@ footer {
 
 .detail-product-content-left-block,
 .profile-user-content-left-block,
+.my-order-content-left-block,
 .admin-system-content-left-block {
   padding: 6px;
 }
@@ -479,4 +481,78 @@ footer {
 
 .cart-item-payment {
   padding: 16px;
+}
+
+.my-order-btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-left: auto;
+  align-items: right;
+  justify-content: right;
+}
+
+.my-order-total-amount {
+  font-size: 14px;
+  margin-top: 5px;
+  display: flex;
+  align-items: right;
+  justify-content: right;
+}
+
+.my-order-delivery {
+  margin-bottom: 5px;
+  color: crimson;
+  display: flex;
+  align-items: right;
+  justify-content: right;
+}
+
+.my-order-name {
+  padding-left: 20px;
+}
+
+.my-order-price-amount {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6D757D;
+}
+
+.my-order-total-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #c92127;
+}
+
+.my-order-content-left-block div,
+.profile-user-content-left-block div {
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.my-order-content-left-block div:hover,
+.profile-user-content-left-block div:hover {
+  color: #FFC107;
+}
+
+.my-order-content-left-block i,
+.profile-user-content-left-block i {
+  width: 18px;
+  color: #0d6efd;
+  padding-right: 20px;
+}
+
+.my-order-content-left-block div.active,
+.profile-user-content-left-block div.active {
+  color: red;
+}
+
+.my-order-user {
+  font-size: 14px;
+}
+
+.my-order-edit-profile-btn {
+  color: #5d5d5d;
+  cursor: pointer;
 }

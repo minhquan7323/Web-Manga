@@ -5,6 +5,6 @@ export const orderContant = {
     },
     payment: {
         later_money: 'pay later',
-        now_money: 'pay now'
+        paypal: 'Paypal'
     }
 }
