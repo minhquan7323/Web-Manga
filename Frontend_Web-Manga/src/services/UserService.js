@@ -53,9 +53,17 @@ export const deleteUser = async (id, access_token) => {
     return res.data
 }
 
-export const refreshToken = async () => {
-    const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/refreshtoken`, {
-        withCredentials: true
+// export const refreshToken = async () => {
+//     const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/refreshtoken`, {
+//         withCredentials: true
+//     })
+//     return res.data
+// }
+export const refreshToken = async (refresh_token) => {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/user/refreshtoken`, {}, {
+        headers: {
+            token: `Bearer ${refresh_token}`
+        }
     })
     return res.data
 }

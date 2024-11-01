@@ -179,7 +179,7 @@ const PaymentPage = () => {
 
     const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.address !== ''
 
-    const onSuccessPaypal = (details, data) => {
+    const onSuccessPaypal = () => {
         mutationAddOrder.mutate({
             access_token: user?.access_token,
             orderItems: order?.orderItemsSelected,

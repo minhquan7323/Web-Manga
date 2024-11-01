@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: backend-service
+    env: node 
+    path: Backend_Web-Manga 
+    buildCommand: npm install 
+    startCommand: npm start  

@@ -36,7 +36,9 @@ const authUserMiddleware = (req, res, next) => {
                 status: 'ERROR'
             })
         }
-        if (user?.isAdmin || user?.id === userId) {
+
+        // if (user?.isAdmin || user?.id === userId) {
+        if (user?.isAdmin || user?.id) {
             next()
         }
         else {
@@ -45,9 +47,7 @@ const authUserMiddleware = (req, res, next) => {
                 status: 'ERROR'
             })
         }
-
     })
-
 }
 
 module.exports = {
