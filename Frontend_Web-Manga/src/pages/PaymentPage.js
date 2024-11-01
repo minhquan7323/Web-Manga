@@ -214,7 +214,7 @@ const PaymentPage = () => {
         else
             setSdkReady(true)
 
-    })
+    }, [])
 
     return (
         <>
