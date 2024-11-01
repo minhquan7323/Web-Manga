@@ -40,7 +40,6 @@ function App() {
         if (decoded?.exp < currentTime.getTime() / 1000) {
             if (decodedRefreshToken?.exp > currentTime.getTime() / 1000) {
                 const data = await UserService.refreshToken(refresh_token)
-                // localStorage.setItem('access_token', JSON.stringify(data.access_token))
                 config.headers['token'] = `Bearer ${data?.access_token}`
             } else {
                 dispatch(resetUser())

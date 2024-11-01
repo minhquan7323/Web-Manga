@@ -55,7 +55,7 @@ function SignInPage() {
         const storageRefreshToken = localStorage.getItem('refresh_token')
         const refresh_token = JSON.parse(storageRefreshToken)
         const res = await UserService.getDetailsUser(id, access_token)
-        dispatch(updateUser({ ...res?.data, access_token: access_token, refresh_token: refresh_token }))
+        dispatch(updateUser({ ...res?.data, access_token: access_token, refresh_token }))
     }
 
     const handleOnChangeEmail = (value) => {
