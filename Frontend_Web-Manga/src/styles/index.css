@@ -505,11 +505,20 @@ footer {
   color: crimson;
   display: flex;
   align-items: right;
-  justify-content: right;
+  font-weight: bold;
+  justify-content: space-between;
 }
 
 .my-order-name {
-  padding-left: 20px;
+  /* padding-left: 20px; */
+  font-size: 16px;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  line-height: 1.4em;
+  width: 95%;
 }
 
 .my-order-price-amount {
@@ -545,7 +554,7 @@ footer {
 
 .my-order-content-left-block div.active,
 .profile-user-content-left-block div.active {
-  color: red;
+  color: coral;
 }
 
 .my-order-user {
@@ -555,4 +564,13 @@ footer {
 .my-order-edit-profile-btn {
   color: #5d5d5d;
   cursor: pointer;
+}
+
+.my-order-code {
+  color: #6D757D;
+  font-size: 14px;
+}
+
+.my-order-user-name {
+  font-weight: bold;
 }

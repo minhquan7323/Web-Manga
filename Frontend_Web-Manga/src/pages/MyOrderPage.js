@@ -74,11 +74,27 @@ function MyOrderPage() {
             message.error()
     }, [isSuccessCancel, isErrorCancel])
 
-
+    const handleClickNav = (type) => {
+        if (type === 'myorder') {
+            navigate(`/myorder`, {
+                state: {
+                    id: user?.id,
+                    access_token: user?.access_token
+                }
+            })
+        } else if (type === 'profileuser') {
+            navigate('/profileuser', {
+                state: {
+                    id: user?.id,
+                    access_token: user?.access_token
+                }
+            })
+        }
+    }
 
     const pages = [
-        { key: 'profile', label: 'My account', iconClass: 'fas fa-user', path: '/profileuser' },
-        { key: 'myorder', label: 'My purchase', iconClass: 'fas fa-receipt', path: '/myorder' },
+        { key: 'profile', label: 'My account', iconClass: 'fas fa-user', pathPage: 'profileuser', path: () => handleClickNav('profileuser') },
+        { key: 'myorder', label: 'My purchase', iconClass: 'fas fa-receipt', pathPage: 'myorder', path: () => handleClickNav('myorder') }
     ]
 
     return (
@@ -88,32 +104,31 @@ function MyOrderPage() {
                     <Col xs={12} sm={4} md={3} lg={3} className="my-order-content-block">
                         <div className='my-order-content-left bg'>
                             <span>
-                                {user?.avatar ? (
-                                    <>
-                                        <Row>
-                                            <Col xs={3} sm={3} md={3} lg={3} className='my-order-user-img item-center'>
-                                                <img src={user?.avatar} alt="avatar" />
-                                            </Col>
-                                            <Col xs={9} sm={9} md={9} lg={9} className='my-order-user'>
-                                                <div>
-                                                    {user?.name}
-                                                </div>
-                                                <div className="my-order-edit-profile-btn">
-                                                    <i class="fas fa-pen"></i> Edit profile
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </>
-                                ) : (
-                                    <i className="fa-solid fa-user"></i>
-                                )}
+                                <Row>
+                                    <Col xs={3} sm={3} md={3} lg={3} className='my-order-user-img item-center'>
+                                        {user?.avatar ? (
+                                            <img src={user?.avatar} alt="avatar" />
+                                        ) : (
+                                            <i className="fa-solid fa-user"></i>
+
+                                        )}
+                                    </Col>
+                                    <Col xs={9} sm={9} md={9} lg={9} className='my-order-user'>
+                                        <div className='my-order-user-name'>
+                                            {user?.name}
+                                        </div>
+                                        <div onClick={() => handleClickNav('profileuser')} className="my-order-edit-profile-btn">
+                                            <i className="fas fa-pen"></i> Edit profile
+                                        </div>
+                                    </Col>
+                                </Row>
                             </span>
                             <div className='my-order-content-left-block'>
                                 {pages.map((page) => (
                                     <div
                                         key={page.key}
-                                        onClick={() => navigate(page.path)}
-                                        className={location.pathname.includes(page.path) ? 'active' : ''}
+                                        onClick={page.path}
+                                        className={location.pathname.includes(page.pathPage) ? 'active' : ''}
                                     >
                                         <i className={page.iconClass}></i> {page.label}
                                     </div>
@@ -122,66 +137,72 @@ function MyOrderPage() {
                         </div>
                     </Col>
                     <Col xs={12} sm={8} md={9} lg={9} className="my-order-content-block">
-                        {data?.map((order, index) => {
-                            const isLastOrder = index === data.length - 1
-                            const totalProducts = order.orderItems.reduce((sum, item) => sum + item.amount, 0)
-                            const itemsToDisplay = expandedOrders[order._id] ? order.orderItems : order.orderItems.slice(0, 2)
+                        {data?.length > 0 ? (
+                            data?.map((order, index) => {
+                                const isLastOrder = index === data.length - 1
+                                const totalProducts = order.orderItems.reduce((sum, item) => sum + item.amount, 0)
+                                const itemsToDisplay = expandedOrders[order._id] ? order.orderItems : order.orderItems.slice(0, 2)
 
-                            return (
-                                <div className='my-order-content-right bg' style={{ marginBottom: isLastOrder ? '0' : '10px' }} key={order._id}>
-                                    <div className="my-order-delivery">
-                                        <span>{order?.delivery ? 'Delivered' : 'In delivery'}</span>
-                                    </div>
-                                    <div>
-                                        <Row className="g-2 item-center">
-                                            {itemsToDisplay.map((item) => (
-                                                <Col xs={12} className="my-order-item" key={item._id}>
-                                                    <Row className="item-center">
-                                                        <Col xs={3} className='my-order-img'>
-                                                            <img src={item.image} alt={item.name} />
-                                                        </Col>
-                                                        <Col xs={9} className='my-order-details'>
-                                                            <div className='my-order-name'>
-                                                                <span>{item.name}</span>
-                                                            </div>
-                                                            <div className="my-order-price-amount">
-                                                                <span>{convertPrice(item.price)} VND</span>
-                                                                <div>x{item.amount}</div>
-                                                            </div>
-                                                        </Col>
-                                                    </Row>
-                                                </Col>
-                                            ))}
-                                        </Row>
-                                    </div>
+                                return (
+                                    <div className='my-order-content-right bg' style={{ marginBottom: isLastOrder ? '0' : '10px' }} key={order._id}>
+                                        <div className="my-order-delivery">
+                                            <span className="my-order-code">Order code: {order?._id}</span>
+                                            <span>{order?.delivery ? 'Delivered' : 'In delivery'}</span>
+                                        </div>
+                                        <div>
+                                            <Row className="g-2 item-center">
+                                                {itemsToDisplay.map((item) => (
+                                                    <Col xs={12} className="my-order-item" key={item._id}>
+                                                        <Row className="item-center">
+                                                            <Col xs={3} className='my-order-img'>
+                                                                <img src={item.image} alt={item.name} />
+                                                            </Col>
+                                                            <Col xs={9} className='my-order-details'>
+                                                                <div className='my-order-name'>
+                                                                    <span>{item.name}</span>
+                                                                </div>
+                                                                <div className="my-order-price-amount">
+                                                                    <span>{convertPrice(item.price)} VND</span>
+                                                                    <div>x{item.amount}</div>
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+                                                    </Col>
+                                                ))}
+                                            </Row>
+                                        </div>
 
-                                    <div className="item-center my-order-btn-more-less">
-                                        {order.orderItems.length > 2 && !expandedOrders[order._id] && (
-                                            <button className="btn btn-outline-primary" onClick={() => toggleExpandOrder(order._id)}>See More</button>
-                                        )}
-                                        {expandedOrders[order._id] && order.orderItems.length > 2 && (
-                                            <button className="btn btn-outline-secondary" onClick={() => toggleExpandOrder(order._id)}>See Less</button>
-                                        )}
-                                    </div>
-                                    <hr style={{ width: '100%', margin: '20px 0' }} />
-                                    <div className='my-order-total-amount item-center'>
-                                        Total amount ({totalProducts} {totalProducts > 1 ? "products" : "product"}): <span className='m-0 my-order-total-price'>&nbsp;{convertPrice(order.totalPrice)} VND</span>
-                                    </div>
-                                    <div className="my-order-btn-group">
-                                        <span>
-                                            {order?.delivery ? (
-                                                <button className="btn btn-outline-danger">Rating</button>
-                                            ) : (
-                                                <button onClick={() => handleCancelOrder(order)} className="btn btn-outline-secondary">Cancel order</button>
+                                        <div className="item-center my-order-btn-more-less">
+                                            {order.orderItems.length > 2 && !expandedOrders[order._id] && (
+                                                <button className="btn btn-outline-primary" onClick={() => toggleExpandOrder(order._id)}>See More</button>
                                             )}
-                                        </span>
-                                        <span>
-                                            <button onClick={() => handleDetailsOrder(order?._id)} className="btn btn-outline-primary">Details</button>
-                                        </span>
+                                            {expandedOrders[order._id] && order.orderItems.length > 2 && (
+                                                <button className="btn btn-outline-secondary" onClick={() => toggleExpandOrder(order._id)}>See Less</button>
+                                            )}
+                                        </div>
+                                        <hr style={{ width: '100%', margin: '20px 0' }} />
+                                        <div className='my-order-total-amount item-center'>
+                                            Total amount ({totalProducts} {totalProducts > 1 ? "products" : "product"}): <span className='m-0 my-order-total-price'>&nbsp;{convertPrice(order.totalPrice)} VND</span>
+                                        </div>
+                                        <div className="my-order-btn-group">
+                                            <span>
+                                                {order?.isPaid ? (
+                                                    <button className="btn btn-outline-danger">Rating</button>
+                                                ) : (
+                                                    <button onClick={() => handleCancelOrder(order)} className="btn btn-outline-secondary">Cancel order</button>
+                                                )}
+                                            </span>
+                                            <span>
+                                                <button onClick={() => handleDetailsOrder(order?._id)} className="btn btn-outline-primary">Details</button>
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            )
-                        })}
+                                )
+                            })
+                        ) : (
+                            <h1>No orders yet</h1>
+                        )}
+
                     </Col>
                 </div>
             </Container>

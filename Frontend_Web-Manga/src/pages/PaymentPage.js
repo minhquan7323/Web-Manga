@@ -192,6 +192,7 @@ const PaymentPage = () => {
             totalPrice: totalAmountMemo,
             user: user?.id,
             isPaid: true,
+            email: user?.email,
             // paidAt: details.update_time
         })
     }

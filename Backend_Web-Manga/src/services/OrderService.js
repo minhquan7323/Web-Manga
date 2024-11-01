@@ -1,9 +1,10 @@
 const Order = require('../models/OrderProduct')
 const Product = require('../models/ProductModel')
+const EmailService = require('./EmailService')
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems, fullName, address, phone, paymentMethod, itemsPrice, shippingPrice, totalPrice, user, isPaid, paidAt } = newOrder
+        const { orderItems, fullName, address, phone, paymentMethod, itemsPrice, shippingPrice, totalPrice, user, isPaid, paidAt, email } = newOrder
         try {
             const promises = orderItems.map(async (order) => {
                 const productData = await Product.findByIdAndUpdate(
@@ -66,6 +67,8 @@ const createOrder = (newOrder) => {
                 })
 
                 if (createOrder) {
+                    if (email)
+                        await EmailService.sendEmailCreateOrder(email, orderItems);
                     resolve({
                         status: 'OK',
                         message: 'SUCCESS'

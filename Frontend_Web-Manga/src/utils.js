@@ -71,3 +71,33 @@ export const resizeImage = (file, maxWidth = 1920, maxHeight = 1080, quality = 0
             reject(error)
         }
     })
+
+export const initFacebookSDK = () => {
+    if (window.FB) {
+        window.FB.XFBML.parse();
+        return;
+    }
+
+    let locale = 'en_EN';
+
+    window.fbAsyncInit = function () {
+        if (window.FB) {
+            window.FB.init({
+                appId: process.env.REACT_APP_FB_ID,
+                cookie: true,
+                xfbml: true,
+                version: 'v8.6',
+            });
+        } else {
+            console.error("Facebook SDK failed to load.");
+        }
+    };
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = `https://connect.facebook.net/${locale}/sdk.js`;
+        fjs.parentNode.insertBefore(js, fjs);
+    })(document, 'script', 'facebook-jssdk');
+};

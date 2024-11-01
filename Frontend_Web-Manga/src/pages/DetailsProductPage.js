@@ -1,37 +1,47 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as ProductService from '../services/ProductService'
 import { useQuery } from '@tanstack/react-query'
 import Loading from '../components/Loading/Loading'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { addOrderProduct } from '../redux/orderSlide'
-import { convertPrice } from '../utils'
+import { convertPrice, initFacebookSDK } from '../utils'
 import * as message from "../components/Message/Message"
-
+import LikeFacebookButton from '../components/User/LikeFacebookButton'
+import CommentFacebook from '../components/User/CommentFacebook'
 const DetailsProductPage = () => {
     const { id: productId } = useParams()
     const user = useSelector((state) => state?.user)
+    const order = useSelector((state) => state?.order)
     const navigate = useNavigate()
     const location = useLocation()
     const dispatch = useDispatch()
     const [quantity, setQuantity] = useState(1)
+    const [limitOrder, setLimitOrder] = useState(false)
 
     const decreaseQuantity = () => {
         if (quantity > 1) {
             setQuantity(quantity - 1)
         }
     }
-
     const increaseQuantity = () => {
         if (quantity < productDetails?.stock) {
             setQuantity(quantity + 1)
         }
     }
-
     const handleChange = (e) => {
         // const value = Math.max(1, Math.min(10, parseInt(e.target.value) || 1))
         // setQuantity(value)
     }
+
+    useEffect(() => {
+        const orderRedux = order?.orderItems?.find((item) => item.product === productDetails._id)
+        if ((orderRedux?.amount + quantity) <= orderRedux?.stock || !orderRedux) {
+            setLimitOrder(false)
+        } else if (productDetails?.stock === 0) {
+            setLimitOrder(true)
+        }
+    }, [quantity])
 
     const fetchGetDetailsProduct = async (productId) => {
         if (productId) {
@@ -50,19 +60,30 @@ const DetailsProductPage = () => {
         if (!user?.id) {
             navigate('/signin', { state: location?.pathname })
         } else {
-            dispatch(addOrderProduct({
-                orderItem: {
-                    name: productDetails?.name,
-                    amount: quantity,
-                    image: productDetails?.image,
-                    price: productDetails?.price,
-                    product: productDetails?._id,
-                    stock: productDetails?.stock,
-                }
-            }))
-            message.success()
+            const orderRedux = order?.orderItems?.find((item) => item.product === productDetails?._id)
+            if ((orderRedux?.amount + quantity) <= orderRedux?.stock || !orderRedux) {
+                dispatch(addOrderProduct({
+                    orderItem: {
+                        name: productDetails?.name,
+                        amount: quantity,
+                        image: productDetails?.image,
+                        price: productDetails?.price,
+                        product: productDetails?._id,
+                        stock: productDetails?.stock,
+                    }
+                }))
+
+                message.success()
+            } else {
+                setLimitOrder(true)
+                message.error()
+            }
         }
     }
+
+    useEffect(() => {
+        initFacebookSDK()
+    }, [])
 
     return (
         <Loading isLoading={isLoading}>
@@ -95,9 +116,15 @@ const DetailsProductPage = () => {
                                     Stock: <span>{productDetails?.stock || 'N/A'}</span>
                                 </div>
                             </div>
-                            <h1 className="fs-1 detail-product-price">
+                            <h2 className="detail-product-price" style={{ marginTop: '10px' }}>
                                 {productDetails?.price ? `${convertPrice(productDetails.price)} VND` : 'N/A'}
-                            </h1>
+                            </h2>
+                            <LikeFacebookButton
+                                dataHref={process.env.REACT_APP_IS_LOCAL ?
+                                    'https://developers.facebook.com/docs/plugins/'
+                                    : window.location.href}
+
+                            />
                             <br />
                             <div className="row">
                                 <div className="col-2">
@@ -114,10 +141,14 @@ const DetailsProductPage = () => {
                                         </button>
                                     </div>
                                 </div>
-                                <div className="col-5">
-                                    <button onClick={handleAddOrderProduct} type="button" className="btn btn-outline-danger">
-                                        <i className="fa-solid fa-cart-shopping"></i> Add to cart
-                                    </button>
+                                <div className="col-5 item-center">
+                                    {limitOrder ? (
+                                        <div style={{ color: 'red' }}>Out of stock</div>
+                                    ) : (
+                                        <button onClick={handleAddOrderProduct} type="button" className="btn btn-outline-danger">
+                                            <i className="fa-solid fa-cart-shopping"></i> Add to cart
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -139,6 +170,15 @@ const DetailsProductPage = () => {
                         <div className="detail-product-content-right bg">
                             <h3>Description</h3>
                             <p>{productDetails?.description || ''}</p>
+                        </div>
+                    </div>
+                    <div className="col-12 col-xs-12 col-sm-12 col-md-12 col-lg-12 detail-product-content-block">
+                        <div className="detail-product-content-left bg">
+                            <h3>Product reviews</h3>
+                            <CommentFacebook dataHref={process.env.REACT_APP_IS_LOCAL ?
+                                `https://yourwebsite.com/products/${productId}`
+                                : window.location.href}
+                            />
                         </div>
                     </div>
                 </div>

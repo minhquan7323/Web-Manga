@@ -40,8 +40,8 @@ const Header = () => {
         message.success()
         navigate('/')
         dispatch(resetUser())
-        // localStorage.removeItem('access_token')
-        // localStorage.removeItem('user_id')
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('user_id')
         setIsLoading(false)
         setShowPopover(false)
         setNavbarExpanded(false)
@@ -91,9 +91,9 @@ const Header = () => {
                                 <NavLink to="/Product" className='nav-link' onClick={() => setNavbarExpanded(false)}>Product</NavLink>
                                 <NavLink to="/Cart" className='nav-link position-relative' onClick={() => setNavbarExpanded(false)}>
                                     Cart <i className="fas fa-cart-shopping"></i>
-                                    {/* <span class="position-absolute top-10  translate-middle badge rounded-pill bg-danger">
+                                    {/* <span className="position-absolute top-10  translate-middle badge rounded-pill bg-danger">
                                         99+
-                                        <span class="visually-hidden">unread messages</span>
+                                        <span className="visually-hidden">unread messages</span>
                                     </span> */}
                                     {order?.orderItems?.length > 0 ? (
                                         <Badge className='translate-middle badge rounded-pill' style={{ marginLeft: '5px', minWidth: '22px', padding: '5px' }} bg="warning" text="dark">

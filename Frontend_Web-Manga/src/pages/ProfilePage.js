@@ -100,11 +100,29 @@ const ProfilePage = () => {
         dispatch(updateUser({ ...res?.data, access_token: access_token }))
     }
 
+    const handleClickNav = (type) => {
+        if (type === 'myorder') {
+            navigate(`/myorder`, {
+                state: {
+                    id: user?.id,
+                    access_token: user?.access_token
+                }
+            })
+        } else if (type === 'profileuser') {
+            navigate('/profileuser', {
+                state: {
+                    id: user?.id,
+                    access_token: user?.access_token
+                }
+            })
+        }
+    }
 
     const pages = [
-        { key: 'profile', label: 'My account', iconClass: 'fas fa-user', path: '/profileuser' },
-        { key: 'myorder', label: 'My purchase', iconClass: 'fas fa-receipt', path: '/myorder' },
+        { key: 'profile', label: 'My account', iconClass: 'fas fa-user', pathPage: 'profileuser', path: () => handleClickNav('profileuser') },
+        { key: 'myorder', label: 'My purchase', iconClass: 'fas fa-receipt', pathPage: 'myorder', path: () => handleClickNav('myorder') }
     ]
+
     return (
         <>
             <div className="container profile-user" style={{ maxWidth: '100%', margin: '0 auto' }}>
@@ -112,32 +130,31 @@ const ProfilePage = () => {
                     <div className="col-12 col-xs-12 col-sm-4 col-md-3 col-lg-3 profile-user-content-block">
                         <div className='profile-user-content-left bg'>
                             <span>
-                                {user?.avatar ? (
-                                    <>
-                                        <Row>
-                                            <Col xs={3} sm={3} md={3} lg={3} className='my-order-user-img item-center'>
-                                                <img src={user?.avatar} alt="avatar" />
-                                            </Col>
-                                            <Col xs={9} sm={9} md={9} lg={9} className='my-order-user'>
-                                                <div>
-                                                    {user?.name}
-                                                </div>
-                                                <div className="my-order-edit-profile-btn">
-                                                    <i class="fas fa-pen"></i> Edit profile
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </>
-                                ) : (
-                                    <i className="fa-solid fa-user"></i>
-                                )}
+                                <Row>
+                                    <Col xs={3} sm={3} md={3} lg={3} className='my-order-user-img item-center'>
+                                        {user?.avatar ? (
+                                            <img src={user?.avatar} alt="avatar" />
+                                        ) : (
+                                            <i className="fa-solid fa-user"></i>
+
+                                        )}
+                                    </Col>
+                                    <Col xs={9} sm={9} md={9} lg={9} className='my-order-user'>
+                                        <div className='my-order-user-name'>
+                                            {user?.name}
+                                        </div>
+                                        <div onClick={() => handleClickNav('profileuser')} className="my-order-edit-profile-btn">
+                                            <i className="fas fa-pen"></i> Edit profile
+                                        </div>
+                                    </Col>
+                                </Row>
                             </span>
                             <div className='profile-user-content-left-block'>
                                 {pages.map((page) => (
                                     <div
                                         key={page.key}
-                                        onClick={() => navigate(page.path)}
-                                        className={location.pathname.includes(page.path) ? 'active' : ''}
+                                        onClick={page.path}
+                                        className={location.pathname.includes(page.pathPage) ? 'active' : ''}
                                     >
                                         <i className={page.iconClass}></i> {page.label}
                                     </div>
