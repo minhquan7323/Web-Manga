@@ -1,5 +1,5 @@
 const express = require('express')
-const { mongoose } = require('mongoose')
+const { default: mongoose } = require('mongoose')
 const dotenv = require('dotenv')
 const routes = require('./routes')
 const cors = require('cors')
@@ -17,7 +17,6 @@ app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
 app.use(cookieParser())
 routes(app)
-
 mongoose.connect(`${process.env.MONGO_DB}`)
     .then(() => {
         // console.log('Connected to MongoDB')

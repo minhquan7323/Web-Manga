@@ -48,7 +48,7 @@ export const getAllTypeProduct = async () => {
 }
 
 export const createProduct = async (data) => {
-    const res = await axios.post(`${process.env.REACT_APP_API_URL}/product/create`, data)
+    const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/product/create`, data)
     return res.data
 }
 

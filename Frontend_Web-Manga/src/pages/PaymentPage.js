@@ -10,6 +10,7 @@ import Loading from '../components/Loading/Loading'
 import * as message from "../components/Message/Message"
 import { updateUser } from '../redux/userSlide'
 import { removeAllOrderProduct } from '../redux/orderSlide'
+import { PayPalButton } from "react-paypal-button-v2";
 
 const PaymentPage = () => {
     const order = useSelector((state) => state.order)
@@ -178,7 +179,7 @@ const PaymentPage = () => {
 
     const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.address !== ''
 
-    const onSuccessPaypal = () => {
+    const onSuccessPaypal = (details, data) => {
         mutationAddOrder.mutate({
             access_token: user?.access_token,
             orderItems: order?.orderItemsSelected,
@@ -213,7 +214,7 @@ const PaymentPage = () => {
         else
             setSdkReady(true)
 
-    }, [])
+    })
 
     return (
         <>
@@ -318,7 +319,15 @@ const PaymentPage = () => {
                                             </div>
                                         </div>
                                         {payment === 'paypal' && sdkReady ? (
-                                            <div id="paypal-button-container"></div>
+                                            <PayPalButton
+                                                amount={Math.round(totalAmountMemo / 25000)}
+                                                // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                                                onSuccess={onSuccessPaypal}
+                                                onError={() => {
+                                                    alert("Transaction completed err");
+
+                                                }}
+                                            />
                                         ) : (
                                             <button
                                                 type="button"
@@ -373,31 +382,6 @@ const PaymentPage = () => {
                     </div>
                 </div>
             </div>
-            <script>
-                {`
-                    if (window.paypal && ${sdkReady}) {
-                        window.paypal.Buttons({
-                            createOrder: (data, actions) => {
-                                return actions.order.create({
-                                    purchase_units: [{
-                                        amount: {
-                                            value: '${Math.round(totalAmountMemo / 25000)}'
-                                        }
-                                    }]
-                                });
-                            },
-                            onApprove: (data, actions) => {
-                                return actions.order.capture().then(() => {
-                                    ${onSuccessPaypal()};
-                                });
-                            },
-                            onError: (err) => {
-                                alert('Transaction completed error');
-                            }
-                        }).render('#paypal-button-container');
-                    }
-                `}
-            </script>
         </>
     )
 }

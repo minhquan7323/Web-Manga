@@ -319,16 +319,19 @@ function AdminProduct() {
         return false
     }
 
-    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type !== '' && stateProduct.price !== '' && stateProduct.stock !== ''
-    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type !== '' && stateDetailsProduct.price !== '' && stateDetailsProduct.stock !== ''
+    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type.length > 0 && stateProduct.price !== '' && stateProduct.stock !== ''
+    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type.length > 0 && stateDetailsProduct.price !== '' && stateDetailsProduct.stock !== ''
 
     const handleCheckboxChange = (type) => {
-        setStateDetailsProduct((prev) => {
+        setStateProduct((prev) => {
             const isChecked = prev.type.includes(type)
-            const newTypes = isChecked ? prev.type.filter(t => t !== type) : [...prev.type, type]
+            const newTypes = isChecked
+                ? prev.type.filter(t => t !== type)
+                : [...prev.type, type]
             return { ...prev, type: newTypes }
         })
     }
+
 
     const handleCheckboxChangeDetails = (e) => {
         const { value, checked } = e.target
@@ -400,7 +403,7 @@ function AdminProduct() {
                                                             value={type}
                                                             className="form-check-input"
                                                             checked={stateProduct?.type.includes(type)}
-                                                            onChange={handleCheckboxChange}
+                                                            onChange={() => handleCheckboxChange(type)}
                                                         />
                                                         <label className="form-check-label" htmlFor={`type-${type}`}>
                                                             {type}
