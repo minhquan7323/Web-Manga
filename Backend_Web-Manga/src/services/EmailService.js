@@ -1,7 +1,3 @@
-const nodemailer = require('nodemailer')
-const dotenv = require('dotenv')
-dotenv.config()
-
 const sendEmailCreateOrder = async (email, orderItems) => {
     let transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -17,19 +13,16 @@ const sendEmailCreateOrder = async (email, orderItems) => {
     orderItems.forEach((order) => {
         listItem +=
             `<div>
-                <div>You have ordered <b>${order.name}</b> with a quantity of <b>${order.amount}</b> and a price of <b>${order.price} VND</b></div>
-            </div>`
+                    <div>You have ordered <b>${order.name}</b> with a quantity of <b>${order.amount}</b> and a price of <b>${order.price} VND</b></div>
+                </div>`
         attachImage.push({ path: order.image })
-    });
+    })
     let info = await transporter.sendMail({
         from: process.env.MAIL_ACCOUNT,
         to: email,
         subject: 'Thank you for ordering at Web Manga',
-        text: 'hee',
-        html: `${listItem}`,
+        text: 'hi',
+        html: `<h2>Your Order Details:</h2>${listItem}`,
         attachments: attachImage
     })
-}
-module.exports = {
-    sendEmailCreateOrder
 }
