@@ -10,7 +10,7 @@ const app = express()
 const port = process.env.PORT || 3001
 
 app.use(cors({
-    origin: 'https://frontendweb-manga-gcibfv4pu-minhquan7323s-projects.vercel.app',
+    origin: 'https://frontendweb-manga-git-main-minhquan7323s-projects.vercel.app/',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }))
