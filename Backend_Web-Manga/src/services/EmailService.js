@@ -1,3 +1,7 @@
+const nodemailer = require('nodemailer')
+const dotenv = require('dotenv')
+dotenv.config()
+
 const sendEmailCreateOrder = async (email, orderItems) => {
     let transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -25,4 +29,8 @@ const sendEmailCreateOrder = async (email, orderItems) => {
         html: `<h2>Your Order Details:</h2>${listItem}`,
         attachments: attachImage
     })
+}
+
+module.exports = {
+    sendEmailCreateOrder
 }
