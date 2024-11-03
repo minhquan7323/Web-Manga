@@ -1,29 +1,38 @@
 import React, { useState } from 'react'
-import { UserOutlined, ProductOutlined } from '@ant-design/icons'
+import { UserOutlined, ProductOutlined, DashboardOutlined, FileDoneOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
 import { getItem } from "../utils"
 import AdminUser from '../components/Admin/AdminUser'
 import AdminProduct from '../components/Admin/AdminProduct'
+import AdminOrder from '../components/Admin/AdminOrder'
+import AdminDashboard from '../components/Admin/AdminDashboard'
+
 
 const AdminPage = () => {
     const items = [
+        getItem('Dashboard', 'dashboard', <DashboardOutlined />),
         getItem('User', 'user', <UserOutlined />),
-        getItem('Product', 'product', <ProductOutlined />)
+        getItem('Product', 'product', <ProductOutlined />),
+        getItem('Order', 'order', <FileDoneOutlined />)
     ]
 
     const renderPage = (key) => {
         switch (key) {
+            case 'dashboard':
+                return <AdminDashboard />
             case 'user':
                 return <AdminUser />
             case 'product':
                 return <AdminProduct />
+            case 'order':
+                return <AdminOrder />
             default:
                 return <AdminProduct />
         }
     }
 
-    const rootSubmenuKeys = ['user', 'product']
-    const [keySelected, setKeySelected] = useState('product')
+    const rootSubmenuKeys = ['user', 'product', 'order', 'dashboard']
+    const [keySelected, setKeySelected] = useState('dashboard')
     const [openKeys, setOpenKeys] = useState([keySelected])
 
     const onOpenChange = (keys) => {

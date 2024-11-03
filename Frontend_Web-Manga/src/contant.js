@@ -4,7 +4,7 @@ export const orderContant = {
         standard: 'standard'
     },
     payment: {
-        later_money: 'pay later',
+        later_money: 'Pay later',
         paypal: 'Paypal'
     }
 }

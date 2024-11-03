@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useDispatch, useSelector } from 'react-redux'
 import { resetUser, updateUser } from './redux/userSlide'
 import * as UserService from './services/UserService.js'
+import ScrollToTop from './components/ScrollToTop.js'
 
 function App() {
     const dispatch = useDispatch()
@@ -67,6 +68,9 @@ function App() {
             </div>
             <div>
                 {/* <Footer /> */}
+            </div>
+            <div>
+                <ScrollToTop />
             </div>
         </div>
     )

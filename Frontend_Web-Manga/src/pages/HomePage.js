@@ -85,9 +85,14 @@ function HomePage() {
                             />
                         })}
                     </Row>
-                    <div className='item-center'>
-                        <button className='btn btn-primary' onClick={() => setLimit((prev) => prev + 4)}>show more</button>
-                    </div>
+                    {products?.length < limit ? (
+                        <div></div>
+                    ) : (
+                        <div className='item-center'>
+                            <button className='btn btn-primary' onClick={() => setLimit((prev) => prev + 4)}>show more</button>
+                        </div>
+
+                    )}
                 </Container>
             </Loading>
         </>

@@ -20,7 +20,7 @@ const ProductPage = () => {
         limit: 12,
         total: 0
     })
-    const [visibleTypes, setVisibleTypes] = useState(8)
+    const [visibleTypes, setVisibleTypes] = useState(6)
 
     const fetchAllProduct = async (context) => {
         const limit = context.queryKey[1]
@@ -95,7 +95,7 @@ const ProductPage = () => {
     }
 
     const handleShowLessTypes = () => {
-        setVisibleTypes(8)
+        setVisibleTypes(6)
     }
 
     return (
@@ -165,19 +165,23 @@ const ProductPage = () => {
                             <Toolbar />
                             <Loading isLoading={isLoading}>
                                 <Row className="products">
-                                    {products?.map((product) => (
-                                        <ProductCard
-                                            key={product._id}
-                                            stock={product.stock}
-                                            description={product.description}
-                                            image={product.image}
-                                            name={product.name}
-                                            price={convertPrice(product.price)}
-                                            rating={product.rating}
-                                            type={product.type}
-                                            id={product._id}
-                                        />
-                                    ))}
+                                    {products?.length > 0 ? (
+                                        products.map((product) => (
+                                            <ProductCard
+                                                key={product._id}
+                                                stock={product.stock}
+                                                description={product.description}
+                                                image={product.image}
+                                                name={product.name}
+                                                price={convertPrice(product.price)}
+                                                rating={product.rating}
+                                                type={product.type}
+                                                id={product._id}
+                                            />
+                                        ))
+                                    ) : (
+                                        <h1 className='item-center'>No products found</h1>
+                                    )}
                                 </Row>
                                 <Pagination
                                     align="center"

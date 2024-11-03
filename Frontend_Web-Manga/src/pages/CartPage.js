@@ -15,7 +15,9 @@ const CartPage = () => {
     const order = useSelector((state) => state.order)
     const user = useSelector((state) => state.user)
     const [listChecked, setListChecked] = useState([])
+    const [currentStep, SetCurrentStep] = useState(0)
     const dispatch = useDispatch()
+    console.log('user ||| ', user);
 
     const [stateDetailsUser, setStateDetailsUser] = useState({
         name: '',
@@ -63,6 +65,10 @@ const CartPage = () => {
 
     useEffect(() => {
         dispatch(selectedOrder({ listChecked }))
+        if (listChecked.length > 0)
+            SetCurrentStep(1)
+        else
+            SetCurrentStep(0)
     }, [listChecked])
 
     const handleDeleteOrder = (idProduct) => {
@@ -208,10 +214,12 @@ const CartPage = () => {
                         <div className='col-8 cart-item-block'>
                             <div className='col-12 cart-item-header-block p-0' >
                                 <div className='cart-item-header-inner bg'>
-                                    {/* <div className='row cart-item-header'>
-                                        <Step current={0} />
+                                    <div className='row timeline-step m-0'>
+                                        <Step current={currentStep} />
                                     </div>
-                                    <hr style={{ width: '95%', margin: '0 auto' }} /> */}
+                                    <span className='item-center'>
+                                        <hr style={{ width: '95%' }} />
+                                    </span>
                                     <div className='row cart-item-header'>
                                         <div className='col-1 cart-item-header-check item-center'>
                                             <input onChange={handleOnChangeCheckAll} checked={listChecked?.length === order?.orderItems?.length} className="form-check-input m-0" type="checkbox" value="" aria-label="..." />

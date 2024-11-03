@@ -4,7 +4,7 @@ const EmailService = require('./EmailService')
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems, fullName, address, phone, paymentMethod, itemsPrice, shippingPrice, totalPrice, user, isPaid, paidAt, email } = newOrder
+        const { orderItems, fullName, address, phone, paymentMethod, itemsPrice, shippingPrice, totalPrice, user, isPaid, isDelivered, paidAt, email } = newOrder
         try {
             const promises = orderItems.map(async (order) => {
                 const productData = await Product.findByIdAndUpdate(
@@ -61,6 +61,7 @@ const createOrder = (newOrder) => {
                     itemsPrice,
                     shippingPrice,
                     totalPrice,
+                    isDelivered,
                     user: user,
                     isPaid: isPaid,
                     paidAt: paidAt
@@ -191,10 +192,24 @@ const cancelOrder = async (id, data) => {
     }
 }
 
-
+const getAllOrder = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allOrder = await Order.find()
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: allOrder
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
 module.exports = {
     createOrder,
     getAllDetailsOrder,
     getDetailsOrder,
-    cancelOrder
+    cancelOrder,
+    getAllOrder
 }

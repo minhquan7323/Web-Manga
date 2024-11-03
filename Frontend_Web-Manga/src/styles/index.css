@@ -7,6 +7,10 @@ body {
   background-color: #fff;
 }
 
+.nav-link {
+  cursor: pointer;
+}
+
 .header-user,
 .header-account {
   cursor: pointer;
@@ -298,6 +302,28 @@ footer {
   padding: 10px;
 }
 
+/* src/ScrollToTopButton.css */
+.scroll-to-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 1000;
+}
+
+.scroll-button {
+  background-color: #007BFF;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.scroll-button:hover {
+  background-color: #0056b3;
+}
 
 
 
@@ -573,4 +599,8 @@ footer {
 
 .my-order-user-name {
   font-weight: bold;
+}
+
+.timeline-step {
+  padding: 16px 16px 0 16px !important;
 }

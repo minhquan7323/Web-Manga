@@ -11,6 +11,7 @@ import * as message from "../components/Message/Message"
 import { updateUser } from '../redux/userSlide'
 import { removeAllOrderProduct } from '../redux/orderSlide'
 import { PayPalButton } from "react-paypal-button-v2";
+import Step from '../components/User/Step'
 
 const PaymentPage = () => {
     const order = useSelector((state) => state.order)
@@ -72,6 +73,7 @@ const PaymentPage = () => {
                 itemsPrice: priceMemo,
                 shippingPrice: deliveryPriceMemo,
                 totalPrice: totalAmountMemo,
+                isDelivered: false,
                 user: user?.id,
             })
     }
@@ -192,6 +194,7 @@ const PaymentPage = () => {
             totalPrice: totalAmountMemo,
             user: user?.id,
             isPaid: true,
+            isDelivered: false,
             email: user?.email,
             // paidAt: details.update_time
         })
@@ -229,6 +232,12 @@ const PaymentPage = () => {
                         <div className='col-12 col-xs-12 col-sm-6 col-md-6 col-lg-8 cart-item-header-block'>
                             <div className='cart-item-block p-0'>
                                 <div className='cart-item-inner bg'>
+                                    <div className='row timeline-step m-0'>
+                                        <Step current={2} />
+                                    </div>
+                                    <span className='item-center'>
+                                        <hr style={{ width: '95%' }} />
+                                    </span>
                                     <div className='cart-item-payment'>
                                         <div>
                                             <div>
