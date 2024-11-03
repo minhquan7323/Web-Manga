@@ -398,9 +398,9 @@ function AdminUser() {
                                                     <input type="name" className="form-control" id="nameDetail" placeholder="name" value={stateDetailsUser.name} name="name" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="name">Name</label>
                                                 </div>
-                                                <div class="form-check form-switch col-4" style={{ paddingTop: '20px' }}>
-                                                    <input class="form-check-input" onChange={handleOnchangeDetails} checked={stateDetailsUser.isAdmin} type="checkbox" role="switch" id="isAdminDetail" name="isAdmin" />
-                                                    <label class="form-check-label" htmlFor="isAdmin">Admin</label>
+                                                <div className="form-check form-switch col-4" style={{ paddingTop: '20px' }}>
+                                                    <input className="form-check-input" onChange={handleOnchangeDetails} checked={stateDetailsUser.isAdmin} type="checkbox" role="switch" id="isAdminDetail" name="isAdmin" />
+                                                    <label className="form-check-label" htmlFor="isAdmin">Admin</label>
                                                 </div>
                                                 <div className="form-floating mb-3 col-5">
                                                     <input type="tel" className="form-control" id="phoneDetail" placeholder="0123123123" value={stateDetailsUser.phone} name="phone" onChange={handleOnchangeDetails} required />
