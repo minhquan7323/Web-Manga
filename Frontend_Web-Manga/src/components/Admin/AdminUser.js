@@ -193,9 +193,10 @@ function AdminUser() {
         })
     }
     const handleOnchangeDetails = (e) => {
+        const { name, type, value, checked } = e.target
         setStateDetailsUser({
             ...stateDetailsUser,
-            [e.target.name]: e.target.value
+            [name]: type === "checkbox" ? checked : value
         })
     }
 
@@ -345,19 +346,19 @@ function AdminUser() {
                                                 <input type="name" className="form-control" id="name" placeholder="name" value={stateUser.name} name="name" onChange={handleOnchange} required />
                                                 <label htmlFor="name">Name</label>
                                             </div>
-                                            <div className="form-floating mb-3 col-6">
+                                            <div className="form-floating mb-3 col-5">
                                                 <input type="tel" className="form-control" id="phone" placeholder="0123123123" value={stateUser.phone} name="phone" onChange={handleOnchange} required />
                                                 <label htmlFor="phone">Phone</label>
                                             </div>
-                                            <div className="form-floating mb-3 col-6">
+                                            <div className="form-floating mb-3 col-7">
                                                 <input type="email" className="form-control" id="email" placeholder="email@gmail.com" value={stateUser.email} name="email" onChange={handleOnchange} required />
                                                 <label htmlFor="email">Email address</label>
                                             </div>
-                                            <div className="form-floating mb-3 col-6">
+                                            <div className="form-floating mb-3 col-xs-12 col-sm-6 col-md-6 col-lg-6 col-12">
                                                 <input type="password" className="form-control" id="password" placeholder="password" value={stateUser.password} name="password" onChange={handleOnchange} required />
                                                 <label htmlFor="password">Password</label>
                                             </div>
-                                            <div className="form-floating mb-3 col-6">
+                                            <div className="form-floating mb-3 col-xs-12 col-sm-6 col-md-6 col-lg-6 col-12">
                                                 <input type="password" className="form-control" id="confirmPassword" placeholder="confirmPassword" value={stateUser.confirmPassword} name="confirmPassword" onChange={handleOnchange} required />
                                                 <label htmlFor="confirmPassword">Confirm password</label>
                                             </div>
@@ -393,25 +394,25 @@ function AdminUser() {
                                                         <img src={stateDetailsUser?.avatar} alt="avt" />
                                                     )}
                                                 </div>
-                                                <div className="form-floating mb-3 col-12">
+                                                <div className="form-floating mb-3 col-8">
                                                     <input type="name" className="form-control" id="nameDetail" placeholder="name" value={stateDetailsUser.name} name="name" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="name">Name</label>
                                                 </div>
-                                                <div className="form-floating mb-3 col-6">
+                                                <div class="form-check form-switch col-4" style={{ paddingTop: '20px' }}>
+                                                    <input class="form-check-input" onChange={handleOnchangeDetails} checked={stateDetailsUser.isAdmin} type="checkbox" role="switch" id="isAdminDetail" name="isAdmin" />
+                                                    <label class="form-check-label" htmlFor="isAdmin">Admin</label>
+                                                </div>
+                                                <div className="form-floating mb-3 col-5">
                                                     <input type="tel" className="form-control" id="phoneDetail" placeholder="0123123123" value={stateDetailsUser.phone} name="phone" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="phone">Phone</label>
                                                 </div>
-                                                <div className="form-floating mb-3 col-6">
+                                                <div className="form-floating mb-3 col-7">
                                                     <input type="email" className="form-control" id="emailDetail" placeholder="email@gmail.com" value={stateDetailsUser.email} name="email" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="email">Email address</label>
                                                 </div>
-                                                <div className="form-floating mb-3 col-6">
+                                                <div className="form-floating mb-3 col-12">
                                                     <input type="address" className="form-control" id="addressDetail" placeholder="address" value={stateDetailsUser.address || ''} name="address" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="address">Address</label>
-                                                </div>
-                                                <div className="form-floating mb-3 col-6">
-                                                    <input type="isAdmin" className="form-control" id="isAdminDetail" placeholder="isAdmin" value={stateDetailsUser.isAdmin} name="isAdmin" onChange={handleOnchangeDetails} required />
-                                                    <label htmlFor="isAdmin">Admin</label>
                                                 </div>
                                             </div>
                                         </div>
