@@ -17,7 +17,6 @@ const CartPage = () => {
     const [listChecked, setListChecked] = useState([])
     const [currentStep, SetCurrentStep] = useState(0)
     const dispatch = useDispatch()
-    console.log('user ||| ', user);
 
     const [stateDetailsUser, setStateDetailsUser] = useState({
         name: '',

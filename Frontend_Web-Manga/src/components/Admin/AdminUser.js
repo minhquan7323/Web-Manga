@@ -249,7 +249,15 @@ function AdminUser() {
         })
     }
     const updateUser = () => {
-        mutationUpdate.mutate({ id: rowSelected, ...stateDetailsUser, access_token: user?.access_token }, {
+        mutationUpdate.mutate({
+            id: rowSelected,
+            name: stateDetailsUser.name,
+            phone: stateDetailsUser.phone,
+            avatar: stateDetailsUser.avatar,
+            address: stateDetailsUser.address,
+            isAdmin: stateDetailsUser.isAdmin,
+            access_token: user?.access_token
+        }, {
             onSettled: () => {
                 queryUser.refetch()
             }

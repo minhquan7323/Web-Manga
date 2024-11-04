@@ -4,15 +4,6 @@ import * as UserService from './UserService'
 
 export const axiosJWT = UserService.axiosJWT
 
-// export const getAllProduct = async (search, limit) => {
-//     let res = {}
-//     if (search?.length > 0) {
-//         res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?filter=name&filter=${search}&limit=${limit}`)
-//     } else {
-//         res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?limit=${limit}`)
-//     }
-//     return res.data
-// }
 export const getAllProduct = async (search, types, limit, page) => {
     let res = {}
     let filterParams = []

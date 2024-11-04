@@ -31,13 +31,15 @@ const ProductPage = () => {
         const res = await ProductService.getAllProduct(search, types, limit, page)
 
         if (res?.status === 'OK') {
-            setPagination((prev) => ({
-                ...prev,
-                total: search.length > 0 ? res?.data?.length : res?.totalProduct,
-                // total: res?.totalFilteredProduct || res?.data?.length || 0,
-                // total: res?.totalFilteredProduct || (search.length > 0 ? res?.data?.length : res?.totalProduct) || 0,
-
-            }))
+            setPagination((prev) => {
+                const newTotal = res?.totalProductFilter ?? res?.totalProduct
+                const newPage = prev.page > Math.ceil(newTotal / prev.limit) ? 1 : prev.page
+                return {
+                    ...prev,
+                    total: newTotal,
+                    page: newPage,
+                }
+            })
             return res?.data || []
         }
         return []

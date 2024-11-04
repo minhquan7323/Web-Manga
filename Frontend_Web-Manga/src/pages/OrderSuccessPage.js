@@ -79,28 +79,26 @@ const OrderSuccessPage = () => {
                                             {state.order?.map((orderItem, index) => {
                                                 const isLastOrder = index === state.order?.length - 1
                                                 return (
-                                                    <>
-                                                        <Row className="g-2 item-center" style={{ marginBottom: isLastOrder ? '0' : '10px' }}>
-                                                            <Col xs={12} className="my-order-item" key={orderItem.product}>
-                                                                <Row className="item-center">
-                                                                    <Col xs={3} className='my-order-img'>
-                                                                        <div >
-                                                                            <img src={orderItem.image} alt={orderItem.name} onClick={() => handleClickNav('details', orderItem.product)} />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xs={9} className='my-order-details'>
-                                                                        <div className='my-order-name'>
-                                                                            <span>{orderItem.name}</span>
-                                                                        </div>
-                                                                        <div className="my-order-price-amount">
-                                                                            <span>{convertPrice(orderItem.price)} VND</span>
-                                                                            <div>x{orderItem.amount}</div>
-                                                                        </div>
-                                                                    </Col>
-                                                                </Row>
-                                                            </Col>
-                                                        </Row>
-                                                    </>
+                                                    <Row className="g-2 item-center" style={{ marginBottom: isLastOrder ? '0' : '10px' }} key={orderItem.product}>
+                                                        <Col xs={12} className="my-order-item">
+                                                            <Row className="item-center">
+                                                                <Col xs={3} className='my-order-img'>
+                                                                    <div >
+                                                                        <img src={orderItem.image} alt={orderItem.name} onClick={() => handleClickNav('details', orderItem.product)} />
+                                                                    </div>
+                                                                </Col>
+                                                                <Col xs={9} className='my-order-details'>
+                                                                    <div className='my-order-name'>
+                                                                        <span>{orderItem.name}</span>
+                                                                    </div>
+                                                                    <div className="my-order-price-amount">
+                                                                        <span>{convertPrice(orderItem.price)} VND</span>
+                                                                        <div>x{orderItem.amount}</div>
+                                                                    </div>
+                                                                </Col>
+                                                            </Row>
+                                                        </Col>
+                                                    </Row>
                                                 )
                                             })}
                                             <hr style={{ width: '100%', margin: '20px 0' }} />

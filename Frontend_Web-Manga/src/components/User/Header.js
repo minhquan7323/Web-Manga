@@ -77,6 +77,7 @@ const Header = () => {
 
     const onSearch = () => {
         dispatch(searchProduct(search))
+        navigate('/Product')
     }
 
     return (
