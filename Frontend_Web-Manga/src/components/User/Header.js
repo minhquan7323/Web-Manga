@@ -5,14 +5,14 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
-import Loading from '../Loading/Loading'
+import Loading from '../Loading/Loading.js'
 import { useNavigate, NavLink, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
-import * as UserService from '../../services/UserService'
-import * as message from "../../components/Message/Message.js"
-import { resetUser } from '../../redux/userSlide'
+import * as UserService from '../../services/UserService.js'
+import * as message from "../Message/Message.js"
+import { resetUser } from '../../redux/userSlide.js'
 import { searchProduct } from '../../redux/productSlide.js'
 
 const Header = () => {
