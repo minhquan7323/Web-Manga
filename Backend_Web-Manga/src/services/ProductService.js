@@ -125,73 +125,49 @@ const deleteManyProducts = (ids) => {
     })
 }
 
-const allProduct = (limit, page, sort, filter) => {
+const allProduct = (limit, page, sort, filter, searchQuery) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const totalProduct = await Product.countDocuments()
-            let allProduct = []
-            let totalProductFilter = totalProduct
+            const query = {}
+            if (searchQuery) {
+                query['name'] = { '$regex': searchQuery, '$options': 'i' }
+            }
             if (filter) {
-                const query = filter.map((f, index) => {
+                filter.forEach((f, index) => {
                     if (index % 2 === 0) {
-                        return { [f]: { '$regex': filter[index + 1], '$options': 'i' } }
+                        query[f] = { '$regex': filter[index + 1], '$options': 'i' }
                     }
-                    return null
-                }).filter(Boolean)
-                totalProductFilter = await Product.countDocuments({ '$or': query })
-                const allProductFilter = await Product.find({ '$or': query })
-                    .limit(limit)
-                    .skip((page - 1) * limit)
-
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: allProductFilter,
-                    totalProduct,
-                    totalProductFilter,
-                    currentPage: Number(page),
-                    totalPage: Math.ceil(totalProductFilter / limit)
                 })
-                return
             }
 
+            const totalProduct = await Product.countDocuments()
+            const totalProductFilter = await Product.countDocuments(query)
+
+            let productQuery = Product.find(query)
             if (sort) {
                 const objectSort = {}
                 objectSort[sort[1]] = sort[0]
-                const allProductSort = await Product.find()
-                    .sort(objectSort)
-                    .limit(limit)
-                    .skip((page - 1) * limit)
-                resolve({
-                    status: 'OK',
-                    message: 'Success',
-                    data: allProductSort,
-                    totalProduct,
-                    currentPage: Number(page),
-                    totalPage: Math.ceil(totalProduct / limit)
-                })
-                return
+                productQuery = productQuery.sort(objectSort)
             }
-            if (!limit) {
-                allProduct = await Product.find()
-            } else {
-                allProduct = await Product.find()
-                    .limit(limit)
-                    .skip((page - 1) * limit)
-            }
+
+            productQuery = productQuery.limit(limit).skip((page - 1) * limit)
+            const allProduct = await productQuery
+
             resolve({
                 status: 'OK',
                 message: 'Success',
                 data: allProduct,
                 totalProduct,
+                totalProductFilter,
                 currentPage: Number(page),
-                totalPage: Math.ceil(totalProduct / limit)
+                totalPage: Math.ceil(totalProductFilter / limit)
             })
         } catch (e) {
             reject(e)
         }
     })
 }
+
 const getAllTypeProduct = () => {
     return new Promise(async (resolve, reject) => {
         try {
