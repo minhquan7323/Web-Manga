@@ -32,7 +32,7 @@ const AdminPage = () => {
     }
 
     const rootSubmenuKeys = ['user', 'product', 'order', 'dashboard']
-    const [keySelected, setKeySelected] = useState('dashboard')
+    const [keySelected, setKeySelected] = useState('product')
     const [openKeys, setOpenKeys] = useState([keySelected])
 
     const onOpenChange = (keys) => {

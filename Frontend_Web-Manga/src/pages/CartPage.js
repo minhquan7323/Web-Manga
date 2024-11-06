@@ -148,12 +148,7 @@ const CartPage = () => {
     const mutationUpdate = useMutationHooks(
         async (data) => {
             const { id, access_token, ...rests } = data
-            const res = await UserService.updateUser(id, rests, access_token)
-            if (res?.status == 'OK') {
-                handleCancel()
-                message.success()
-            }
-            return res
+            await UserService.updateUser(id, rests, access_token)
         }
     )
     const { data: dataUpdated, isSuccess: isSuccessUpdated, isError: isErrorUpdated } = mutationUpdate
@@ -168,10 +163,33 @@ const CartPage = () => {
     const handleUpdateUser = () => {
         const { name, address, phone } = stateDetailsUser
         if (name && address && phone) {
-            // mutationUpdate.reset()
             mutationUpdate.mutate({ id: user?.id, ...stateDetailsUser, access_token: user?.access_token })
-            dispatch(updateUser({ name, address, phone }))
         }
+    }
+    useEffect(() => {
+        if (user) {
+            setStateDetailsUser({
+                name: user?.name || '',
+                phone: user?.phone || '',
+                address: user?.address || ''
+            })
+        }
+    }, [user])
+
+    useEffect(() => {
+        if (isSuccessUpdated) {
+            message.success()
+            handleGetDetailsUser(user?.id, user?.access_token)
+            handleCancel()
+        }
+        else if (isErrorUpdated) {
+            message.error()
+        }
+    }, [isSuccessUpdated, isErrorUpdated])
+
+    const handleGetDetailsUser = async (id, access_token) => {
+        const res = await UserService.getDetailsUser(id, access_token)
+        dispatch(updateUser({ ...res?.data, access_token: access_token }))
     }
 
     const handleCancel = () => {
@@ -303,9 +321,9 @@ const CartPage = () => {
                                         <div className='cart-total-number'>
                                             <p><b>{user?.address}</b></p>
                                         </div>
-                                        {/* <div>
+                                        <div style={{ cursor: 'pointer' }}>
                                             <p onClick={handleChangeAddress}><b>Change</b></p>
-                                        </div> */}
+                                        </div>
                                     </div>
                                     <hr />
                                     <div className='cart-total'>

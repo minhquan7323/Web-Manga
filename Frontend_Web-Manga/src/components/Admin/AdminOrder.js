@@ -3,7 +3,7 @@ import TableComponent from "../Table"
 import * as OrderService from '../../services/OrderService.js'
 import { useQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
-import { convertPrice } from '../../utils.js'
+import { convertPrice, sortByDate } from '../../utils.js'
 import { orderContant } from '../../contant.js'
 function AdminOrder() {
     const user = useSelector((state) => state?.user)
@@ -83,7 +83,7 @@ function AdminOrder() {
             <div className='admin-system-content-right bg'>
                 <TableComponent
                     columns={columns}
-                    data={dataTable}
+                    data={sortByDate(dataTable)}
                     isLoading={isLoadingOrders}
                 />
             </div>

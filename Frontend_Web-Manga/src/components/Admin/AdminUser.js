@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import TableComponent from "../Table"
-import { resizeImage } from '../../utils'
+import { resizeImage, sortByDate } from '../../utils'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Upload } from 'antd'
 import * as UserService from '../../services/UserService.js'
@@ -463,7 +463,7 @@ function AdminUser() {
                 <TableComponent
                     deleteMany={deleteManyUsers}
                     columns={columns}
-                    data={dataTable}
+                    data={sortByDate(dataTable)}
                     isLoading={isLoadingUsers}
                     onRow={(record, rowIndex) => {
                         return {

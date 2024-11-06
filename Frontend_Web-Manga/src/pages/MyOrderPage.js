@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { useMutationHooks } from '../hooks/useMutationHook.js'
 import * as message from "../components/Message/Message"
 import React, { useEffect, useState } from "react"
-import { convertPrice } from "../utils.js"
+import { convertPrice, sortByDate } from "../utils.js"
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -137,8 +137,8 @@ function MyOrderPage() {
                         </div>
                     </Col>
                     <Col xs={12} sm={8} md={9} lg={9} className="my-order-content-block">
-                        {data?.length > 0 ? (
-                            data?.map((order, index) => {
+                        {data && data?.length > 0 ? (
+                            sortByDate(data).map((order, index) => {
                                 const isLastOrder = index === data.length - 1
                                 const totalProducts = order.orderItems.reduce((sum, item) => sum + item.amount, 0)
                                 const itemsToDisplay = expandedOrders[order._id] ? order.orderItems : order.orderItems.slice(0, 2)

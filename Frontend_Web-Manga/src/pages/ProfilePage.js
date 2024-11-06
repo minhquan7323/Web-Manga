@@ -26,7 +26,8 @@ const ProfilePage = () => {
     const mutation = useMutationHooks(
         async (data) => {
             const { id, access_token, ...rests } = data
-            await UserService.updateUser(id, rests, access_token)
+            const res = await UserService.updateUser(id, rests, access_token)
+            return res
         }
     )
 

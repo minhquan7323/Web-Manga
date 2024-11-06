@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import TableComponent from "../Table"
-import { resizeImage } from '../../utils'
+import { resizeImage, sortByDate } from '../../utils'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Upload } from 'antd'
 import * as ProductService from '../../services/ProductService.js'
@@ -525,7 +525,7 @@ function AdminProduct() {
                 <TableComponent
                     deleteMany={deleteManyProducts}
                     columns={columns}
-                    data={dataTable}
+                    data={sortByDate(dataTable)}
                     isLoading={isLoadingProducts}
                     onRow={(record) => {
                         return {
