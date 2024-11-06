@@ -132,7 +132,7 @@ const allProduct = (limit, page, sort, filter, searchQuery) => {
             if (searchQuery) {
                 query['name'] = { '$regex': searchQuery, '$options': 'i' }
             }
-            if (filter) {
+            if (filter && Array.isArray(filter)) {
                 filter.forEach((f, index) => {
                     if (index % 2 === 0) {
                         query[f] = { '$regex': filter[index + 1], '$options': 'i' }
@@ -146,12 +146,11 @@ const allProduct = (limit, page, sort, filter, searchQuery) => {
             let productQuery = Product.find(query)
             if (sort) {
                 const objectSort = {}
-                objectSort[sort[1]] = sort[0]
+                objectSort[sort[1]] = sort[0] === 'asc' ? 1 : -1
                 productQuery = productQuery.sort(objectSort)
             }
 
-            productQuery = productQuery.limit(limit).skip((page - 1) * limit)
-            const allProduct = await productQuery
+            const allProduct = await productQuery.limit(limit).skip((page - 1) * limit)
 
             resolve({
                 status: 'OK',

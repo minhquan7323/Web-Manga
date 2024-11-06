@@ -15,6 +15,7 @@ const ProductPage = () => {
     const searchProduct = useSelector((state) => state?.product?.search)
     const [typeProducts, setTypeProducts] = useState([])
     const [selectedTypes, setSelectedTypes] = useState([])
+    const [sortOrder, setSortOrder] = useState('')
     const [pagination, setPagination] = useState({
         page: 1,
         limit: 12,
@@ -27,8 +28,9 @@ const ProductPage = () => {
         const search = context.queryKey[2]
         const types = context.queryKey[3] || []
         const page = context.queryKey[4]
+        const sort = context.queryKey[5]
 
-        const res = await ProductService.getAllProduct(search, types, limit, page)
+        const res = await ProductService.getAllProduct(search, types, limit, page, sort)
 
         if (res?.status === 'OK') {
             setPagination((prev) => {
@@ -55,7 +57,7 @@ const ProductPage = () => {
     }, [])
 
     const { isLoading, data: products = [] } = useQuery({
-        queryKey: ['products', pagination.limit, searchProduct, selectedTypes, pagination.page],
+        queryKey: ['products', pagination.limit, searchProduct, selectedTypes, pagination.page, sortOrder],
         queryFn: fetchAllProduct,
         retry: 3,
         retryDelay: 1000,
@@ -98,6 +100,10 @@ const ProductPage = () => {
 
     const handleShowLessTypes = () => {
         setVisibleTypes(6)
+    }
+
+    const handleSortChange = (sort) => {
+        setSortOrder(sort)
     }
 
     return (
@@ -164,7 +170,7 @@ const ProductPage = () => {
                     </Col>
                     <Col xs={12} sm={12} md={12} lg={9} className='product-box'>
                         <div className='bg'>
-                            <Toolbar />
+                            <Toolbar onSortChange={handleSortChange} />
                             <Loading isLoading={isLoading}>
                                 <Row className="products">
                                     {products?.length > 0 ? (

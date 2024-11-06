@@ -4,7 +4,7 @@ import * as UserService from './UserService'
 
 export const axiosJWT = UserService.axiosJWT
 
-export const getAllProduct = async (search, types, limit, page) => {
+export const getAllProduct = async (search, types, limit, page, sort) => {
     let res = {}
     let filterParams = []
     if (search?.length > 0) {
@@ -17,6 +17,9 @@ export const getAllProduct = async (search, types, limit, page) => {
     }
     if (page) {
         filterParams.push(`page=${page}`)
+    }
+    if (sort) {
+        filterParams.push(`sort=${sort}&sort=price`)
     }
     if (limit) {
         filterParams.push(`limit=${limit}`)
