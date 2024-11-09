@@ -16,6 +16,7 @@
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "jquery": "^3.7.1",
     "jwt-decode": "^4.0.0",
