@@ -22,6 +22,7 @@ function DetailsOrderPage() {
         enabled: Boolean(id)
     })
     const { isLoading, data: detailsOrder } = queryOrder
+    console.log('detailsOrder', detailsOrder);
 
     return (
         <Loading isLoading={isLoading}>
