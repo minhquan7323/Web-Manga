@@ -29,7 +29,6 @@ function DetailsOrderPage() {
         enabled: Boolean(id)
     })
     const { isLoading, data: detailsOrder } = queryOrder
-    console.log('detailsOrder', detailsOrder);
 
     return (
         <Loading isLoading={isLoading}>
@@ -89,7 +88,13 @@ function DetailsOrderPage() {
                                 })}
                                 <hr style={{ width: '100%', margin: '20px 0' }} />
                                 <div style={{ fontSize: 14, color: 'darkgray' }}>
-                                    Create order at: {format(new Date(detailsOrder?.createdAt), ' HH:mm:ss dd/MM/yyyy')}
+                                    Create order at:
+                                    {/* {format(new Date(detailsOrder.createdAt), ' HH:mm:ss dd/MM/yyyy')} */}
+                                    {
+                                        detailsOrder?.createdAt
+                                            ? format(new Date(detailsOrder.createdAt), ' HH:mm:ss dd/MM/yyyy')
+                                            : 'Unknown'
+                                    }
                                 </div>
                                 <div style={{ justifyContent: 'flex-end' }}>
                                     <div>
@@ -106,7 +111,7 @@ function DetailsOrderPage() {
                                             <span>{convertPrice(detailsOrder?.totalPrice)} VND</span>
                                         </div>
                                         <hr style={{ width: '100%', margin: '20px 0' }} />
-                                        Paid: {detailsOrder?.isPaid ? detailsOrder?.paymentMethod : 'unpaid'}
+                                        Paid: {detailsOrder?.isPaid ? detailsOrder?.paymentMethod : 'Unpaid'}
 
                                     </div>
                                 </div>

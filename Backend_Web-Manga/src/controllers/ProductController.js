@@ -107,6 +107,7 @@ const allProduct = async (req, res) => {
         })
     }
 }
+
 const getAllTypeProduct = async (req, res) => {
     try {
         const response = await ProductService.getAllTypeProduct()

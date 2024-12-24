@@ -1,7 +1,6 @@
-const { default: mongoose } = require('mongoose')
-const moongoose = require('mongoose')
+const Mongoose = require('mongoose')
 
-const orderSchema = new moongoose.Schema(
+const orderSchema = new Mongoose.Schema(
     {
         orderItems: [
             {
@@ -11,7 +10,7 @@ const orderSchema = new moongoose.Schema(
                 price: { type: Number, require: true },
                 discount: { type: Number },
                 product: {
-                    type: mongoose.Schema.Types.ObjectId,
+                    type: Mongoose.Schema.Types.ObjectId,
                     ref: 'Product',
                     require: true,
                 },
@@ -27,7 +26,7 @@ const orderSchema = new moongoose.Schema(
         itemsPrice: { type: Number, require: true },
         shippingPrice: { type: Number, require: true },
         totalPrice: { type: Number, require: true },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true },
+        user: { type: Mongoose.Schema.Types.ObjectId, ref: 'User', require: true },
         isPaid: { type: Boolean, require: false },
         paidAt: { type: Date },
         isDelivered: { type: Boolean, require: false },
@@ -37,5 +36,5 @@ const orderSchema = new moongoose.Schema(
         timestamps: true
     }
 )
-const Order = moongoose.model("Order", orderSchema)
+const Order = Mongoose.model("Order", orderSchema)
 module.exports = Order

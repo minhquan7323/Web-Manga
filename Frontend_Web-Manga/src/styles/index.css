@@ -77,6 +77,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
 .product-card:hover {
@@ -141,6 +142,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
+
 }
 
 .product-card-episode {

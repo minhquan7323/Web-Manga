@@ -14,6 +14,7 @@ import Step from '../components/User/Step'
 const CartPage = () => {
     const order = useSelector((state) => state.order)
     const user = useSelector((state) => state.user)
+
     const [listChecked, setListChecked] = useState([])
     const [currentStep, SetCurrentStep] = useState(0)
     const dispatch = useDispatch()
@@ -111,23 +112,26 @@ const CartPage = () => {
     }, [priceMemo, deliveryPriceMemo])
 
     const handlePayment = () => {
-        if (!user?.phone || !user?.address || !user?.name) {
-            const modalUpdateInfoElement = document.getElementById('modalUpdateInfo')
-            if (modalUpdateInfoElement) {
-                const modalUpdateInfoInstance = BootstrapModal.getOrCreateInstance(modalUpdateInfoElement)
-                if (modalUpdateInfoInstance) {
-                    setStateDetailsUser({
-                        name: user?.name,
-                        address: user?.address,
-                        phone: user?.phone
-                    })
-                    modalUpdateInfoInstance.show()
+        if (!user.id)
+            navigate('/signin')
+        else
+            if (!user?.phone || !user?.address || !user?.name) {
+                const modalUpdateInfoElement = document.getElementById('modalUpdateInfo')
+                if (modalUpdateInfoElement) {
+                    const modalUpdateInfoInstance = BootstrapModal.getOrCreateInstance(modalUpdateInfoElement)
+                    if (modalUpdateInfoInstance) {
+                        setStateDetailsUser({
+                            name: user?.name,
+                            address: user?.address,
+                            phone: user?.phone
+                        })
+                        modalUpdateInfoInstance.show()
+                    }
                 }
             }
-        }
-        else {
-            navigate('/payment')
-        }
+            else {
+                navigate('/payment')
+            }
     }
 
     const handleChangeAddress = () => {

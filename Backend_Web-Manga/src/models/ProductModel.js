@@ -1,22 +1,24 @@
-const moongoose = require('mongoose')
-const productSchema = new moongoose.Schema(
+const Mongoose = require('mongoose')
+const productSchema = new Mongoose.Schema(
     {
         name: { type: String, require: true, unique: true },
         image: { type: String, require: true },
-        type: { type: [String], require: true },
-        price: { type: Number, require: true },
-        stock: { type: Number, require: true },
-        rating: { type: Number },
-        description: { type: String },
-        supplier: { type: String },
-        publisher: { type: String },
-        author: { type: String },
-        cover: { type: String },
-        selled: { type: Number }
+        // type: { type: [String], required: true },
+        type: [{ type: Mongoose.Schema.Types.ObjectId, ref: 'Category', require: true }],
+        price: { type: Number, require: true, min: 0 },
+        stock: { type: Number, require: true, min: 0 },
+        rating: { type: Number, min: 0, max: 5 },
+        description: { type: String, default: '' },
+        supplier: { type: String, default: '' },
+        // supplier: { type: Mongoose.Schema.Types.ObjectId, ref: 'Supplier' },
+        publisher: { type: String, default: '' },
+        author: { type: String, default: '' },
+        cover: { type: String, default: '' },
+        selled: { type: Number, default: 0 }
     },
     {
         timestamps: true
     }
 )
-const Product = moongoose.model("Product", productSchema)
+const Product = Mongoose.model("Product", productSchema)
 module.exports = Product
