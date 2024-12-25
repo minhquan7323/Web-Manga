@@ -129,13 +129,24 @@ const allProduct = (limit, page, sort, filter, searchQuery) => {
     return new Promise(async (resolve, reject) => {
         try {
             const query = {}
+
+            // Lọc theo search query
             if (searchQuery) {
                 query['name'] = { '$regex': searchQuery, '$options': 'i' }
             }
+
+            // Lọc theo các filter, bao gồm cả loại sản phẩm (type)
             if (filter && Array.isArray(filter)) {
                 filter.forEach((f, index) => {
                     if (index % 2 === 0) {
-                        query[f] = { '$regex': filter[index + 1], '$options': 'i' }
+                        // Kiểm tra xem filter có phải là loại sản phẩm (type)
+                        if (f === 'type') {
+                            // Nếu là loại, dùng $in để lọc các sản phẩm có type nằm trong mảng các ID
+                            query['type'] = { '$in': filter[index + 1].split(',') }  // Tách các ID bằng dấu phẩy
+                        } else {
+                            // Lọc theo các trường khác (dùng regex)
+                            query[f] = { '$regex': filter[index + 1], '$options': 'i' }
+                        }
                     }
                 })
             }
@@ -166,6 +177,7 @@ const allProduct = (limit, page, sort, filter, searchQuery) => {
         }
     })
 }
+
 
 const getAllTypeProduct = () => {
     return new Promise(async (resolve, reject) => {

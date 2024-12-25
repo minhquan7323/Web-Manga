@@ -4,6 +4,7 @@ import { resizeImage, sortByDate } from '../../utils'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Upload } from 'antd'
 import * as ProductService from '../../services/ProductService.js'
+import * as CategoryService from '../../services/CategoryService.js'
 import * as message from "../Message/Message.js"
 import { useMutationHooks } from '../../hooks/useMutationHook.js'
 import Loading from '../Loading/Loading.js'
@@ -94,6 +95,19 @@ function AdminProduct() {
         setIsLoadingDetails(false)
     }
 
+    const fetchAllCategory = async () => {
+        const res = await CategoryService.getAllCategory()
+        return res
+    }
+
+    const queryCategory = useQuery({
+        queryKey: ['categories'],
+        queryFn: fetchAllCategory,
+        retry: 3,
+        retryDelay: 1000,
+    })
+    const { isLoading: isLoadingCategories, data: categories } = queryCategory
+
     useEffect(() => {
         if (rowSelected) {
             fetchGetDetailsProduct(rowSelected)
@@ -162,7 +176,13 @@ function AdminProduct() {
     ]
 
     const dataTable = products?.data?.length && products?.data?.map((product) => {
-        return { ...product, key: product._id }
+        return {
+            ...product, key: product._id, type: product.type
+                .map((id) => {
+                    const category = categories?.data?.find((cat) => cat._id === id);
+                    return category ? category.name : "Unknown";
+                })
+        }
     })
 
     useEffect(() => {
@@ -393,20 +413,20 @@ function AdminProduct() {
                                                 <label htmlFor="stock">Stock</label>
                                             </div>
                                             <b>Type</b>
-                                            {productTypes.map((type) => (
-                                                <div className="form-floating mb-0 col-md-6" key={type}>
+                                            {categories?.data?.map((type) => (
+                                                <div className="form-floating mb-0 col-md-6" key={type._id}>
                                                     <div className="form-check">
                                                         <input
                                                             type="checkbox"
-                                                            id={`type-${type}`}
+                                                            id={`type-${type._id}`}
                                                             name="type"
-                                                            value={type}
+                                                            value={type._id}
                                                             className="form-check-input"
-                                                            checked={stateProduct?.type.includes(type)}
-                                                            onChange={() => handleCheckboxChange(type)}
+                                                            checked={stateProduct?.type.includes(type._id)}
+                                                            onChange={() => handleCheckboxChange(type._id)}
                                                         />
-                                                        <label className="form-check-label" htmlFor={`type-${type}`}>
-                                                            {type}
+                                                        <label className="form-check-label" htmlFor={`type-${type._id}`}>
+                                                            {type.name}
                                                         </label>
                                                     </div>
                                                 </div>
@@ -461,25 +481,24 @@ function AdminProduct() {
                                                     <label htmlFor="stock">Stock</label>
                                                 </div>
                                                 <b>Type</b>
-                                                {productTypes.map((type) => (
-                                                    <div className="form-floating mb-0 col-6" key={type}>
+                                                {categories?.data?.map((type) => (
+                                                    <div className="form-floating mb-0 col-md-6" key={type._id}>
                                                         <div className="form-check">
                                                             <input
                                                                 type="checkbox"
-                                                                id={`type-${type}`}
+                                                                id={`type-${type._id}`}
                                                                 name="type"
-                                                                value={type}
+                                                                value={type._id}
                                                                 className="form-check-input"
-                                                                checked={stateDetailsProduct?.type?.includes(type)}
-                                                                onChange={() => handleCheckboxChange(type)}
+                                                                checked={stateDetailsProduct?.type.includes(type._id)}
+                                                                onChange={(e) => handleCheckboxChangeDetails(e)}
                                                             />
-                                                            <label className="form-check-label" htmlFor={`type-${type}`}>
-                                                                {type}
+                                                            <label className="form-check-label" htmlFor={`type-${type._id}`}>
+                                                                {type.name}
                                                             </label>
                                                         </div>
                                                     </div>
                                                 ))}
-
                                                 <div className="form-floating mb-3 col-12">
                                                     <textarea type="description" className="form-control" id="description" placeholder="description" value={stateDetailsProduct.description} name="description" onChange={handleOnchangeDetails} />
                                                     <label htmlFor="description">Description</label>

@@ -11,9 +11,7 @@ export const getAllProduct = async (search, types, limit, page, sort) => {
         filterParams.push(`filter=name&filter=${search}`)
     }
     if (types?.length > 0) {
-        types.forEach(type => {
-            filterParams.push(`filter=type&filter=${type}`)
-        })
+        filterParams.push(`filter=type&filter=${types.join(',')}`)
     }
     if (page) {
         filterParams.push(`page=${page}`)
@@ -28,7 +26,6 @@ export const getAllProduct = async (search, types, limit, page, sort) => {
     res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?${queryString}`)
     return res.data
 }
-
 
 export const getTypeProduct = async (types) => {
     const filterParams = types.map(type => `filter=type&filter=${type}`).join('&')

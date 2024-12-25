@@ -6,6 +6,7 @@ import ProductCard from '../components/User/ProductCard'
 import Toolbar from '../components/User/Toolbar'
 import { Pagination } from 'antd'
 import * as ProductService from '../services/ProductService'
+import * as CategoryService from '../services/CategoryService'
 import { useSelector } from 'react-redux'
 import Loading from '../components/Loading/Loading'
 import { useQuery } from '@tanstack/react-query'
@@ -42,14 +43,29 @@ const ProductPage = () => {
                     page: newPage,
                 }
             })
-            return res?.data || []
+
+            return res?.data
         }
+
         return []
     }
 
     const fetchAllTypeProduct = async () => {
         const res = await ProductService.getAllTypeProduct()
-        setTypeProducts(res?.data)
+        const typesList = res?.data || []
+        setTypeProducts(typesList)
+    }
+
+    const fetchAllCategories = async () => {
+        const res = await CategoryService.getAllCategory()
+        if (res?.status === 'OK') {
+            const categoriesMap = res?.data.reduce((acc, category) => {
+                acc[category._id] = category.name
+                return acc
+            }, {})
+            return categoriesMap
+        }
+        return {}
     }
 
     useEffect(() => {
@@ -64,14 +80,15 @@ const ProductPage = () => {
         enabled: !!pagination.limit,
     })
 
+    const [categoriesMap, setCategoriesMap] = useState({})
+
     useEffect(() => {
-        if (searchProduct.length > 0) {
-            setPagination((prev) => ({
-                ...prev,
-                page: 1
-            }))
+        const fetchCategories = async () => {
+            const categoryData = await fetchAllCategories()
+            setCategoriesMap(categoryData)
         }
-    }, [searchProduct])
+        fetchCategories()
+    }, [])
 
     const handleTypeChange = (type) => {
         setPagination((prev) => ({
@@ -136,7 +153,7 @@ const ProductPage = () => {
                                                     onChange={() => handleTypeChange(item)}
                                                 />
                                                 <label htmlFor={`checkbox-${item}`} style={{ fontSize: '14px', marginLeft: '5px' }}>
-                                                    {item}
+                                                    {categoriesMap[item] ? categoriesMap[item] : 'Unknown Category'}
                                                 </label>
                                             </Col>
                                         ))}
