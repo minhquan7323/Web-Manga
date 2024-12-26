@@ -461,6 +461,7 @@ function AdminUser() {
                 </div>
 
                 <TableComponent
+                    multiChoice={true}
                     deleteMany={deleteManyUsers}
                     columns={columns}
                     data={sortByDate(dataTable)}

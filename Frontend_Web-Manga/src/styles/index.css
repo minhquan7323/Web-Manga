@@ -113,7 +113,7 @@ body {
 .product-card-body .product-card-price {
   color: #c92127;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
   text-align: left;
   padding: 5px 0;
 }
@@ -212,6 +212,7 @@ body {
 .my-order-content-right,
 .my-order-content-left,
 .profile-user-content-left,
+.item-box-shadow,
 .profile-user-content-right {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
@@ -605,4 +606,25 @@ footer {
 
 .timeline-step {
   padding: 16px 16px 0 16px !important;
+}
+
+.admin-system-dashboard-block {
+  padding: 0 10px 10px 10px !important;
+}
+
+.card-header-dashboard {
+  color: #d20000 !important;
+  text-transform: uppercase;
+}
+
+.product-card-sold {
+  color: #6D757D;
+  font-size: 12px;
+  margin: 0 !important;
+  align-items: center;
+}
+
+.product-card-block {
+  display: flex;
+  justify-content: space-between;
 }

@@ -20,7 +20,8 @@ function AdminProduct() {
         type: [],
         price: '',
         stock: '',
-        description: ''
+        description: '',
+        cover: 'Paperback'
     })
     const [stateDetailsProduct, setStateDetailsProduct] = useState({
         name: '',
@@ -28,7 +29,8 @@ function AdminProduct() {
         type: [],
         price: '',
         stock: '',
-        description: ''
+        description: '',
+        cover: 'Paperback'
     })
     const [rowSelected, setRowSelected] = useState('')
     const user = useSelector((state) => state?.user)
@@ -89,7 +91,8 @@ function AdminProduct() {
                 type: res.data.type,
                 price: res.data.price,
                 stock: res.data.stock,
-                description: res.data.description
+                description: res.data.description,
+                cover: res.data.cover
             })
         }
         setIsLoadingDetails(false)
@@ -154,6 +157,11 @@ function AdminProduct() {
             sorter: (a, b) => a.stock - b.stock
         },
         {
+            title: 'Cover',
+            dataIndex: 'cover',
+            sorter: (a, b) => a.cover - b.cover
+        },
+        {
             title: 'action',
             dataIndex: 'action',
             fixed: 'right',
@@ -177,7 +185,7 @@ function AdminProduct() {
 
     const dataTable = products?.data?.length && products?.data?.map((product) => {
         return {
-            ...product, key: product._id, type: product.type
+            ...product, key: product._id
         }
     })
 
@@ -349,8 +357,8 @@ function AdminProduct() {
         return false
     }
 
-    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type.length > 0 && stateProduct.price !== '' && stateProduct.stock !== ''
-    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type.length > 0 && stateDetailsProduct.price !== '' && stateDetailsProduct.stock !== ''
+    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type.length > 0 && stateProduct.price !== '' && stateProduct.stock !== '' && stateProduct.cover !== ''
+    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type.length > 0 && stateDetailsProduct.price !== '' && stateDetailsProduct.stock !== '' && stateDetailsProduct.cover !== ''
 
     const handleCheckboxChange = (type) => {
         setStateProduct((prev) => {
@@ -377,6 +385,18 @@ function AdminProduct() {
         }
     }
 
+    const handleBookCover = (typeCover) => {
+        setStateProduct((prev) => ({
+            ...prev,
+            cover: typeCover
+        }))
+    }
+    const handleDetailBookCover = (typeCover) => {
+        setStateDetailsProduct((prev) => ({
+            ...prev,
+            cover: typeCover
+        }))
+    }
     return (
         <>
             <div className='admin-system-content-right bg'>
@@ -440,6 +460,19 @@ function AdminProduct() {
                                                     </div>
                                                 </div>
                                             ))}
+                                            <b>Book cover</b>
+                                            <div className="mb-0 col-md-6" key='' style={{ paddingBottom: '10px' }}>
+                                                <select
+                                                    id="sortPrice"
+                                                    className="form-select"
+                                                    value={stateProduct.cover}
+                                                    onChange={(e) => handleBookCover(e.target.value)}
+                                                >
+                                                    <option value="Paperback">Paperback</option>
+                                                    <option value="Hardback">Hardback</option>
+                                                    <option value="Box set">Box set</option>
+                                                </select>
+                                            </div>
                                             <div className="form-floating mb-3 col-12">
                                                 <textarea type="description" className="form-control" id="description" placeholder="description" value={stateProduct.description} name="description" onChange={handleOnchange} />
                                                 <label htmlFor="description">Description</label>
@@ -508,6 +541,19 @@ function AdminProduct() {
                                                         </div>
                                                     </div>
                                                 ))}
+                                                <b>Book cover</b>
+                                                <div className="mb-0 col-md-6" key='' style={{ paddingBottom: '10px' }}>
+                                                    <select
+                                                        id="sortPrice"
+                                                        className="form-select"
+                                                        value={stateDetailsProduct.cover}
+                                                        onChange={(e) => handleDetailBookCover(e.target.value)}
+                                                    >
+                                                        <option value="Paperback">Paperback</option>
+                                                        <option value="Hardback">Hardback</option>
+                                                        <option value="Box set">Box set</option>
+                                                    </select>
+                                                </div>
                                                 <div className="form-floating mb-3 col-12">
                                                     <textarea type="description" className="form-control" id="description" placeholder="description" value={stateDetailsProduct.description} name="description" onChange={handleOnchangeDetails} />
                                                     <label htmlFor="description">Description</label>
@@ -551,6 +597,7 @@ function AdminProduct() {
                 </div>
 
                 <TableComponent
+                    multiChoice={true}
                     deleteMany={deleteManyProducts}
                     columns={columns}
                     data={sortByDate(dataTable)}

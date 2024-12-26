@@ -4,7 +4,7 @@ import * as UserService from './UserService'
 
 export const axiosJWT = UserService.axiosJWT
 
-export const getAllProduct = async (search, types, limit, page, sort) => {
+export const getAllProduct = async (search, types, limit, page, sort, price, covers) => {
     let res = {}
     let filterParams = []
     if (search?.length > 0) {
@@ -12,6 +12,9 @@ export const getAllProduct = async (search, types, limit, page, sort) => {
     }
     if (types?.length > 0) {
         filterParams.push(`filter=type&filter=${types.join(',')}`)
+    }
+    if (price && price.length === 2) {
+        filterParams.push(`filter=price&filter=${price}`)
     }
     if (page) {
         filterParams.push(`page=${page}`)
@@ -21,6 +24,9 @@ export const getAllProduct = async (search, types, limit, page, sort) => {
     }
     if (limit) {
         filterParams.push(`limit=${limit}`)
+    }
+    if (covers?.length > 0) {
+        filterParams.push(`filter=cover&filter=${covers.join(',')}`)
     }
     const queryString = filterParams.length > 0 ? `&${filterParams.join('&')}` : ''
     res = await axios.get(`${process.env.REACT_APP_API_URL}/product/getall?${queryString}`)

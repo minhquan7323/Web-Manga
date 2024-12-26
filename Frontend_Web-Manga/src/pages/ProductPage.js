@@ -6,22 +6,25 @@ import ProductCard from '../components/User/ProductCard'
 import Toolbar from '../components/User/Toolbar'
 import { Pagination } from 'antd'
 import * as ProductService from '../services/ProductService'
-import * as CategoryService from '../services/CategoryService'
 import { useSelector } from 'react-redux'
 import Loading from '../components/Loading/Loading'
 import { useQuery } from '@tanstack/react-query'
 import { convertPrice } from '../utils'
+import Slider from '../components/User/Slider'
 
 const ProductPage = () => {
     const searchProduct = useSelector((state) => state?.product?.search)
     const [typeProducts, setTypeProducts] = useState([])
     const [selectedTypes, setSelectedTypes] = useState([])
     const [sortOrder, setSortOrder] = useState('')
+    const [priceFilter, setPriceFilter] = useState([0, 500000])
     const [pagination, setPagination] = useState({
         page: 1,
         limit: 12,
         total: 0
     })
+    const [selectedBookCovers, setSelectedBookCovers] = useState([])
+    const coverTypes = ["Paperback", "Hardback", "Boxset"];
     const [visibleTypes, setVisibleTypes] = useState(6)
 
     const fetchAllProduct = async (context) => {
@@ -30,8 +33,10 @@ const ProductPage = () => {
         const types = context.queryKey[3] || []
         const page = context.queryKey[4]
         const sort = context.queryKey[5]
+        const price = context.queryKey[6]
+        const cover = context.queryKey[7] || {}
 
-        const res = await ProductService.getAllProduct(search, types, limit, page, sort)
+        const res = await ProductService.getAllProduct(search, types, limit, page, sort, price, cover)
 
         if (res?.status === 'OK') {
             setPagination((prev) => {
@@ -65,7 +70,7 @@ const ProductPage = () => {
     }, [])
 
     const { isLoading, data: products = [] } = useQuery({
-        queryKey: ['products', pagination.limit, searchProduct, selectedTypes, pagination.page, sortOrder],
+        queryKey: ['products', pagination.limit, searchProduct, selectedTypes, pagination.page, sortOrder, priceFilter, selectedBookCovers],
         queryFn: fetchAllProduct,
         retry: 3,
         retryDelay: 1000,
@@ -105,6 +110,24 @@ const ProductPage = () => {
         setSortOrder(sort)
     }
 
+    const handlePriceFilter = (value) => {
+        setPriceFilter(value)
+        setPagination((prev) => ({ ...prev, page: 1 }))
+    }
+
+    const handleBookCoverChange = (coverType) => {
+        setPagination((prev) => ({
+            ...prev,
+            page: 1
+        }))
+
+        setSelectedBookCovers((prev) => {
+            const newCovers = prev.includes(coverType)
+                ? prev.filter((t) => t !== coverType)
+                : [...prev, coverType]
+            return newCovers
+        })
+    }
     return (
         <>
             <nav style={{ '--bs-breadcrumb-divider': '>' }} aria-label="breadcrumb">
@@ -142,29 +165,52 @@ const ProductPage = () => {
                                     </Row>
                                 </Container>
                                 <div className='item-center'>
-                                    {visibleTypes < typeProducts.length ? (
-                                        <button onClick={handleShowMoreTypes} className='btn btn-outline-warning mt-2'>
-                                            See More
-                                        </button>
-                                    ) : (
-                                        <button onClick={handleShowLessTypes} className='btn btn-warning mt-2'>
-                                            See Less
-                                        </button>
+                                    {typeProducts.length > visibleTypes && (
+                                        visibleTypes < typeProducts.length ? (
+                                            <button onClick={handleShowMoreTypes} className='btn btn-outline-warning mt-2'>
+                                                See More
+                                            </button>
+                                        ) : (
+                                            <button onClick={handleShowLessTypes} className='btn btn-warning mt-2'>
+                                                See Less
+                                            </button>
+                                        )
                                     )}
                                 </div>
                             </div>
                             <hr style={{ width: '90%', margin: '0 auto' }} />
                             <div className='sidebar'>
                                 <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Price</p>
+                                <div style={{ width: '90%', margin: 'auto' }}>
+                                    <Slider
+                                        step={1000}
+                                        min={0}
+                                        max={500000}
+                                        defaultValue={[0, 500000]}
+                                        onFilter={handlePriceFilter}
+                                    />
+                                </div>
                             </div>
                             <hr style={{ width: '90%', margin: '0 auto' }} />
                             <div className='sidebar'>
-                                <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Suppliers</p>
+                                <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Book Cover</p>
+                                <div>
+                                    {coverTypes.map((cover) => (
+                                        <div key={cover}>
+                                            <input
+                                                type="checkbox"
+                                                id={cover}
+                                                checked={selectedBookCovers.includes(cover)}
+                                                onChange={() => handleBookCoverChange(cover)}
+                                            />
+                                            <label htmlFor={cover} style={{ fontSize: '14px', marginLeft: '5px' }}>
+                                                {cover}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                             <hr style={{ width: '90%', margin: '0 auto' }} />
-                            <div className='sidebar'>
-                                <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Form</p>
-                            </div>
                         </div>
                     </Col>
                     <Col xs={12} sm={12} md={12} lg={9} className='product-box'>
@@ -184,6 +230,7 @@ const ProductPage = () => {
                                                 rating={product.rating}
                                                 type={product.type}
                                                 id={product._id}
+                                                sold={product.sold}
                                             />
                                         ))
                                     ) : (

@@ -9,7 +9,7 @@ import { convertPrice, initFacebookSDK } from '../utils'
 import * as message from "../components/Message/Message"
 import LikeFacebookButton from '../components/User/LikeFacebookButton'
 import CommentFacebook from '../components/User/CommentFacebook'
-
+import Rate from '../components/User/Rate'
 const DetailsProductPage = () => {
     const { id: productId } = useParams()
     const user = useSelector((state) => state?.user)
@@ -130,20 +130,15 @@ const DetailsProductPage = () => {
                                 <h3>{productDetails?.name || 'Product Name'}</h3>
                                 <div className="row">
                                     <div className="col-6">
-                                        Supplier: <span>{productDetails?.supplier || 'N/A'}</span>
+                                        Sold: <span>{productDetails?.sold}</span>
                                     </div>
                                     <div className="col-6">
-                                        Author: <span>{productDetails?.author || 'N/A'}</span>
+                                        Stock: <span>{productDetails?.stock}</span>
                                     </div>
-                                    <div className="col-6">
-                                        Publisher: <span>{productDetails?.publisher || 'N/A'}</span>
-                                    </div>
-                                    <div className="col-6">
-                                        Stock: <span>{productDetails?.stock || 'N/A'}</span>
-                                    </div>
+                                    <div className="col-12" style={{ paddingTop: '10px' }}><Rate star={0} /> <span style={{ color: 'orange', fontSize: '12px' }}>(0 rating)</span></div>
                                 </div>
                                 <h2 className="detail-product-price" style={{ marginTop: '10px' }}>
-                                    {productDetails?.price ? `${convertPrice(productDetails.price)} VND` : 'N/A'}
+                                    {convertPrice(productDetails?.price)} VND
                                 </h2>
                                 <div>
                                     <LikeFacebookButton
@@ -193,12 +188,16 @@ const DetailsProductPage = () => {
                                             <td>{productDetails?.author || 'N/A'}</td>
                                         </tr>
                                         <tr>
-                                            <td className="table-label">Author</td>
-                                            <td>{productDetails?.author || 'N/A'}</td>
+                                            <td className="table-label">publisher</td>
+                                            <td>{productDetails?.publisher || 'N/A'}</td>
                                         </tr>
                                         <tr>
-                                            <td className="table-label">Author</td>
-                                            <td>{productDetails?.author || 'N/A'}</td>
+                                            <td className="table-label">Book cover</td>
+                                            <td>{productDetails?.cover}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="table-label">Genre</td>
+                                            <td>{productDetails?.type?.map(type => type.name).join(', ')}</td>
                                         </tr>
                                     </tbody>
                                 </table>

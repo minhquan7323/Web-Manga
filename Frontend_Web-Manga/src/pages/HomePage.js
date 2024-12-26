@@ -82,6 +82,11 @@ function HomePage() {
                                 rating={product.rating}
                                 type={product.type}
                                 id={product._id}
+                                sold={product.sold}
+                                lgSize={2}
+                                mdSize={3}
+                                smSize={4}
+                                xsSize={6}
                             />
                         })}
                     </Row>

@@ -3,7 +3,6 @@ const productSchema = new Mongoose.Schema(
     {
         name: { type: String, require: true, unique: true },
         image: { type: String, require: true },
-        // type: { type: [String], required: true },
         type: [{ type: Mongoose.Schema.Types.ObjectId, ref: 'Category', require: true }],
         price: { type: Number, require: true, min: 0 },
         stock: { type: Number, require: true, min: 0 },
@@ -13,8 +12,8 @@ const productSchema = new Mongoose.Schema(
         // supplier: { type: Mongoose.Schema.Types.ObjectId, ref: 'Supplier' },
         publisher: { type: String, default: '' },
         author: { type: String, default: '' },
-        cover: { type: String, default: '' },
-        selled: { type: Number, default: 0 }
+        cover: { type: String, require: true },
+        sold: { type: Number, default: 0 }
     },
     {
         timestamps: true

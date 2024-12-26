@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Loading from '../components/Loading/Loading'
 
 const TableComponent = (props) => {
-    const { selectionType = 'checkbox', data = [], isLoading = false, columns = [], deleteMany } = props
+    const { selectionType = 'checkbox', data = [], isLoading = false, columns = [], deleteMany, multiChoice = false } = props
     const [rowSelectedKeys, setRowSelectedKeys] = useState([])
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -21,12 +21,12 @@ const TableComponent = (props) => {
 
     return (
         <Loading isLoading={isLoading}>
-            {rowSelectedKeys.length > 0 && (
-                <button onClick={handleDeleteAll}>Delete all?</button>
+            {multiChoice && rowSelectedKeys.length > 0 && (
+                <button className="btn btn-primary" style={{ marginBottom: '10px' }} onClick={handleDeleteAll}>Delete all?</button>
             )}
             <Table
                 bordered
-                rowSelection={{
+                rowSelection={multiChoice && {
                     type: selectionType,
                     ...rowSelection
                 }}

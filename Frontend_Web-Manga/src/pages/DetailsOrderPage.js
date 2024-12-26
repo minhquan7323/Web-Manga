@@ -9,6 +9,7 @@ import { convertPrice } from "../utils.js";
 import { format } from 'date-fns'
 import parse from 'date-fns/parse'
 import { orderContant } from "../contant.js";
+import { useSelector } from "react-redux";
 
 function DetailsOrderPage() {
     const params = useParams()
@@ -16,6 +17,7 @@ function DetailsOrderPage() {
     const navigate = useNavigate()
     const location = useLocation()
     const { state } = location
+    const user = useSelector((state) => state?.user)
 
     const fetchDetailsOrder = async () => {
         const res = await OrderService.getDetailsOrder(id, state?.access_token)
@@ -30,6 +32,15 @@ function DetailsOrderPage() {
     })
     const { isLoading, data: detailsOrder } = queryOrder
 
+    const handleClickNav = () => {
+        navigate(`/myorder`, {
+            state: {
+                id: user?.id,
+                access_token: user?.access_token
+            }
+        })
+    }
+
     return (
         <Loading isLoading={isLoading}>
             <nav style={{ '--bs-breadcrumb-divider': '>' }} aria-label="breadcrumb">
@@ -43,7 +54,7 @@ function DetailsOrderPage() {
                             <b>Profile</b>
                         </a>
                         <span> &gt; </span>
-                        <a href="/myorder" style={{ textDecoration: 'none', color: 'black' }}>
+                        <a onClick={handleClickNav} style={{ textDecoration: 'none', color: 'black' }}>
                             <b>Order</b>
                         </a>
                     </li>
@@ -63,7 +74,7 @@ function DetailsOrderPage() {
                                     <span>{detailsOrder?.delivery ? 'Delivered' : 'In delivery'}</span>
                                 </div>
                                 <div>
-                                    Name: {detailsOrder?.shippingAddress?.fullName} - 0{detailsOrder?.shippingAddress?.phone} - {detailsOrder?.shippingAddress?.address}
+                                    {detailsOrder?.shippingAddress?.fullName} - 0{detailsOrder?.shippingAddress?.phone} - {detailsOrder?.shippingAddress?.address}
                                 </div>
                                 <hr style={{ width: '100%', margin: '20px 0' }} />
                                 {detailsOrder?.orderItems?.map((order) => {

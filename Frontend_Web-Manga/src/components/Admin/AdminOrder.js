@@ -4,9 +4,11 @@ import * as OrderService from '../../services/OrderService.js'
 import { useQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
 import { convertPrice, sortByDate } from '../../utils.js'
+import { Modal as BootstrapModal } from 'bootstrap'
 import { orderContant } from '../../contant.js'
 function AdminOrder() {
     const user = useSelector((state) => state?.user)
+    const [rowSelected, setRowSelected] = useState('')
 
     const fetchAllOrder = async () => {
         const res = await OrderService.getAllOrder(user?.access_token)
@@ -20,6 +22,25 @@ function AdminOrder() {
         retryDelay: 1000,
     })
     const { isLoading: isLoadingOrders, data: orders } = queryOrder
+
+    const handleModalOpen = (modalType) => {
+        const modalElement = document.getElementById(modalType)
+        if (modalType === 'modalAdd' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+        if (modalType === 'modalEdit' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+        if (modalType === 'modalDelete' && modalElement) {
+            const modalInstance = BootstrapModal.getOrCreateInstance(modalElement)
+            if (modalInstance)
+                modalInstance.show()
+        }
+    }
 
     const columns = [
         {
@@ -61,6 +82,23 @@ function AdminOrder() {
             title: 'Payment method',
             dataIndex: 'paymentMethod',
             render: (text) => <span> {orderContant.payment[text]}</span>,
+        },
+        {
+            title: 'action',
+            dataIndex: 'action',
+            fixed: 'right',
+            width: 50,
+            render: (_, record) => (
+                <div className="admin-table-action">
+                    <span onClick={() => {
+                        handleModalOpen('modalEdit')
+                        setRowSelected(record._id)
+                    }}>
+                        <i className="fas fa-edit"></i>
+                    </span>
+                </div>
+
+            )
         }
     ]
 

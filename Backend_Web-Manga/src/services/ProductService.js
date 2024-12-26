@@ -3,7 +3,7 @@ const Category = require('../models/CategoryModel')
 
 const createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
-        const { name, image, type, price, stock, description } = newProduct
+        const { name, image, type, price, stock, description, cover } = newProduct
         try {
             const checkProduct = await Product.findOne({
                 name: name
@@ -16,11 +16,12 @@ const createProduct = (newProduct) => {
             }
             const newProduct = await Product.create({
                 name,
-                image,
                 type,
                 price,
                 stock,
-                description
+                description,
+                cover,
+                image
             })
             if (newProduct) {
                 resolve({
@@ -136,11 +137,24 @@ const allProduct = (limit, page, sort, filter, searchQuery) => {
                 query['name'] = { '$regex': searchQuery, '$options': 'i' };
             }
 
-            // Lọc theo loại sản phẩm (type)
+            // Lọc theo loại sản phẩm (type) và giá
             if (filter && Array.isArray(filter)) {
                 filter.forEach((f, index) => {
-                    if (index % 2 === 0 && f === 'type') {
-                        query['type'] = { '$in': filter[index + 1].split(',') };
+                    if (index % 2 === 0) {
+                        if (f === 'type') {
+                            query['type'] = { '$in': filter[index + 1].split(',') };
+                        } else if (f === 'price') {
+                            const priceRange = filter[index + 1].split(',').map(Number);
+                            if (priceRange.length === 2) {
+                                const [minPrice, maxPrice] = priceRange;
+                                if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+                                    query['price'] = { $gte: minPrice, $lte: maxPrice };
+                                }
+                            }
+                        } else if (f === 'cover') {
+                            const covers = filter[index + 1].split(',');
+                            query['cover'] = { $in: covers };
+                        }
                     }
                 });
             }
@@ -153,12 +167,14 @@ const allProduct = (limit, page, sort, filter, searchQuery) => {
                 .limit(limit)
                 .skip((page - 1) * limit);
 
+            // Sắp xếp theo yêu cầu
             if (sort) {
                 const objectSort = {};
                 objectSort[sort[1]] = sort[0] === 'asc' ? 1 : -1;
                 productQuery = productQuery.sort(objectSort);
             }
 
+            // Lấy danh sách sản phẩm theo query
             const allProduct = await productQuery;
 
             resolve({
@@ -168,29 +184,15 @@ const allProduct = (limit, page, sort, filter, searchQuery) => {
                 totalProduct,
                 totalProductFilter,
                 currentPage: Number(page),
-                totalPage: Math.ceil(totalProductFilter / limit)
+                totalPage: Math.ceil(totalProductFilter / limit),
             });
         } catch (e) {
             reject(e);
         }
     });
-}
+};
 
 
-// const getAllTypeProduct = () => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             const allType = await Product.distinct('type')
-//             resolve({
-//                 status: 'OK',
-//                 message: 'Success',
-//                 data: allType
-//             })
-//         } catch (e) {
-//             reject(e)
-//         }
-//     })
-// }
 const getAllTypeProduct = async () => {
     return new Promise(async (resolve, reject) => {
         try {
