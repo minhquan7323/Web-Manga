@@ -36,8 +36,8 @@ function AdminProduct() {
 
     const mutation = useMutationHooks(
         async (data) => {
-            const { name, image, type, price, stock, description } = data
-            const res = await ProductService.createProduct({ name, image, type, price, stock, description })
+            const { access_token, ...rests } = data
+            const res = await ProductService.createProduct(rests, access_token)
             return res
         }
     )
@@ -48,7 +48,6 @@ function AdminProduct() {
         async (data) => {
             const { id, access_token, ...rests } = data
             const res = await ProductService.updateProduct(id, rests, access_token)
-
             return res
         }
     )
@@ -58,7 +57,8 @@ function AdminProduct() {
     const mutationDelete = useMutationHooks(
         async (data) => {
             const { id, access_token } = data
-            await ProductService.deleteProduct(id, access_token)
+            const res = await ProductService.deleteProduct(id, access_token)
+            return res
         }
     )
     const { data: dataDeleted, isSuccess: isSuccessDeleted, isError: isErrorDeleted } = mutationDelete
@@ -140,7 +140,7 @@ function AdminProduct() {
             title: 'Type',
             dataIndex: 'type',
             width: 250,
-            render: (types) => types.join(', ')
+            render: (types) => types.map(type => type.name).join(', ')
         },
         {
             title: 'Price',
@@ -178,10 +178,6 @@ function AdminProduct() {
     const dataTable = products?.data?.length && products?.data?.map((product) => {
         return {
             ...product, key: product._id, type: product.type
-                .map((id) => {
-                    const category = categories?.data?.find((cat) => cat._id === id);
-                    return category ? category.name : "Unknown";
-                })
         }
     })
 
@@ -253,7 +249,21 @@ function AdminProduct() {
             description: ''
         })
     }
+    useEffect(() => {
+        const modalDeleteElement = document.getElementById('modalDelete');
 
+        if (modalDeleteElement) {
+            const handleModalHidden = () => {
+                handleCancel();
+            };
+
+            modalDeleteElement.addEventListener('hidden.bs.modal', handleModalHidden);
+
+            return () => {
+                modalDeleteElement.removeEventListener('hidden.bs.modal', handleModalHidden);
+            };
+        }
+    }, [handleCancel]);
     useEffect(() => {
         const modalElement = document.getElementById('modalAdd')
         const handleModalHidden = () => {
@@ -285,7 +295,7 @@ function AdminProduct() {
     }
 
     const createProduct = () => {
-        mutation.mutate(stateProduct, {
+        mutation.mutate({ ...stateProduct, access_token: user?.access_token }, {
             onSettled: () => {
                 queryProduct.refetch()
             }
@@ -352,19 +362,18 @@ function AdminProduct() {
         })
     }
 
-
     const handleCheckboxChangeDetails = (e) => {
         const { value, checked } = e.target
         if (checked) {
-            setStateDetailsProduct((prevState) => ({
-                ...prevState,
-                type: [...prevState.type, value]
-            }))
+            setStateDetailsProduct({
+                ...stateDetailsProduct,
+                type: [...stateDetailsProduct.type, { _id: value }]
+            })
         } else {
-            setStateDetailsProduct((prevState) => ({
-                ...prevState,
-                type: prevState.type.filter((item) => item !== value)
-            }))
+            setStateDetailsProduct({
+                ...stateDetailsProduct,
+                type: stateDetailsProduct.type.filter(item => item._id !== value)
+            })
         }
     }
 
@@ -490,7 +499,7 @@ function AdminProduct() {
                                                                 name="type"
                                                                 value={type._id}
                                                                 className="form-check-input"
-                                                                checked={stateDetailsProduct?.type.includes(type._id)}
+                                                                checked={stateDetailsProduct?.type.some(item => item._id === type._id)}
                                                                 onChange={(e) => handleCheckboxChangeDetails(e)}
                                                             />
                                                             <label className="form-check-label" htmlFor={`type-${type._id}`}>

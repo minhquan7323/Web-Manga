@@ -1,4 +1,5 @@
 const Product = require('../models/ProductModel')
+const Category = require('../models/CategoryModel')
 
 const createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
@@ -66,24 +67,24 @@ const updateProduct = (id, data) => {
 const detailsProduct = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const product = await Product.findOne({ _id: id })
+            const product = await Product.findOne({ _id: id }).populate('type', 'name');
 
-            if (product === null) {
+            if (!product) {
                 return resolve({
                     status: 'ERR',
                     message: 'The product is not defined'
-                })
+                });
             }
 
             resolve({
                 status: 'OK',
                 message: 'Success',
                 data: product
-            })
+            });
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
+    });
 }
 
 const deleteProduct = (id) => {
@@ -128,40 +129,37 @@ const deleteManyProducts = (ids) => {
 const allProduct = (limit, page, sort, filter, searchQuery) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const query = {}
+            const query = {};
 
             // Lọc theo search query
             if (searchQuery) {
-                query['name'] = { '$regex': searchQuery, '$options': 'i' }
+                query['name'] = { '$regex': searchQuery, '$options': 'i' };
             }
 
-            // Lọc theo các filter, bao gồm cả loại sản phẩm (type)
+            // Lọc theo loại sản phẩm (type)
             if (filter && Array.isArray(filter)) {
                 filter.forEach((f, index) => {
-                    if (index % 2 === 0) {
-                        // Kiểm tra xem filter có phải là loại sản phẩm (type)
-                        if (f === 'type') {
-                            // Nếu là loại, dùng $in để lọc các sản phẩm có type nằm trong mảng các ID
-                            query['type'] = { '$in': filter[index + 1].split(',') }  // Tách các ID bằng dấu phẩy
-                        } else {
-                            // Lọc theo các trường khác (dùng regex)
-                            query[f] = { '$regex': filter[index + 1], '$options': 'i' }
-                        }
+                    if (index % 2 === 0 && f === 'type') {
+                        query['type'] = { '$in': filter[index + 1].split(',') };
                     }
-                })
+                });
             }
 
-            const totalProduct = await Product.countDocuments()
-            const totalProductFilter = await Product.countDocuments(query)
+            const totalProduct = await Product.countDocuments();
+            const totalProductFilter = await Product.countDocuments(query);
 
             let productQuery = Product.find(query)
+                .populate('type', 'name') // Lấy thông tin chi tiết của danh mục
+                .limit(limit)
+                .skip((page - 1) * limit);
+
             if (sort) {
-                const objectSort = {}
-                objectSort[sort[1]] = sort[0] === 'asc' ? 1 : -1
-                productQuery = productQuery.sort(objectSort)
+                const objectSort = {};
+                objectSort[sort[1]] = sort[0] === 'asc' ? 1 : -1;
+                productQuery = productQuery.sort(objectSort);
             }
 
-            const allProduct = await productQuery.limit(limit).skip((page - 1) * limit)
+            const allProduct = await productQuery;
 
             resolve({
                 status: 'OK',
@@ -171,28 +169,50 @@ const allProduct = (limit, page, sort, filter, searchQuery) => {
                 totalProductFilter,
                 currentPage: Number(page),
                 totalPage: Math.ceil(totalProductFilter / limit)
-            })
+            });
         } catch (e) {
-            reject(e)
+            reject(e);
         }
-    })
+    });
 }
 
 
-const getAllTypeProduct = () => {
+// const getAllTypeProduct = () => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             const allType = await Product.distinct('type')
+//             resolve({
+//                 status: 'OK',
+//                 message: 'Success',
+//                 data: allType
+//             })
+//         } catch (e) {
+//             reject(e)
+//         }
+//     })
+// }
+const getAllTypeProduct = async () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allType = await Product.distinct('type')
+            const allCategories = await Category.find()
+            const allTypesInProducts = await Product.distinct('type')
             resolve({
                 status: 'OK',
                 message: 'Success',
-                data: allType
+                data: {
+                    categories: allCategories,
+                    types: allTypesInProducts,
+                }
             })
         } catch (e) {
-            reject(e)
+            reject({
+                status: 'ERROR',
+                message: e.message || 'Failed to fetch data',
+            })
         }
     })
 }
+
 module.exports = {
     createProduct,
     updateProduct,

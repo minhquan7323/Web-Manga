@@ -52,20 +52,12 @@ const ProductPage = () => {
 
     const fetchAllTypeProduct = async () => {
         const res = await ProductService.getAllTypeProduct()
-        const typesList = res?.data || []
-        setTypeProducts(typesList)
-    }
-
-    const fetchAllCategories = async () => {
-        const res = await CategoryService.getAllCategory()
-        if (res?.status === 'OK') {
-            const categoriesMap = res?.data.reduce((acc, category) => {
-                acc[category._id] = category.name
-                return acc
-            }, {})
-            return categoriesMap
+        if (res.status === 'OK') {
+            const categories = res.data.categories
+            const availableTypes = res.data.types
+            const filteredTypes = categories.filter(category => availableTypes.includes(category._id))
+            setTypeProducts(filteredTypes)
         }
-        return {}
     }
 
     useEffect(() => {
@@ -79,16 +71,6 @@ const ProductPage = () => {
         retryDelay: 1000,
         enabled: !!pagination.limit,
     })
-
-    const [categoriesMap, setCategoriesMap] = useState({})
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            const categoryData = await fetchAllCategories()
-            setCategoriesMap(categoryData)
-        }
-        fetchCategories()
-    }, [])
 
     const handleTypeChange = (type) => {
         setPagination((prev) => ({
@@ -144,16 +126,16 @@ const ProductPage = () => {
                                 <p style={{ fontSize: '18px', fontWeight: 'bolder', marginBottom: '5px' }}>Genres</p>
                                 <Container style={{ maxWidth: '100%', margin: '0 auto' }}>
                                     <Row>
-                                        {typeProducts?.slice(0, visibleTypes).map((item) => (
-                                            <Col xs={6} sm={4} md={3} lg={6} key={item} style={{ padding: '0px' }}>
+                                        {typeProducts?.map((item) => (
+                                            <Col xs={6} sm={4} md={3} lg={6} key={item._id} style={{ padding: '0px' }}>
                                                 <input
                                                     type="checkbox"
-                                                    id={`checkbox-${item}`}
-                                                    checked={selectedTypes.includes(item)}
-                                                    onChange={() => handleTypeChange(item)}
+                                                    id={`checkbox-${item._id}`}
+                                                    checked={selectedTypes.includes(item._id)}
+                                                    onChange={() => handleTypeChange(item._id)}
                                                 />
-                                                <label htmlFor={`checkbox-${item}`} style={{ fontSize: '14px', marginLeft: '5px' }}>
-                                                    {categoriesMap[item] ? categoriesMap[item] : 'Unknown Category'}
+                                                <label htmlFor={`checkbox-${item._id}`} style={{ fontSize: '14px', marginLeft: '5px' }}>
+                                                    {item.name}
                                                 </label>
                                             </Col>
                                         ))}

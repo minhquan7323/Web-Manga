@@ -25,8 +25,8 @@ function AdminCategory() {
 
     const mutation = useMutationHooks(
         async (data) => {
-            const { name, isActive } = data
-            const res = await CategoryService.createCategory({ name, isActive })
+            const { access_token, ...rests } = data
+            const res = await CategoryService.createCategory(rests, access_token)
             return res
         }
     )
@@ -172,7 +172,10 @@ function AdminCategory() {
     };
 
     const createCategory = () => {
-        mutation.mutate(stateCategory, {
+        mutation.mutate({
+            ...stateCategory,
+            access_token: user?.access_token
+        }, {
             onSettled: () => {
                 queryCategory.refetch()
             }
@@ -181,8 +184,7 @@ function AdminCategory() {
     const updateCategory = () => {
         mutationUpdate.mutate({
             id: rowSelected,
-            name: stateDetailsCategory.name,
-            isActive: stateDetailsCategory.isActive,
+            ...stateDetailsCategory,
             access_token: user?.access_token
         }, {
             onSettled: () => {
