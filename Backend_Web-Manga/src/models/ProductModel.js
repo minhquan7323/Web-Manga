@@ -9,9 +9,8 @@ const productSchema = new Mongoose.Schema(
         rating: { type: Number, min: 0, max: 5 },
         description: { type: String, default: '' },
         supplier: { type: String, default: '' },
-        // supplier: { type: Mongoose.Schema.Types.ObjectId, ref: 'Supplier' },
-        publisher: { type: String, default: '' },
-        author: { type: String, default: '' },
+        publisher: { type: String, default: '', require: true },
+        author: { type: String, default: '', require: true },
         cover: { type: String, require: true },
         sold: { type: Number, default: 0 }
     },

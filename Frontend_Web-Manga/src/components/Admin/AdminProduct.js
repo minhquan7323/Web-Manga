@@ -14,6 +14,7 @@ import { useSelector } from "react-redux"
 
 function AdminProduct() {
     const productTypes = ['Comedy', 'Shounen', 'Adventure', 'Drama', 'Action', 'Fantasy', 'Sci Fi', 'Slice Of Life', 'School Life', 'Supernatural', 'Seinen', 'Romance', 'Historical', 'Mystery', 'Non-Human Protagonists', 'Elemental', 'Powers', 'Mature', 'Tragedy', 'Family Friendly', 'Gender Bender', 'Shoujo', 'Sport', 'Psychological', 'Horror', 'Harem', 'Monsters', 'Ecchi', 'Josei', 'Shounen-Ai', 'Other']
+    const productPublisher = ['Kim Dong', 'Tre', 'IPM']
     const [stateProduct, setStateProduct] = useState({
         name: '',
         image: '',
@@ -21,7 +22,9 @@ function AdminProduct() {
         price: '',
         stock: '',
         description: '',
-        cover: 'Paperback'
+        cover: 'Paperback',
+        author: '',
+        publisher: ''
     })
     const [stateDetailsProduct, setStateDetailsProduct] = useState({
         name: '',
@@ -30,7 +33,9 @@ function AdminProduct() {
         price: '',
         stock: '',
         description: '',
-        cover: 'Paperback'
+        cover: 'Paperback',
+        author: '',
+        publisher: ''
     })
     const [rowSelected, setRowSelected] = useState('')
     const user = useSelector((state) => state?.user)
@@ -92,7 +97,9 @@ function AdminProduct() {
                 price: res.data.price,
                 stock: res.data.stock,
                 description: res.data.description,
-                cover: res.data.cover
+                cover: res.data.cover,
+                author: res.data.author,
+                publisher: res.data.publisher
             })
         }
         setIsLoadingDetails(false)
@@ -357,8 +364,8 @@ function AdminProduct() {
         return false
     }
 
-    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type.length > 0 && stateProduct.price !== '' && stateProduct.stock !== '' && stateProduct.cover !== ''
-    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type.length > 0 && stateDetailsProduct.price !== '' && stateDetailsProduct.stock !== '' && stateDetailsProduct.cover !== ''
+    const isProductFormValid = stateProduct.name !== '' && stateProduct.image !== '' && stateProduct.type.length > 0 && stateProduct.price !== '' && stateProduct.stock !== '' && stateProduct.cover !== '' && stateProduct.author !== '' && stateProduct.publisher !== ''
+    const isDetailsProductFormValid = stateDetailsProduct.name !== '' && stateDetailsProduct.image !== '' && stateDetailsProduct.type.length > 0 && stateDetailsProduct.price !== '' && stateDetailsProduct.stock !== '' && stateDetailsProduct.cover !== '' && stateDetailsProduct.author !== '' && stateDetailsProduct.publisher !== ''
 
     const handleCheckboxChange = (type) => {
         setStateProduct((prev) => {
@@ -385,18 +392,33 @@ function AdminProduct() {
         }
     }
 
+    const handleRadioChangeDetails = (e) => {
+        const { value } = e.target
+        setStateDetailsProduct({
+            ...stateDetailsProduct,
+            publisher: value,
+        })
+    }
+    const handleRadioChange = (e) => {
+        setStateProduct({
+            ...stateProduct,
+            publisher: e.target.value,
+        });
+    };
     const handleBookCover = (typeCover) => {
         setStateProduct((prev) => ({
             ...prev,
             cover: typeCover
         }))
     }
+
     const handleDetailBookCover = (typeCover) => {
         setStateDetailsProduct((prev) => ({
             ...prev,
             cover: typeCover
         }))
     }
+
     return (
         <>
             <div className='admin-system-content-right bg'>
@@ -430,24 +452,47 @@ function AdminProduct() {
                                                 )}
                                             </div>
                                             <div className="form-floating mb-3 col-12">
-                                                <input type="name" className="form-control" id="name" placeholder="name" value={stateProduct.name} name="name" onChange={handleOnchange} required />
+                                                <input type="text" className="form-control" id="nameAdd" placeholder="name" value={stateProduct.name} name="name" onChange={handleOnchange} required />
                                                 <label htmlFor="name">Name</label>
                                             </div>
                                             <div className="form-floating mb-3 col-6">
-                                                <input type="price" className="form-control" id="price" placeholder="price" value={stateProduct.price} name="price" onChange={handleOnchange} required />
+                                                <input type="price" className="form-control" id="priceAdd" placeholder="price" value={stateProduct.price} name="price" onChange={handleOnchange} required />
                                                 <label htmlFor="price">Price</label>
                                             </div>
                                             <div className="form-floating mb-3 col-6">
-                                                <input type="stock" className="form-control" id="stock" placeholder="stock" value={stateProduct.stock} name="stock" onChange={handleOnchange} required />
+                                                <input type="stock" className="form-control" id="stockAdd" placeholder="stock" value={stateProduct.stock} name="stock" onChange={handleOnchange} required />
                                                 <label htmlFor="stock">Stock</label>
                                             </div>
+                                            <div className="form-floating mb-3 col-6">
+                                                <input type="text" className="form-control" id="authorAdd" placeholder="author" value={stateProduct.author} name="author" onChange={handleOnchange} required />
+                                                <label htmlFor="author">Author</label>
+                                            </div>
+                                            <b style={{ padding: '10px' }}>Publisher</b>
+                                            {productPublisher.map((publisher, index) => (
+                                                <div className="form-floating mb-0 col-4 col-6 col-xs-12 col-sm-6 col-md-4 col-lg-4" key={index}>
+                                                    <div className="form-check">
+                                                        <input
+                                                            type="radio"
+                                                            id={`publisher-${publisher}-Add`}
+                                                            name="publisher"
+                                                            value={publisher}
+                                                            className="form-check-input custom-radio"
+                                                            checked={stateProduct?.publisher === publisher}
+                                                            onChange={(e) => handleRadioChange(e)}
+                                                        />
+                                                        <label className="form-check-label" htmlFor={`publisher-${publisher}-Add`}>
+                                                            {publisher}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            ))}
                                             <b>Type</b>
                                             {categories?.data?.map((type) => (
                                                 <div className="form-floating mb-0 col-md-6" key={type._id}>
                                                     <div className="form-check">
                                                         <input
                                                             type="checkbox"
-                                                            id={`type-${type._id}`}
+                                                            id={`type-${type._id}-Add`}
                                                             name="type"
                                                             value={type._id}
                                                             className="form-check-input"
@@ -463,9 +508,10 @@ function AdminProduct() {
                                             <b>Book cover</b>
                                             <div className="mb-0 col-md-6" key='' style={{ paddingBottom: '10px' }}>
                                                 <select
-                                                    id="sortPrice"
+                                                    id="sortPriceAdd"
                                                     className="form-select"
                                                     value={stateProduct.cover}
+                                                    defaultValue={'Paperback'}
                                                     onChange={(e) => handleBookCover(e.target.value)}
                                                 >
                                                     <option value="Paperback">Paperback</option>
@@ -474,7 +520,7 @@ function AdminProduct() {
                                                 </select>
                                             </div>
                                             <div className="form-floating mb-3 col-12">
-                                                <textarea type="description" className="form-control" id="description" placeholder="description" value={stateProduct.description} name="description" onChange={handleOnchange} />
+                                                <textarea type="description" className="form-control" id="descriptionAdd" placeholder="description" value={stateProduct.description} name="description" onChange={handleOnchange} />
                                                 <label htmlFor="description">Description</label>
                                             </div>
                                         </div>
@@ -511,24 +557,47 @@ function AdminProduct() {
                                                     )}
                                                 </div>
                                                 <div className="form-floating mb-3 col-12">
-                                                    <input type="name" className="form-control" id="name" placeholder="name" value={stateDetailsProduct.name} name="name" onChange={handleOnchangeDetails} required />
+                                                    <input type="text" className="form-control" id="nameEdit" placeholder="name" value={stateDetailsProduct.name} name="name" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="name">Name</label>
                                                 </div>
                                                 <div className="form-floating mb-3 col-6">
-                                                    <input type="price" className="form-control" id="price" placeholder="price" value={stateDetailsProduct.price} name="price" onChange={handleOnchangeDetails} required />
+                                                    <input type="price" className="form-control" id="priceEdit" placeholder="price" value={stateDetailsProduct.price} name="price" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="price">Price</label>
                                                 </div>
                                                 <div className="form-floating mb-3 col-6">
-                                                    <input type="stock" className="form-control" id="stock" placeholder="stock" value={stateDetailsProduct.stock} name="stock" onChange={handleOnchangeDetails} required />
+                                                    <input type="text" className="form-control" id="stockEdit" placeholder="stock" value={stateDetailsProduct.stock} name="stock" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="stock">Stock</label>
                                                 </div>
-                                                <b>Type</b>
+                                                <div className="form-floating mb-3 col-6">
+                                                    <input type="text" className="form-control" id="authorEdit" placeholder="author" value={stateDetailsProduct.author} name="author" onChange={handleOnchangeDetails} required />
+                                                    <label htmlFor="author">Author</label>
+                                                </div>
+                                                <b style={{ padding: '10px' }}>Publisher</b>
+                                                {productPublisher.map((publisher, index) => (
+                                                    <div className="form-floating mb-0 col-4 col-6 col-xs-12 col-sm-6 col-md-4 col-lg-4" key={index}>
+                                                        <div className="form-check">
+                                                            <input
+                                                                type="radio"
+                                                                id={`publisher-${publisher}-Edit`}
+                                                                name="publisher"
+                                                                value={publisher}
+                                                                className="form-check-input custom-radio"
+                                                                checked={stateDetailsProduct?.publisher === publisher}
+                                                                onChange={(e) => handleRadioChangeDetails(e)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={`publisher-${publisher}`}>
+                                                                {publisher}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                <b style={{ padding: '10px' }}>Genre</b>
                                                 {categories?.data?.map((type) => (
-                                                    <div className="form-floating mb-0 col-md-6" key={type._id}>
+                                                    <div className="form-floating mb-0 col-6 col-xs-12 col-sm-6 col-md-6 col-lg-6" key={type._id}>
                                                         <div className="form-check">
                                                             <input
                                                                 type="checkbox"
-                                                                id={`type-${type._id}`}
+                                                                id={`type-${type._id}-Edit`}
                                                                 name="type"
                                                                 value={type._id}
                                                                 className="form-check-input"
@@ -541,10 +610,10 @@ function AdminProduct() {
                                                         </div>
                                                     </div>
                                                 ))}
-                                                <b>Book cover</b>
+                                                <b style={{ padding: '10px' }}>Book cover</b>
                                                 <div className="mb-0 col-md-6" key='' style={{ paddingBottom: '10px' }}>
                                                     <select
-                                                        id="sortPrice"
+                                                        id="sortPriceEdit"
                                                         className="form-select"
                                                         value={stateDetailsProduct.cover}
                                                         onChange={(e) => handleDetailBookCover(e.target.value)}
@@ -555,7 +624,7 @@ function AdminProduct() {
                                                     </select>
                                                 </div>
                                                 <div className="form-floating mb-3 col-12">
-                                                    <textarea type="description" className="form-control" id="description" placeholder="description" value={stateDetailsProduct.description} name="description" onChange={handleOnchangeDetails} />
+                                                    <textarea type="description" className="form-control" id="descriptionEdit" placeholder="description" value={stateDetailsProduct.description} name="description" onChange={handleOnchangeDetails} />
                                                     <label htmlFor="description">Description</label>
                                                 </div>
                                             </div>

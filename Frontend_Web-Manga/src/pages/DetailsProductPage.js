@@ -135,7 +135,7 @@ const DetailsProductPage = () => {
                                     <div className="col-6">
                                         Stock: <span>{productDetails?.stock}</span>
                                     </div>
-                                    <div className="col-12" style={{ paddingTop: '10px' }}><Rate star={0} /> <span style={{ color: 'orange', fontSize: '12px' }}>(0 rating)</span></div>
+                                    <div className="col-12" style={{ paddingTop: '10px' }}><Rate star={productDetails?.rating || 0} /> <span style={{ color: 'orange', fontSize: '12px' }}>(0 rating)</span></div>
                                 </div>
                                 <h2 className="detail-product-price" style={{ marginTop: '10px' }}>
                                     {convertPrice(productDetails?.price)} VND
@@ -177,27 +177,27 @@ const DetailsProductPage = () => {
                             </div>
                             <div className="detail-product-content-right bg">
                                 <h3>Details</h3>
-                                <table className="table">
+                                <table className="table" style={{ fontSize: 15 }}>
                                     <tbody>
                                         <tr>
                                             <td className="table-label">Supplier</td>
-                                            <td>{productDetails?.supplier || 'N/A'}</td>
+                                            <td><i>{productDetails?.supplier || 'N/A'}</i></td>
                                         </tr>
                                         <tr>
                                             <td className="table-label">Author</td>
-                                            <td>{productDetails?.author || 'N/A'}</td>
+                                            <td><i>{productDetails?.author || 'N/A'}</i></td>
                                         </tr>
                                         <tr>
-                                            <td className="table-label">publisher</td>
-                                            <td>{productDetails?.publisher || 'N/A'}</td>
+                                            <td className="table-label">Publisher</td>
+                                            <td><i>{productDetails?.publisher + ' Publishing House' || 'N/A'}</i></td>
                                         </tr>
                                         <tr>
-                                            <td className="table-label">Book cover</td>
-                                            <td>{productDetails?.cover}</td>
+                                            <td className="table-label">Cover form</td>
+                                            <td><i>{productDetails?.cover}</i></td>
                                         </tr>
                                         <tr>
                                             <td className="table-label">Genre</td>
-                                            <td>{productDetails?.type?.map(type => type.name).join(', ')}</td>
+                                            <td><i>{productDetails?.type?.map(type => type.name).join(', ')}</i></td>
                                         </tr>
                                     </tbody>
                                 </table>
