@@ -20,7 +20,7 @@ const ProductPage = () => {
     const [priceFilter, setPriceFilter] = useState([0, 500000])
     const [pagination, setPagination] = useState({
         page: 1,
-        limit: 12,
+        limit: 16,
         total: 0
     })
     const [selectedBookCovers, setSelectedBookCovers] = useState([])
@@ -35,7 +35,6 @@ const ProductPage = () => {
         const sort = context.queryKey[5]
         const price = context.queryKey[6]
         const cover = context.queryKey[7] || {}
-
         const res = await ProductService.getAllProduct(search, types, limit, page, sort, price, cover)
 
         if (res?.status === 'OK') {
@@ -96,6 +95,7 @@ const ProductPage = () => {
 
     const onPageChange = (page) => {
         setPagination({ ...pagination, page })
+        window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     const handleShowMoreTypes = () => {

@@ -130,14 +130,13 @@ const deleteManyProducts = (ids) => {
     })
 }
 
-const allProduct = (limit, page, sort, filter, searchQuery) => {
+const allProduct = (limit, page, sort, filter, search) => {
     return new Promise(async (resolve, reject) => {
         try {
             const query = {};
-
             // Lọc theo search query
-            if (searchQuery) {
-                query['name'] = { '$regex': searchQuery, '$options': 'i' };
+            if (search) {
+                query['name'] = { '$regex': search, '$options': 'i' };
             }
 
             // Lọc theo loại sản phẩm (type) và giá

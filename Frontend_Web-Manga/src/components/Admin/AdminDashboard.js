@@ -24,7 +24,7 @@ const AdminDashboard = () => {
                 OrderService.getAllOrder(),
             ])
 
-            setTotalProduct(productRes.totalProduct || 0)
+            setTotalProduct(productRes?.totalProduct || 0)
             setTotalUser(userRes.data?.length || 0)
             setTotalOrder(orderRes.data?.length || 0)
 

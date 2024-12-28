@@ -628,3 +628,21 @@ footer {
   display: flex;
   justify-content: space-between;
 }
+
+.detail-product-content-right p {
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+
+.admin-table-name {
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4em;
+  max-height: calc(1.4em * 2);
+  text-overflow: ellipsis;
+  word-break: break-word;
+}

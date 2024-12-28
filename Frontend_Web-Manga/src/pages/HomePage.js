@@ -16,7 +16,7 @@ function rdimg() {
 function HomePage() {
     const searchProduct = useSelector((state) => state?.product?.search)
     const [loading, setLoading] = useState(false)
-    const [limit, setLimit] = useState(4)
+    const [limit, setLimit] = useState(6)
 
     const fetchAllProduct = async (context) => {
         const limit = context.queryKey[1]
@@ -94,7 +94,7 @@ function HomePage() {
                         null
                     ) : (
                         <div className='item-center'>
-                            <button className='btn btn-primary' onClick={() => setLimit((prev) => prev + 4)} style={{ marginBottom: 10 }}>show more</button>
+                            <button className='btn btn-primary' onClick={() => setLimit((prev) => prev + 6)} style={{ marginBottom: 10 }}>show more</button>
                         </div>
 
                     )}

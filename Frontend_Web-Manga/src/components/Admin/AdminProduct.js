@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import TableComponent from "../Table"
 import { resizeImage, sortByDate } from '../../utils'
 import { UploadOutlined } from '@ant-design/icons'
-import { Button, Upload } from 'antd'
+import { Button, Upload, Input } from 'antd'
 import * as ProductService from '../../services/ProductService.js'
 import * as CategoryService from '../../services/CategoryService.js'
 import * as message from "../Message/Message.js"
@@ -11,6 +11,8 @@ import Loading from '../Loading/Loading.js'
 import { Modal as BootstrapModal } from 'bootstrap'
 import { useQuery } from "@tanstack/react-query"
 import { useSelector } from "react-redux"
+import { SearchOutlined } from '@ant-design/icons'
+import Highlighter from 'react-highlight-words'
 
 function AdminProduct() {
     const productTypes = ['Comedy', 'Shounen', 'Adventure', 'Drama', 'Action', 'Fantasy', 'Sci Fi', 'Slice Of Life', 'School Life', 'Supernatural', 'Seinen', 'Romance', 'Historical', 'Mystery', 'Non-Human Protagonists', 'Elemental', 'Powers', 'Mature', 'Tragedy', 'Family Friendly', 'Gender Bender', 'Shoujo', 'Sport', 'Psychological', 'Horror', 'Harem', 'Monsters', 'Ecchi', 'Josei', 'Shounen-Ai', 'Other']
@@ -24,7 +26,7 @@ function AdminProduct() {
         description: '',
         cover: 'Paperback',
         author: '',
-        publisher: '',
+        publisher: 'Kim Dong',
         pages: ''
     })
     const [stateDetailsProduct, setStateDetailsProduct] = useState({
@@ -133,7 +135,64 @@ function AdminProduct() {
         retry: 3,
         retryDelay: 1000,
     })
+
     const { isLoading: isLoadingProducts, data: products } = queryProduct
+    const [searchText, setSearchText] = useState("")
+    const [searchedColumn, setSearchedColumn] = useState("")
+    const searchInputRef = useRef(null)
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm()
+        setSearchText(selectedKeys[0])
+        setSearchedColumn(dataIndex)
+    }
+
+    const handleReset = (clearFilters) => {
+        clearFilters()
+        setSearchText("")
+    }
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    ref={searchInputRef}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{ marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    type="primary"
+                    onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    size="small"
+                    style={{ marginRight: 8 }}
+                >
+                    Search
+                </Button>
+                <Button onClick={() => handleReset(clearFilters)} size="small">
+                    Reset
+                </Button>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ""}
+                />
+            ) : (
+                text
+            ),
+    })
 
     const columns = [
         {
@@ -141,7 +200,9 @@ function AdminProduct() {
             dataIndex: 'name',
             render: (text) => <div className="admin-table-name">{text}</div>,
             width: 150,
-            sorter: (a, b) => a.name.length - b.name.length
+            sorter: (a, b) => a.name.length - b.name.length,
+            searchable: true,
+            ...getColumnSearchProps('name'),
         },
         {
             title: 'Image',
@@ -152,24 +213,21 @@ function AdminProduct() {
         {
             title: 'Type',
             dataIndex: 'type',
-            width: 250,
+            width: 150,
             render: (types) => types.map(type => type.name).join(', ')
         },
         {
             title: 'Price',
             dataIndex: 'price',
             sorter: (a, b) => a.price - b.price,
-            render: (price) => price.toLocaleString().replace(/,/g, '.')
+            render: (price) => price.toLocaleString().replace(/,/g, '.'),
+            width: 50,
         },
         {
             title: 'Stock',
             dataIndex: 'stock',
-            sorter: (a, b) => a.stock - b.stock
-        },
-        {
-            title: 'Cover',
-            dataIndex: 'cover',
-            sorter: (a, b) => a.cover - b.cover
+            sorter: (a, b) => a.stock - b.stock,
+            width: 50,
         },
         {
             title: 'action',
@@ -264,7 +322,11 @@ function AdminProduct() {
             type: '',
             price: '',
             stock: '',
-            description: ''
+            description: '',
+            author: '',
+            publisher: 'Kim Dong',
+            pages: '',
+            cover: 'Paperback',
         })
     }
     useEffect(() => {
@@ -523,7 +585,7 @@ function AdminProduct() {
                                                 >
                                                     <option value="Paperback">Paperback</option>
                                                     <option value="Hardback">Hardback</option>
-                                                    <option value="Box set">Box set</option>
+                                                    <option value="Boxset">Box set</option>
                                                 </select>
                                             </div>
                                             <div className="form-floating mb-3 col-12">
@@ -631,7 +693,7 @@ function AdminProduct() {
                                                     >
                                                         <option value="Paperback">Paperback</option>
                                                         <option value="Hardback">Hardback</option>
-                                                        <option value="Box set">Box set</option>
+                                                        <option value="Boxset">Box set</option>
                                                     </select>
                                                 </div>
                                                 <div className="form-floating mb-3 col-12">
@@ -686,9 +748,10 @@ function AdminProduct() {
                         return {
                             onClick: () => {
                                 setRowSelected(record._id)
-                            }
+                            },
                         }
-                    }} />
+                    }}
+                />
             </div>
         </>
     )
