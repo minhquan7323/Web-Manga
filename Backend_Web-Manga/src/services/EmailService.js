@@ -31,6 +31,24 @@ const sendEmailCreateOrder = async (email, orderItems) => {
     })
 }
 
+// const sendEmailForgetPassword = async (email, otp) => {
+//     let transporter = nodemailer.createTransport({
+//         host: 'smtp.gmail.com',
+//         port: 465,
+//         secure: true,
+//         auth: {
+//             user: process.env.MAIL_ACCOUNT,
+//             pass: process.env.MAIL_PASSWORD
+//         }
+//     })
+//     let info = await transporter.sendMail({
+//         from: process.env.MAIL_ACCOUNT,
+//         to: email,
+//         subject: 'Web Manga | OTP Forget Password',
+//         text: `<h2>Your OTP is: ${otp}</h2>`,
+//         html: `<h2>Your OTP is: ${otp}</h2>`
+//     })
+// }
 module.exports = {
     sendEmailCreateOrder
 }

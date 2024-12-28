@@ -192,6 +192,10 @@ const DetailsProductPage = () => {
                                             <td><i>{productDetails?.publisher + ' Publishing House' || 'N/A'}</i></td>
                                         </tr>
                                         <tr>
+                                            <td className="table-label">Pages</td>
+                                            <td><i>{productDetails?.pages || 'N/A'}</i></td>
+                                        </tr>
+                                        <tr>
                                             <td className="table-label">Cover form</td>
                                             <td><i>{productDetails?.cover}</i></td>
                                         </tr>

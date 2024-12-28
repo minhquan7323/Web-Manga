@@ -98,7 +98,7 @@ function SignInPage() {
                                     <label htmlFor="password">Password</label>
                                 </div>
                                 {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
-                                <p className="text-muted">Forget password?</p>
+                                {/* <p className="text-muted">Forget password?</p> */}
                                 <span>Don't have an account?</span>
                                 <span className="text-muted label-signinup" onClick={handleNavigateSignUp}>
                                     Sign Up

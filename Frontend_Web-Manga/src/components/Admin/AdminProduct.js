@@ -24,7 +24,8 @@ function AdminProduct() {
         description: '',
         cover: 'Paperback',
         author: '',
-        publisher: ''
+        publisher: '',
+        pages: ''
     })
     const [stateDetailsProduct, setStateDetailsProduct] = useState({
         name: '',
@@ -35,7 +36,8 @@ function AdminProduct() {
         description: '',
         cover: 'Paperback',
         author: '',
-        publisher: ''
+        publisher: '',
+        pages: ''
     })
     const [rowSelected, setRowSelected] = useState('')
     const user = useSelector((state) => state?.user)
@@ -99,7 +101,8 @@ function AdminProduct() {
                 description: res.data.description,
                 cover: res.data.cover,
                 author: res.data.author,
-                publisher: res.data.publisher
+                publisher: res.data.publisher,
+                pages: res.data.pages
             })
         }
         setIsLoadingDetails(false)
@@ -467,6 +470,10 @@ function AdminProduct() {
                                                 <input type="text" className="form-control" id="authorAdd" placeholder="author" value={stateProduct.author} name="author" onChange={handleOnchange} required />
                                                 <label htmlFor="author">Author</label>
                                             </div>
+                                            <div className="form-floating mb-3 col-6">
+                                                <input type="text" className="form-control" id="pagesAdd" placeholder="pages" value={stateProduct.pages} name="pages" onChange={handleOnchange} required />
+                                                <label htmlFor="pages">Pages</label>
+                                            </div>
                                             <b style={{ padding: '10px' }}>Publisher</b>
                                             {productPublisher.map((publisher, index) => (
                                                 <div className="form-floating mb-0 col-4 col-6 col-xs-12 col-sm-6 col-md-4 col-lg-4" key={index}>
@@ -571,6 +578,10 @@ function AdminProduct() {
                                                 <div className="form-floating mb-3 col-6">
                                                     <input type="text" className="form-control" id="authorEdit" placeholder="author" value={stateDetailsProduct.author} name="author" onChange={handleOnchangeDetails} required />
                                                     <label htmlFor="author">Author</label>
+                                                </div>
+                                                <div className="form-floating mb-3 col-6">
+                                                    <input type="text" className="form-control" id="pagesEdit" placeholder="pages" value={stateDetailsProduct.pages} name="pages" onChange={handleOnchangeDetails} required />
+                                                    <label htmlFor="pages">Pages</label>
                                                 </div>
                                                 <b style={{ padding: '10px' }}>Publisher</b>
                                                 {productPublisher.map((publisher, index) => (

@@ -68,7 +68,7 @@ function AdminCategory() {
     }, [rowSelected])
 
     const queryCategory = useQuery({
-        queryKey: ['category'],
+        queryKey: ['categories'],
         queryFn: fetchAllCategory,
         retry: 3,
         retryDelay: 1000,
@@ -169,9 +169,10 @@ function AdminCategory() {
             name: '',
             isActive: ''
         });
-    };
+    }
 
     const createCategory = () => {
+
         mutation.mutate({
             ...stateCategory,
             access_token: user?.access_token

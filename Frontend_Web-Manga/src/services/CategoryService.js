@@ -1,6 +1,7 @@
 import axios from "axios"
+import * as UserService from './UserService'
 
-export const axiosJWT = axios.create()
+export const axiosJWT = UserService.axiosJWT
 
 export const createCategory = async (data, access_token) => {
     const res = await axiosJWT.post(`${process.env.REACT_APP_API_URL}/category/create`, data, {

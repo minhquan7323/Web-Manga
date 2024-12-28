@@ -1,6 +1,7 @@
 const User = require('../models/UserModel')
 const bcrypt = require('bcrypt')
 const { genneralAccessToken, genneralRefreshToken } = require('./JwtService')
+const EmailService = require('./EmailService')
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
@@ -190,6 +191,31 @@ const getDetailsUser = (id) => {
     });
 }
 
+// const forgetPasswordUser = (email) => {
+//     return new Promise(async (resolve, reject) => {
+//         const otpRand = Math.floor(100000 + Math.random() * 900000)
+//         try {
+//             const checkUser = await User.findOne({ email: email })
+//             if (!checkUser) {
+//                 resolve({
+//                     status: 'ERR',
+//                     message: 'Email does not exist'
+//                 })
+//             } else {
+//                 await EmailService.sendEmailForgetPassword(email, otpRand)
+//                 resolve({
+//                     status: 'OK',
+//                     message: 'SUCCESS'
+//                 })
+//             }
+//         } catch (e) {
+//             reject({
+//                 status: 'ERR',
+//                 message: e.message || 'An unexpected error occurred'
+//             })
+//         }
+//     })
+// }
 module.exports = {
     createUser,
     loginUser,
@@ -197,5 +223,6 @@ module.exports = {
     deleteUser,
     getAllUser,
     getDetailsUser,
-    deleteManyUsers
+    deleteManyUsers,
+    // forgetPasswordUser
 }
