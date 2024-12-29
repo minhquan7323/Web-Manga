@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { resetUser, updateUser } from './redux/userSlide.js'
 import * as UserService from './services/UserService.js'
 // import ScrollToTop from './components/ScrollToTop.js'
+import * as message from "./components/Message/Message.js"
 
 function App() {
     const dispatch = useDispatch()
@@ -55,7 +56,15 @@ function App() {
         const storageRefreshToken = localStorage.getItem('refresh_token')
         const refresh_token = JSON.parse(storageRefreshToken)
         const res = await UserService.getDetailsUser(id, access_token)
-        dispatch(updateUser({ ...res?.data, access_token: access_token, refresh_token: refresh_token }))
+
+        if (!res?.data?.isActive) {
+            message.error("Your account has been banned. You will be logged out.")
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('refresh_token')
+            dispatch(resetUser())
+        } else {
+            dispatch(updateUser({ ...res?.data, access_token: access_token, refresh_token: refresh_token }))
+        }
     }
 
     return (

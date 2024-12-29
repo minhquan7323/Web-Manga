@@ -11,7 +11,6 @@ import { jwtDecode } from "jwt-decode"
 import { useDispatch } from 'react-redux'
 import { updateUser } from '../redux/userSlide.js'
 
-
 function SignInPage() {
     const navigate = useNavigate()
     const location = useLocation()
@@ -30,33 +29,50 @@ function SignInPage() {
     const { data, isError } = mutation
     const isLoading = mutation.isPending
 
-    useEffect(() => {
-        if (data && data?.status === 'OK') {
-            message.success()
-            localStorage.setItem('access_token', JSON.stringify(data?.access_token))
-            localStorage.setItem('refresh_token', JSON.stringify(data?.refresh_token))
-            if (data?.access_token) {
-                const decoded = jwtDecode(data?.access_token)
-                if (decoded?.id) {
-                    handleGetDetailsUser(decoded?.id, data?.access_token)
-                }
-            }
-            if (location?.state) {
-                navigate(location?.state)
-            } else {
-                navigate('/')
-            }
-        } else if (isError || (data && data?.status === 'ERR')) {
-            message.error(data?.message)
-        }
-    }, [data, isError, navigate])
-
     const handleGetDetailsUser = async (id, access_token) => {
         const storageRefreshToken = localStorage.getItem('refresh_token')
         const refresh_token = JSON.parse(storageRefreshToken)
         const res = await UserService.getDetailsUser(id, access_token)
+
+        if (!res?.data?.isActive) {
+            message.error("Your account has been banned")
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('refresh_token')
+            return false
+        }
+
         dispatch(updateUser({ ...res?.data, access_token: access_token, refresh_token }))
+        return true
     }
+
+    const checkAndNavigate = async () => {
+        if (data && data?.status === 'OK') {
+            localStorage.setItem('access_token', JSON.stringify(data?.access_token))
+            localStorage.setItem('refresh_token', JSON.stringify(data?.refresh_token))
+
+            if (data?.access_token) {
+                const decoded = jwtDecode(data?.access_token)
+                if (decoded?.id) {
+                    const isUserActive = await handleGetDetailsUser(decoded?.id, data?.access_token)
+
+                    if (isUserActive) {
+                        message.success("Login successful!")
+                        if (location?.state && typeof location.state === 'string') {
+                            navigate(location.state)
+                        } else {
+                            navigate('/')
+                        }
+                    }
+                }
+            }
+        } else if (isError || (data && data?.status === 'ERR')) {
+            message.error(data?.message || "Login failed. Please try again.")
+        }
+    }
+
+    useEffect(() => {
+        checkAndNavigate()
+    }, [data, isError, navigate])
 
     const handleOnChangeEmail = (value) => {
         setEmail(value)
@@ -90,15 +106,30 @@ function SignInPage() {
                             </div>
                             <div className="body">
                                 <div className="form-floating mb-3">
-                                    <input type="email" className="form-control" id="email" placeholder="name@example.com" value={email} onChange={(e) => handleOnChangeEmail(e.target.value)} required />
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        id="email"
+                                        placeholder="name@example.com"
+                                        value={email}
+                                        onChange={(e) => handleOnChangeEmail(e.target.value)}
+                                        required
+                                    />
                                     <label htmlFor="email">Email address</label>
                                 </div>
                                 <div className="form-floating mb-3">
-                                    <input type="password" className="form-control" id="password" placeholder="Password" value={password} onChange={(e) => handleOnChangePassword(e.target.value)} required />
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        id="password"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => handleOnChangePassword(e.target.value)}
+                                        required
+                                    />
                                     <label htmlFor="password">Password</label>
                                 </div>
                                 {data?.status === 'ERR' && <span style={{ color: 'red' }}>{data?.message}</span>}
-                                {/* <p className="text-muted">Forget password?</p> */}
                                 <span>Don't have an account?</span>
                                 <span className="text-muted label-signinup" onClick={handleNavigateSignUp}>
                                     Sign Up
@@ -106,7 +137,12 @@ function SignInPage() {
                             </div>
                             <Loading isLoading={isLoading}>
                                 <div className='item-center'>
-                                    <button type="button" className="btn btn-primary" onClick={handleSignIn} disabled={!isFormValid}>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        onClick={handleSignIn}
+                                        disabled={!isFormValid}
+                                    >
                                         Sign In
                                     </button>
                                 </div>

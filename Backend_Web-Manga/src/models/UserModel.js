@@ -7,6 +7,7 @@ const userSchema = new Mongoose.Schema(
         avatar: { type: String },
         address: { type: String },
         isAdmin: { type: Boolean, default: false, require: true },
+        isActive: { type: Boolean, default: true, require: true },
         phone: { type: Number },
         access_token: { type: String, require: true },
         refresh_token: { type: String, require: true },

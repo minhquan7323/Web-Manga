@@ -1,22 +1,24 @@
-import { Table } from "antd";
-import React, { useState } from "react";
+import { Table } from "antd"
+import React, { useState } from "react"
 import Loading from '../components/Loading/Loading'
 
 const TableComponent = (props) => {
     const { selectionType = 'checkbox', data = [], isLoading = false, columns = [], deleteMany, multiChoice = false } = props
     const [rowSelectedKeys, setRowSelectedKeys] = useState([])
+
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             setRowSelectedKeys(selectedRowKeys)
         },
-        // getCheckboxProps: (record) => ({
-        //     disabled: record.name === 'Disabled User',
-        //     name: record.name
-        // })
     }
+
     const handleDeleteAll = async () => {
         await deleteMany(rowSelectedKeys)
         setRowSelectedKeys([])
+    }
+
+    const handleTableChange = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     return (
@@ -32,9 +34,13 @@ const TableComponent = (props) => {
                 }}
                 columns={columns}
                 dataSource={data}
+                pagination={{
+                    position: ['bottomCenter'],
+                }}
                 scroll={{
                     x: 'max-content',
                 }}
+                onChange={handleTableChange}
                 {...props}
             />
         </Loading>

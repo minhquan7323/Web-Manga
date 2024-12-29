@@ -24,9 +24,10 @@ function AdminUser() {
         name: '',
         phone: '',
         email: '',
-        avatar: '',
-        address: '',
-        isAdmin: ''
+        // avatar: '',
+        // address: '',
+        isAdmin: '',
+        isActive: ''
     })
     const [rowSelected, setRowSelected] = useState('')
     const user = useSelector((state) => state?.user)
@@ -85,10 +86,11 @@ function AdminUser() {
                 name: res.data.name,
                 phone: res.data.phone,
                 email: res.data.email,
-                password: res.data.password,
-                avatar: res.data.avatar,
-                address: res.data.address,
-                isAdmin: res.data.isAdmin
+                // password: res.data.password,
+                // avatar: res.data.avatar,
+                // address: res.data.address,
+                isAdmin: res.data.isAdmin,
+                isActive: res.data.isActive
             })
         }
         setIsLoadingDetails(false)
@@ -129,6 +131,11 @@ function AdminUser() {
             dataIndex: 'isAdmin',
         },
         {
+            title: 'Status',
+            dataIndex: 'isActive',
+            width: 100
+        },
+        {
             title: 'action',
             dataIndex: 'action',
             fixed: 'right',
@@ -150,7 +157,11 @@ function AdminUser() {
     ]
 
     const dataTable = users?.data?.length && users?.data?.map((user) => {
-        return { ...user, key: user._id, isAdmin: user.isAdmin ? 'true' : 'false' }
+        return {
+            ...user, key: user._id,
+            isAdmin: user.isAdmin ? 'true' : 'false',
+            isActive: user.isActive ? 'Is active' : 'Inactive'
+        }
     })
 
     useEffect(() => {
@@ -251,11 +262,12 @@ function AdminUser() {
     const updateUser = () => {
         mutationUpdate.mutate({
             id: rowSelected,
-            name: stateDetailsUser.name,
-            phone: stateDetailsUser.phone,
-            avatar: stateDetailsUser.avatar,
-            address: stateDetailsUser.address,
+            // name: stateDetailsUser.name,
+            // phone: stateDetailsUser.phone,
+            // avatar: stateDetailsUser.avatar,
+            // address: stateDetailsUser.address,
             isAdmin: stateDetailsUser.isAdmin,
+            isActive: stateDetailsUser.isActive,
             access_token: user?.access_token
         }, {
             onSettled: () => {
@@ -324,7 +336,7 @@ function AdminUser() {
     }
 
     const isUserFormValid = stateUser.name !== '' && stateUser.phone !== '' && stateUser.email !== '' && stateUser.password !== '' && stateUser.confirmPassword !== ''
-    const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.avatar !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.email !== '' && stateDetailsUser.isAdmin !== ''
+    const isDetailsUserFormValid = stateDetailsUser.name !== '' && stateDetailsUser.avatar !== '' && stateDetailsUser.phone !== '' && stateDetailsUser.email !== '' && stateDetailsUser.isAdmin !== '' && stateDetailsUser.isActive !== ''
 
     return (
         <>
@@ -394,33 +406,33 @@ function AdminUser() {
                                     <div className="modal-body">
                                         <div className="body">
                                             <div className="row">
-                                                <div className="form-floating mb-3 col-12">
+                                                {/* <div className="form-floating mb-3 col-12">
                                                     <Upload beforeUpload={beforeUpload} onChange={handleOnChangeImageDetails} showUploadList={false} maxCount={1}>
                                                         <Button icon={<UploadOutlined />}>Avatar</Button>
                                                     </Upload>
                                                     {stateDetailsUser?.avatar && (
                                                         <img src={stateDetailsUser?.avatar} alt="avt" />
                                                     )}
+                                                </div> */}
+                                                <div className="form-floating mb-3 col-12">
+                                                    <input type="name" className="form-control" id="nameDetail" placeholder="name" value={stateDetailsUser.name} name="name" onChange={handleOnchangeDetails} required disabled />
+                                                    <label htmlFor="name">Name</label>
+                                                </div>
+                                                <div className="form-floating mb-3 col-4">
+                                                    <input type="tel" className="form-control" id="phoneDetail" placeholder="0123123123" value={stateDetailsUser.phone} name="phone" onChange={handleOnchangeDetails} required disabled />
+                                                    <label htmlFor="phone">Phone</label>
                                                 </div>
                                                 <div className="form-floating mb-3 col-8">
-                                                    <input type="name" className="form-control" id="nameDetail" placeholder="name" value={stateDetailsUser.name} name="name" onChange={handleOnchangeDetails} required />
-                                                    <label htmlFor="name">Name</label>
+                                                    <input type="email" className="form-control" id="emailDetail" placeholder="email@gmail.com" value={stateDetailsUser.email} name="email" onChange={handleOnchangeDetails} required disabled />
+                                                    <label htmlFor="email">Email address</label>
                                                 </div>
                                                 <div className="form-check form-switch col-4" style={{ paddingTop: '20px' }}>
                                                     <input className="form-check-input" onChange={handleOnchangeDetails} checked={stateDetailsUser.isAdmin} type="checkbox" role="switch" id="isAdminDetail" name="isAdmin" />
                                                     <label className="form-check-label" htmlFor="isAdmin">Admin</label>
                                                 </div>
-                                                <div className="form-floating mb-3 col-5">
-                                                    <input type="tel" className="form-control" id="phoneDetail" placeholder="0123123123" value={stateDetailsUser.phone} name="phone" onChange={handleOnchangeDetails} required />
-                                                    <label htmlFor="phone">Phone</label>
-                                                </div>
-                                                <div className="form-floating mb-3 col-7">
-                                                    <input type="email" className="form-control" id="emailDetail" placeholder="email@gmail.com" value={stateDetailsUser.email} name="email" onChange={handleOnchangeDetails} required />
-                                                    <label htmlFor="email">Email address</label>
-                                                </div>
-                                                <div className="form-floating mb-3 col-12">
-                                                    <input type="address" className="form-control" id="addressDetail" placeholder="address" value={stateDetailsUser.address || ''} name="address" onChange={handleOnchangeDetails} required />
-                                                    <label htmlFor="address">Address</label>
+                                                <div className="form-check form-switch col-4" style={{ paddingTop: '20px' }}>
+                                                    <input className="form-check-input" onChange={handleOnchangeDetails} checked={stateDetailsUser.isActive} type="checkbox" role="switch" id="isActiveDetail" name="isActive" />
+                                                    <label className="form-check-label" htmlFor="isActive">Active</label>
                                                 </div>
                                             </div>
                                         </div>

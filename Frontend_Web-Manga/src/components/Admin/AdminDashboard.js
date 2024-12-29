@@ -4,6 +4,7 @@ import * as UserService from '../../services/UserService'
 import * as OrderService from '../../services/OrderService'
 import Loading from '../Loading/Loading.js'
 import { convertPrice } from '../../utils'
+import { useSelector } from 'react-redux'
 
 const AdminDashboard = () => {
     const [totalProduct, setTotalProduct] = useState(0)
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
     const [totalRevenue, setTotalRevenue] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
     const [hasError, setHasError] = useState(false)
+    const user = useSelector((state) => state?.user)
 
     const fetchAllData = async () => {
         setIsLoading(true)
@@ -19,9 +21,9 @@ const AdminDashboard = () => {
 
         try {
             const [productRes, userRes, orderRes] = await Promise.all([
-                ProductService.getAllProduct(),
-                UserService.getAllUser(),
-                OrderService.getAllOrder(),
+                ProductService.getAllProduct(user?.access_token),
+                UserService.getAllUser(user?.access_token),
+                OrderService.getAllOrder(user?.access_token),
             ])
 
             setTotalProduct(productRes?.totalProduct || 0)
