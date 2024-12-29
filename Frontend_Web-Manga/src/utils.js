@@ -1,3 +1,5 @@
+import imageCompression from 'browser-image-compression'
+
 export const isJsonString = (data) => {
     try {
         JSON.parse(data)
@@ -105,4 +107,35 @@ export const initFacebookSDK = () => {
 export const sortByDate = (data) => {
     if (!Array.isArray(data)) return []
     return data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+}
+
+export const uploadToCloudinary = async (file) => {
+    try {
+        const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1024,
+            useWebWorker: true,
+        }
+        const compressedFile = await imageCompression(file, options)
+
+        const data = new FormData()
+        data.append('file', compressedFile)
+        data.append('upload_preset', `${process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET}`)
+        data.append('cloud_name', `${process.env.REACT_APP_CLOUDINARY_CLOUDNAME}`)
+
+        const response = await fetch(`${process.env.REACT_APP_CLOUDINARY}`, {
+            method: 'POST',
+            body: data,
+        })
+
+        const result = await response.json()
+        if (!result.url) {
+            throw new Error('No URL returned from Cloudinary')
+        }
+
+        return result.url
+    } catch (error) {
+        console.error('Error uploading image:', error)
+        throw error
+    }
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import TableComponent from "../Table"
-import { resizeImage, sortByDate } from '../../utils'
+import { uploadToCloudinary, sortByDate } from '../../utils'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Upload } from 'antd'
 import * as UserService from '../../services/UserService.js'
@@ -295,7 +295,7 @@ function AdminUser() {
     const handleOnChangeImage = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await resizeImage(file, 1920, 1080, 0.7);
+            const preview = await uploadToCloudinary(file);
             setStateUser({
                 ...stateUser,
                 avatar: preview
@@ -305,7 +305,7 @@ function AdminUser() {
     const handleOnChangeImageDetails = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await resizeImage(file, 1920, 1080, 0.7);
+            const preview = await uploadToCloudinary(file);
             setStateDetailsUser({
                 ...stateDetailsUser,
                 avatar: preview

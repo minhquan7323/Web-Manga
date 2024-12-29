@@ -5,7 +5,7 @@ import Loading from '../components/Loading/Loading.js'
 import * as message from "../components/Message/Message.js"
 import { useSelector, useDispatch } from 'react-redux'
 import { updateUser } from '../redux/userSlide.js'
-import { resizeImage } from '../utils.js'
+import { uploadToCloudinary } from '../utils.js'
 import { Button, Upload } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -20,6 +20,7 @@ const ProfilePage = () => {
     const [address, setAddress] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [loadingAvatar, setLoadingAvatar] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -67,8 +68,11 @@ const ProfilePage = () => {
     const handleOnChangeAvatar = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await resizeImage(file, 1920, 1080, 0.7)
+            // const preview = await resizeImage(file, 1920, 1080, 0.7)
+            setLoadingAvatar(true)
+            const preview = await uploadToCloudinary(file)
             setAvatar(preview)
+            setLoadingAvatar(false)
         }
     }
     const beforeUpload = (file) => {
@@ -190,7 +194,9 @@ const ProfilePage = () => {
                                     <Button icon={<UploadOutlined />}>Avatar</Button>
                                 </Upload>
                                 {avatar && (
-                                    <img src={avatar} className='profile-user-avatar' />
+                                    <Loading isLoading={loadingAvatar}>
+                                        <img src={avatar} className='profile-user-avatar' />
+                                    </Loading>
                                 )}
                             </div>
                             <Loading isLoading={isLoading}>

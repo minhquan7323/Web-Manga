@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import TableComponent from "../Table"
-import { resizeImage, sortByDate } from '../../utils'
+import { uploadToCloudinary, sortByDate } from '../../utils'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Upload, Input } from 'antd'
 import * as ProductService from '../../services/ProductService.js'
@@ -15,7 +15,6 @@ import { SearchOutlined } from '@ant-design/icons'
 import Highlighter from 'react-highlight-words'
 
 function AdminProduct() {
-    const productTypes = ['Comedy', 'Shounen', 'Adventure', 'Drama', 'Action', 'Fantasy', 'Sci Fi', 'Slice Of Life', 'School Life', 'Supernatural', 'Seinen', 'Romance', 'Historical', 'Mystery', 'Non-Human Protagonists', 'Elemental', 'Powers', 'Mature', 'Tragedy', 'Family Friendly', 'Gender Bender', 'Shoujo', 'Sport', 'Psychological', 'Horror', 'Harem', 'Monsters', 'Ecchi', 'Josei', 'Shounen-Ai', 'Other']
     const productPublisher = ['Kim Dong', 'Tre', 'IPM']
     const [stateProduct, setStateProduct] = useState({
         name: '',
@@ -44,6 +43,8 @@ function AdminProduct() {
     const [rowSelected, setRowSelected] = useState('')
     const user = useSelector((state) => state?.user)
     const [isLoadingDetails, setIsLoadingDetails] = useState(false)
+    const [isLoadingImg, setIsLoadingImg] = useState(false)
+    const [isLoadingImgEdit, setIsLoadingImgEdit] = useState(false)
 
     const mutation = useMutationHooks(
         async (data) => {
@@ -406,22 +407,26 @@ function AdminProduct() {
     const handleOnChangeImage = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await resizeImage(file, 1920, 1080, 0.7)
+            setIsLoadingImg(true)
+            const preview = await uploadToCloudinary(file)
             setStateProduct({
                 ...stateProduct,
                 image: preview
             })
+            setIsLoadingImg(false)
         }
     }
 
     const handleOnChangeImageDetails = async (info) => {
         const file = info.fileList[0]?.originFileObj
         if (file) {
-            const preview = await resizeImage(file, 1920, 1080, 0.7)
+            setIsLoadingImgEdit(true)
+            const preview = await uploadToCloudinary(file)
             setStateDetailsProduct({
                 ...stateDetailsProduct,
                 image: preview
             })
+            setIsLoadingImgEdit(false)
         }
     }
 
@@ -597,7 +602,7 @@ function AdminProduct() {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancel}>Close</button>
-                                    <Loading isLoading={isLoading}>
+                                    <Loading isLoading={isLoading || isLoadingImg}>
                                         <button type="button" className="btn btn-primary" onClick={createProduct} disabled={!isProductFormValid}>Add</button>
                                     </Loading>
                                 </div>
@@ -706,7 +711,7 @@ function AdminProduct() {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCancel}>Close</button>
-                                    <Loading isLoading={isLoadingUpdated}>
+                                    <Loading isLoading={isLoadingUpdated || isLoadingImgEdit}>
                                         <button type="button" className="btn btn-primary" onClick={updateProduct} disabled={!isDetailsProductFormValid}>Edit</button>
                                     </Loading>
                                 </div>
