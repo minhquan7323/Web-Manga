@@ -72,11 +72,11 @@ function App() {
             <div>
                 <Header />
             </div>
-            <div className='content'>
+            <div className='content' style={{ minHeight: 500 }}>
                 <Outlet />
             </div>
             <div>
-                {/* <Footer /> */}
+                <Footer />
             </div>
             {/* <div>
                 <ScrollToTop />

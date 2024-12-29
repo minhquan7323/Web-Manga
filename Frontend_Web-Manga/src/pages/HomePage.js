@@ -9,10 +9,6 @@ import { useQuery } from '@tanstack/react-query'
 import { convertPrice } from '../utils.js';
 import { Container } from 'react-bootstrap';
 
-function rdimg() {
-    return `https://picsum.photos/1500/600?random=${Math.floor(Math.random() * 1000)}`;
-}
-
 function HomePage() {
     const searchProduct = useSelector((state) => state?.product?.search)
     const [loading, setLoading] = useState(false)
@@ -42,29 +38,27 @@ function HomePage() {
 
     return (
         <>
-            <Carousel>
+            <Carousel className='carousel'>
                 <Carousel.Item interval={3500}>
-                    <img src={rdimg()} className="d-block w-100" alt='img 1' />
-                    {/* <Carousel.Caption>
-                        <h3>First slide label</h3>
-                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                    </Carousel.Caption> */}
+                    <img src='/assets/img/banner1.png' className="d-block w-100" alt='img 1' />
+                    <Carousel.Caption>
+                        <h3>Discover New Manga Worlds</h3>
+                        <p>We bring you the latest manga series in various genres, don't miss out!</p>
+                    </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item interval={3500}>
-                    <img src={rdimg()} className="d-block w-100" alt='img 2' />
-                    {/* <Carousel.Caption>
-                        <h3>Second slide label</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    </Carousel.Caption> */}
+                    <img src='/assets/img/banner2.png' className="d-block w-100" alt='img 2' />
+                    <Carousel.Caption>
+                        <h3>Hot Manga Titles Waiting for You</h3>
+                        <p>Let your favorite manga embark on a new adventure with thrilling stories!</p>
+                    </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item interval={3500}>
-                    <img src={rdimg()} className="d-block w-100" alt='img 3' />
-                    {/* <Carousel.Caption>
-                        <h3>Third slide label</h3>
-                        <p>
-                            Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-                        </p>
-                    </Carousel.Caption> */}
+                    <img src='/assets/img/banner3.jpg' className="d-block w-100" alt='img 3' />
+                    <Carousel.Caption>
+                        <h3>The Infinite World of Manga</h3>
+                        <p>Explore an endless collection of manga, with all genres at your fingertips. Join us today!</p>
+                    </Carousel.Caption>
                 </Carousel.Item>
             </Carousel>
 

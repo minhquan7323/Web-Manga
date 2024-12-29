@@ -84,7 +84,11 @@ const Header = () => {
         <Navbar expand="lg" className="bg-body-tertiary fixed-top" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }} expanded={navbarExpanded}>
             <Container fluid>
 
-                <Navbar.Brand ><NavLink to="/" className='nav-link' onClick={() => handleNavhidden()}>Logo</NavLink></Navbar.Brand>
+                <Navbar.Brand>
+                    <NavLink to="/" className='nav-link' onClick={() => handleNavhidden()} style={{ fontWeight: 'bold', color: '#009990' }}>
+                        Manga Shop
+                    </NavLink>
+                </Navbar.Brand>
                 <Navbar.Toggle onClick={() => setNavbarExpanded(!navbarExpanded)} />
                 <Navbar.Collapse id="navbarScroll">
                     {!adminPath ? (

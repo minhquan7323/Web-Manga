@@ -1,5 +1,5 @@
 import React from 'react';
 import { Rate } from 'antd';
-const RateComponent = ({ star }) =>
-    <Rate disabled allowHalf defaultValue={star} />
+const RateComponent = ({ star, size = 14 }) =>
+    <Rate disabled allowHalf defaultValue={star} style={{ fontSize: size }} />
 export default RateComponent;

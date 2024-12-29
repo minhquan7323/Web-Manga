@@ -3,6 +3,7 @@ import React from 'react';
 import Col from 'react-bootstrap/Col';
 import { Card } from 'react-bootstrap';
 import { useNavigate, NavLink } from 'react-router-dom';
+import Rate from './Rate';
 
 const ProductCard = (props) => {
     const { stock, description, image, name, price, rating, type, id, sold, xsSize = 6, smSize = 4, mdSize = 3, lgSize = 3 } = props
@@ -18,14 +19,16 @@ const ProductCard = (props) => {
                 <Card.Img variant="top" src={image} className='product-card-img' alt={name} />
                 <Card.Body className='product-card-body'>
                     <Card.Text className="product-card-title">{name}</Card.Text>
-                    <div className='product-card-block'>
-                        <Card.Text className="product-card-price">
-                            {price} VND
-                        </Card.Text>
-                        <Card.Text className='product-card-sold'>sold: {sold}</Card.Text>
-                        {/* <Badge bg="secondary" className='product-card-episode'>
+                    <Card.Text className="product-card-price">
+                        {price} VND
+                    </Card.Text>
+
+                    {/* <Badge bg="secondary" className='product-card-episode'>
                         Eps {product.episode}
                     </Badge> */}
+                    <div className='product-card-block'>
+                        <Rate star={rating || 0} size={12} />
+                        <Card.Text className='product-card-sold'>sold: {sold}</Card.Text>
                     </div>
                 </Card.Body>
             </Card>

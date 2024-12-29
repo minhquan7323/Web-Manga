@@ -305,6 +305,10 @@ footer {
   padding: 10px;
 }
 
+.footer-inner i {
+  width: 25px;
+}
+
 /* src/ScrollToTopButton.css */
 .scroll-to-top {
   position: fixed;
@@ -645,4 +649,54 @@ footer {
   max-height: calc(1.4em * 2);
   text-overflow: ellipsis;
   word-break: break-word;
+}
+
+.carousel img {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .carousel img {
+    height: 300;
+  }
+}
+
+@media (min-width: 768px) {
+  .carousel img {
+    height: 400px;
+  }
+}
+
+@media (min-width: 992px) {
+  .carousel img {
+    height: 450px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .carousel img {
+    height: 500px;
+  }
+}
+
+.carousel-caption h3,
+.carousel-caption p {
+  text-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.6),
+    -4px -4px 10px rgba(0, 0, 0, 0.6),
+    0 4px 10px rgba(0, 0, 0, 0.6),
+    0 -4px 10px rgba(0, 0, 0, 0.6),
+    4px 0 10px rgba(0, 0, 0, 0.6),
+    -4px 0 10px rgba(0, 0, 0, 0.6);
+  font-weight: bold;
+}
+
+.carousel-caption h3 {
+  font-size: 2dvw;
+}
+
+.carousel-caption p {
+  font-size: 1.5dvw;
 }
