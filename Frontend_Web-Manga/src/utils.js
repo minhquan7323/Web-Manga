@@ -124,8 +124,10 @@ export const uploadToCloudinary = async (file) => {
         data.append('cloud_name', `${process.env.REACT_APP_CLOUDINARY_CLOUDNAME}`)
 
         const response = await fetch(`${process.env.REACT_APP_CLOUDINARY}`, {
-            method: 'POST',
+            method: "POST",
             body: data,
+            mode: 'cors',
+            credentials: 'omit'
         })
 
         const result = await response.json()
