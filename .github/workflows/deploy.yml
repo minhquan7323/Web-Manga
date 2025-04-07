@@ -25,7 +25,7 @@ jobs:
         port: 22
         script: |
           set -e
-          cd /home/${{ secrets.EC2_USER }}/Book-Store/
+          cd /home/${{ secrets.EC2_USER }}/Web-Manga/
           git pull origin main
           sudo docker-compose down || true
           sudo docker system prune -af
