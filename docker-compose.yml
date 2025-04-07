@@ -1,19 +1,19 @@
 version: "3.8"
 
 services:
-  backend:
-    build: ./backend
+  Backend_Web-Manga:
+    build: ./Backend_Web-Manga
     ports:
       - "4001:4001"
     networks:
       - mynetwork
 
-  frontend:
-    build: ./frontend
+  Frontend_Web-Manga:
+    build: ./Frontend_Web-Manga
     ports:
       - "4000:80"
     depends_on:
-      - backend
+      - Backend_Web-Manga
     networks:
       - mynetwork
 
