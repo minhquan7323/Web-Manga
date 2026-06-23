@@ -3,7 +3,8 @@ const Category = require('../models/CategoryModel')
 
 const createProduct = (newProduct) => {
     return new Promise(async (resolve, reject) => {
-        const { name, image, type, price, stock, description, cover, author, publisher, pages } = newProduct
+        const { name, image, type, price, stock,
+            description, cover, author, publisher, pages } = newProduct
         try {
             const checkProduct = await Product.findOne({
                 name: name
@@ -15,16 +16,8 @@ const createProduct = (newProduct) => {
                 })
             }
             const newProduct = await Product.create({
-                name,
-                type,
-                price,
-                stock,
-                description,
-                cover,
-                image,
-                author,
-                publisher,
-                pages
+                name, type, price, stock, description,
+                cover, image, author, publisher, pages
             })
             if (newProduct) {
                 resolve({
