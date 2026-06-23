@@ -23,7 +23,7 @@ function AdminOrder() {
 
     const fetchGetDetailsOrder = async (rowSelected) => {
         setIsLoadingDetails(true)
-        const res = await OrderService.getDetailsOrder(rowSelected)
+        const res = await OrderService.getDetailsOrder(rowSelected, user?.access_token)
         if (res?.data) {
             setStateDetailsOrder({
                 isDelivered: res.data.isDelivered
