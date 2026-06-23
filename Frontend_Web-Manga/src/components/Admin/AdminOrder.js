@@ -222,6 +222,13 @@ function AdminOrder() {
                     columns={columns}
                     data={sortByDate(dataTable)}
                     isLoading={isLoadingOrders}
+                    onRow={(record, rowIndex) => {
+                        return {
+                            onClick: (event) => {
+                                setRowSelected(record._id);
+                            }
+                        };
+                    }}
                 />
             </div>
         </>
